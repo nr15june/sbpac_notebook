@@ -28,4 +28,6 @@ class AdminAuthController extends Controller
 
         return back()->with('error', 'Email หรือ Password ไม่ถูกต้อง');
     }
+
+    
 }
