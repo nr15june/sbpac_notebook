@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminUserController;
-
+use App\Http\Controllers\NotebookController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -27,9 +27,17 @@ Route::get('/admin/booking_management', function () {
 })->name('admin.booking_management');
 
 //---------------------admin notebook management-----------------------//
-Route::get('/admin/notebook_management', function () {
-    return view('admin.notebook_management');
-})->name('admin.notebook_management');
+Route::get('/admin/notebooks', [NotebookController::class,'index'])
+    ->name('admin.notebook_management');
+
+Route::post('/admin/notebooks', [NotebookController::class,'store'])
+    ->name('admin.notebooks.store');
+    
+Route::get('/admin/notebooks/{id}/edit', [NotebookController::class,'edit'])
+    ->name('admin.notebooks.edit');
+
+Route::delete('/admin/notebooks/{id}', [NotebookController::class,'destroy'])
+    ->name('admin.notebooks.delete');
 
 //---------------------admin user management-----------------------//
 Route::get('/admin/user_management', function () {

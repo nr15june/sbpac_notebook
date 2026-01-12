@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@yield('title', 'ระบบจองโน้ตบุ๊ค | ศอ.บต.')</title>
+    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ค | ศอ.บต.')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -55,7 +55,7 @@
                 class="inline-flex items-center justify-center px-10 py-4 rounded-full text-white text-base md:text-lg font-medium
                            bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-300
                            shadow-md transition">
-                <span class="mr-2">ระบบจองโน้ตบุ๊ก</span>
+                <span class="mr-2">ระบบยืมโน้ตบุ๊ก</span>
                 <span class="text-xl">➜</span>
             </a>
         </div>

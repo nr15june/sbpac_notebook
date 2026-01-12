@@ -2,7 +2,7 @@
 <html lang="th">
 
 <meta charset="UTF-8">
-<title>@yield('title', 'ระบบจองโน้ตบุ๊ค')</title>
+<title>@yield('title', 'ระบบยืมโน้ตบุ๊ค')</title>
 <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -148,7 +148,7 @@
 
             <a href="{{ route('admin.booking_management') }}"
                 class="menu-item {{ request()->routeIs('admin.booking_management') ? 'active' : '' }}">
-                จัดการการจอง
+                จัดการการยืมโน้ตบุ๊ค
             </a>
 
             <a href="{{ route('admin.notebook_management') }}"
