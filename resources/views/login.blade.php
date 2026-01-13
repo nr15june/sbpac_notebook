@@ -108,10 +108,9 @@
             </div>
         </div>
 
-        {{-- ตอนนี้ยังไม่เชื่อมหลังบ้าน ฟอร์มนี้แค่แสดงเฉย ๆ --}}
-        <form action="{{ route('admin.login.submit') }}" method="post">
+        <form method="POST" action="{{ route('login.submit') }}">
             @csrf
-
+            
             <div class="form-group">
                 <div class="form-label">Email</div>
                 <input type="email" name="email" class="form-control" placeholder="email">

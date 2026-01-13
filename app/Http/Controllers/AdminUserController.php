@@ -91,6 +91,7 @@ class AdminUserController extends Controller
             'workgroup'  => 'required|string',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
+
         ]);
 
         User::create([
@@ -103,6 +104,7 @@ class AdminUserController extends Controller
             'workgroup'  => $request->workgroup,
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
+            'role'       => 'user',
         ]);
 
         return redirect()->route('admin.user_management')

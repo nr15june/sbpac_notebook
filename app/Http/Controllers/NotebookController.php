@@ -33,19 +33,14 @@ class NotebookController extends Controller
             // ✅ ถ้ามีการอัปโหลดรูปใหม่
             if ($request->hasFile('image')) {
 
-                // ลบรูปเก่า
+                // ลบรูปเก่าจริง (path แบบ notebooks/xxx.jpg)
                 if ($nb->image) {
-                    Storage::delete('public/notebooks/' . $nb->image);
+                    Storage::disk('public')->delete($nb->image);
                 }
 
-                // ตั้งชื่อไฟล์
-                $filename = time() . '.' . $request->image->extension();
-
-                // บันทึกไฟล์
-                $request->image->storeAs('public/notebooks', $filename);
-
-                // เก็บชื่อไฟล์ลง DB
-                $nb->image = $filename;
+                // บันทึกรูปใหม่ และเก็บ path เต็ม
+                $path = $request->file('image')->store('notebooks', 'public');
+                $nb->image = $path;
                 $nb->save();
             }
 
@@ -65,9 +60,8 @@ class NotebookController extends Controller
 
         // ✅ ถ้ามีอัปโหลดรูป
         if ($request->hasFile('image')) {
-            $filename = time() . '.' . $request->image->extension();
-            $request->image->storeAs('public/notebooks', $filename);
-            $data['image'] = $filename;
+            $path = $request->file('image')->store('notebooks', 'public');
+            $data['image'] = $path;   // notebooks/xxx.jpg
         }
 
         Notebook::create($data);
@@ -85,7 +79,15 @@ class NotebookController extends Controller
 
     public function destroy($id)
     {
-        Notebook::findOrFail($id)->delete();
+        $nb = Notebook::findOrFail($id);
+
+        // ลบรูปด้วย
+        if ($nb->image) {
+            Storage::disk('public')->delete($nb->image);
+        }
+
+        $nb->delete();
+
         return redirect()->back()->with('success', 'ลบแล้ว');
     }
 }

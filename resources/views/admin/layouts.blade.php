@@ -136,7 +136,12 @@
 
         <div class="topbar-right">
             <span>👤 ผู้ดูแลระบบ</span>
-            <a href="#" class="logout-btn">ออกจากระบบ</a>
+            <form method="POST" action="{{ route('logout') }}" >
+                @csrf
+                <button type="submit" class="logout-btn" >
+                    ออกจากระบบ
+                </button>
+            </form>
         </div>
     </div>
 
@@ -146,8 +151,8 @@
         <div class="sidebar">
             <div class="sidebar-title">เมนูผู้ดูแลระบบ</div>
 
-            <a href="{{ route('admin.booking_management') }}"
-                class="menu-item {{ request()->routeIs('admin.booking_management') ? 'active' : '' }}">
+            <a href="{{ route('admin.borrow_management') }}"
+                class="menu-item {{ request()->routeIs('admin.borrow_management') ? 'active' : '' }}">
                 จัดการการยืมโน้ตบุ๊ค
             </a>
 
@@ -159,6 +164,11 @@
             <a href="{{ route('admin.user_management') }}"
                 class="menu-item {{ request()->routeIs('admin.user_management') ? 'active' : '' }}">
                 จัดการผู้ใช้งาน
+            </a>
+
+            <a href="{{ route('admin.borrow_history') }}"
+                class="menu-item {{ request()->routeIs('admin.borrow_history') ? 'active' : '' }}">
+                ประวัติการยืม
             </a>
         </div>
 
