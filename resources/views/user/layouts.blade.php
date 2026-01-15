@@ -157,11 +157,6 @@
                 🕘 ประวัติการยืม
             </a>
 
-            <a href="{{ route('user.report_problem') }}"
-               class="menu-item {{ request()->routeIs('user.report_problem') ? 'active' : '' }}">
-                🛠 แจ้งปัญหาเครื่อง
-            </a>
-
             <a href="{{ route('user.profile') }}"
                class="menu-item {{ request()->routeIs('user.profile') ? 'active' : '' }}">
                 👤 โปรไฟล์

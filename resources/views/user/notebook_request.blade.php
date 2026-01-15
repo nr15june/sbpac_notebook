@@ -62,9 +62,7 @@
         border: 1px solid #ddd;
         border-radius: 10px;
         background: #fff;
-        min-height: 420px;
         visibility: hidden;
-        /* 🔒 ล็อกพื้นที่ไว้ตลอด */
     }
 
     .form-area.show {
@@ -79,10 +77,12 @@
         border-radius: 5px;
     }
 
-    .placeholder {
-        color: #888;
-        text-align: center;
-        margin-top: 80px;
+    .borrow-note {
+        margin: 15px 0;
+        padding: 12px;
+        background: #f8f9fa;
+        border-left: 5px solid #3498db;
+        border-radius: 6px;
     }
 </style>
 
@@ -90,113 +90,101 @@
 
 <div class="grid">
     @foreach($notebooks as $nb)
-    @php
-    $inUse = $nb->borrowings->where('status','borrowed')->count() > 0;
-    @endphp
-
     <div class="card">
         <img src="{{ $nb->image ? asset('storage/'.$nb->image) : asset('images/no-image.png') }}">
         <h4>{{ $nb->brand }} {{ $nb->model }}</h4>
         <div>Asset: {{ $nb->asset_code }}</div>
 
-        @if($inUse)
+        @if($nb->status === 'borrowed')
         <div class="busy">❌ กำลังถูกยืม</div>
-        <button class="btn btn-busy" disabled>ไม่ว่าง</button>
+        <button class="btn btn-busy" disabled>กำลังถูกยืม</button>
+
+        @elseif($nb->status === 'pending')
+        <div class="busy">⏳ รออนุมัติ</div>
+        <button class="btn btn-busy" disabled>รออนุมัติ</button>
+
+        @elseif($nb->status === 'repair')
+        <div class="busy">🛠 อยู่ระหว่างซ่อม</div>
+        <button class="btn btn-busy" disabled>ซ่อม</button>
+
         @else
         <div class="free">✔ พร้อมให้ยืม</div>
         <button class="btn btn-free"
             onclick="selectNotebook('{{ $nb->id }}',
-                                     '{{ $nb->brand }} {{ $nb->model }}',
-                                     '{{ $nb->asset_code }}')">
+                 '{{ $nb->brand }} {{ $nb->model }}',
+                 '{{ $nb->asset_code }}')">
             ยืมเครื่องนี้
         </button>
         @endif
+
     </div>
     @endforeach
 </div>
 
-{{-- ================= FORM ================= --}}
+{{-- ===== FORM ===== --}}
 <div id="borrowForm" class="form-area">
 
     <h3>📝 แบบฟอร์มขอยืมโน้ตบุ๊ค</h3>
 
-    <div id="borrowContent" style="display:none">
-
-        <form method="POST" action="{{ route('user.borrow.store') }}">
-            @csrf
-            <input type="hidden" name="notebook_id" id="notebook_id">
-
-            <b>เครื่องที่เลือก:</b>
-            <span id="notebook_name"></span> (<span id="notebook_asset"></span>)
-            <br><br>
-
-            <label>ชื่อ</label>
-            <input value="{{ auth()->user()->first_name }}" readonly>
-
-            <label>นามสกุล</label>
-            <input value="{{ auth()->user()->last_name }}" readonly>
-
-            <label>สำนัก/กอง/ศูนย์</label>
-            <input value="{{ auth()->user()->department }}" readonly>
-
-            <label>กลุ่มงาน</label>
-            <input value="{{ auth()->user()->workgroup }}" readonly>
-
-            <label>เบอร์ติดต่อ</label>
-            <input value="{{ auth()->user()->phone }}" readonly>
-
-            <label>วันที่ยืม</label>
-            <input type="date" name="borrow_date" id="borrow_date"
-                min="{{ now()->toDateString() }}"
-                onchange="calcReturn()" required>
-
-            <label>วันที่คืน</label>
-            <input type="date" name="return_date" id="return_date" readonly>
-
-            <br>
-            <b>อุปกรณ์ที่ต้องการ</b><br>
-            @foreach($accessories as $a)
-            <label>
-                <input type="checkbox" name="accessories[]" value="{{ $a->id }}">
-                {{ $a->name }}
-            </label><br>
-            @endforeach
-
-            <br>
-            <button class="btn btn-free">ยืนยันการยืม</button>
-
-        </form>
+    <div class="borrow-note">
+        ⏳ สามารถยืมได้ <b>ไม่เกิน 15 วัน</b> ต่อครั้ง
     </div>
+
+    <form method="POST" action="{{ route('user.borrow.store') }}" onsubmit="return confirmBorrow()">
+        @csrf
+        <input type="hidden" name="notebook_id" id="notebook_id">
+
+        <b>เครื่องที่เลือก:</b> <span id="notebook_name"></span>
+        <hr>
+
+        <label>ชื่อ</label>
+        <input value="{{ auth()->user()->first_name }}" readonly>
+
+        <label>นามสกุล</label>
+        <input value="{{ auth()->user()->last_name }}" readonly>
+
+        <label>สำนัก / กอง / ศูนย์</label>
+        <input value="{{ auth()->user()->department }}" readonly>
+
+        <label>กลุ่มงาน</label>
+        <input value="{{ auth()->user()->workgroup }}" readonly>
+
+        <label>เบอร์ติดต่อ</label>
+        <input value="{{ auth()->user()->phone }}" readonly>
+
+        <label>วันที่ยืม</label>
+        <input type="date" name="borrow_date" id="borrow_date"
+            min="{{ now()->toDateString() }}"
+            onchange="setReturnLimit()" required>
+
+        <label>วันที่คืน</label>
+        <input type="date" name="return_date" id="return_date" required>
+
+        <button class="btn btn-free">ยืนยันการยืม</button>
+    </form>
 </div>
 
 <script>
     function selectNotebook(id, name, asset) {
-        const form = document.getElementById('borrowForm');
-        form.classList.add('show');
-
-        document.getElementById('borrowContent').style.display = 'block';
+        document.getElementById('borrowForm').classList.add('show');
         document.getElementById('notebook_id').value = id;
-        document.getElementById('notebook_name').innerText = name;
-        document.getElementById('notebook_asset').innerText = asset;
-
-        form.scrollIntoView({
+        document.getElementById('notebook_name').innerText = name + ' (' + asset + ')';
+        borrowForm.scrollIntoView({
             behavior: 'smooth'
         });
     }
 
+    function setReturnLimit() {
+        let b = new Date(borrow_date.value);
+        let max = new Date(b);
+        max.setDate(max.getDate() + 15);
 
-    function calcReturn() {
-        const borrow = document.getElementById('borrow_date').value;
-        if (!borrow) return;
+        return_date.min = borrow_date.value;
+        return_date.max = max.toISOString().slice(0, 10);
+    }
 
-        const d = new Date(borrow);
-        d.setDate(d.getDate() + 15);
-
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-
-        document.getElementById('return_date').value = `${y}-${m}-${day}`;
+    function confirmBorrow() {
+        return confirm("คุณต้องการยืนยันการยืมโน้ตบุ๊คเครื่องนี้ใช่หรือไม่?");
     }
 </script>
 

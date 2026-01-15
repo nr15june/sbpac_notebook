@@ -123,7 +123,12 @@
 
         <div class="form-group">
             <label>เลขบัตรประชาชน</label>
-            <input type="text" name="id_card" required>
+            <input type="text"
+                name="id_card"
+                id="id_card"
+                maxlength="13"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                required>
         </div>
 
         <div class="form-group">
@@ -138,7 +143,12 @@
 
         <div class="form-group">
             <label>เบอร์โทรศัพท์</label>
-            <input type="text" name="phone" required>
+            <input type="text"
+                name="phone"
+                id="phone"
+                maxlength="10"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                required>
         </div>
 
         <div class="form-group">
@@ -195,6 +205,19 @@
 
     // ยืนยันก่อนบันทึก
     function confirmSave() {
+        const idCard = document.getElementById('id_card').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        if (idCard.length !== 13 || !/^\d+$/.test(idCard)) {
+            alert("❌ เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก");
+            return;
+        }
+
+        if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+            alert("❌ เบอร์โทรต้องเป็นตัวเลข 10 หลัก");
+            return;
+        }
+
         if (confirm("คุณต้องการยืนยันการบันทึกข้อมูลพนักงานหรือไม่?")) {
             document.getElementById('userForm').submit();
         }

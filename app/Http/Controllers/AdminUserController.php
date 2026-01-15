@@ -86,14 +86,14 @@ class AdminUserController extends Controller
             'id_card' => 'required|unique:users,id_card',
             'first_name' => 'required',
             'last_name'  => 'required',
-            'phone'      => 'required',
+            'phone'     => 'required|digits:10',
             'department' => 'required|string',
             'workgroup'  => 'required|string',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
 
         ]);
-
+        
         User::create([
             'name' => $request->first_name . ' ' . $request->last_name,
             'id_card' => $request->id_card,
