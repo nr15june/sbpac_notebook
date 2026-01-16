@@ -1,228 +1,361 @@
 @extends('admin.layouts')
 
-@section('title', 'จัดการโน้ตบุ๊ค')
+@section('title','จัดการโน้ตบุ๊ค')
 
 @section('content')
 
 <style>
-    .nb-card {
-        background: #fff;
-        border-radius: 10px;
-        padding: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    /* ===== Header ===== */
+    .page-header {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        color: #fff;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
     }
 
-    .nb-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
+    .page-header h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
     }
 
-    .nb-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 30px;
-    }
-
-    .nb-box {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 16px;
-        background: #fafafa;
-    }
-
-    .nb-list div {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .form-group {
-        margin-bottom: 12px;
-    }
-
-    .form-group label {
+    .page-header p {
+        margin: 0;
         font-size: 13px;
-        display: block;
-        margin-bottom: 4px;
+        opacity: .75;
     }
 
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+    /* ===== Cards ===== */
+    .card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    /* ===== Notebook List ===== */
+    .nb-item {
+        padding: 12px 10px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+
+    .nb-item:last-child {
+        border-bottom: none;
+    }
+
+    .nb-status {
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    .status-available {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-borrowed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-repair {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-pending {
+        background: #e0f2fe;
+        /* ฟ้าอ่อน */
+        color: #0369a1;
+    }
+
+    /* ===== Form ===== */
+    .form-label {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 14px;
+        border-radius: 10px;
     }
 
     .btn-save {
-        margin-top: 10px;
-        padding: 10px 20px;
-        background: #1e90ff;
+        background: #2563eb;
         border: none;
-        color: #fff;
-        border-radius: 6px;
-        cursor: pointer;
+        padding: 10px 24px;
+        border-radius: 10px;
     }
 
-    .nb-table {
-        width: 100%;
-        border-collapse: collapse;
+    /* ===== Table ===== */
+    .table th {
+        font-size: 13px;
+        background: #f8fafc;
     }
 
-    .nb-table th {
-        background: #f1f2f6;
-        padding: 10px;
-        text-align: left;
+    .table td {
+        font-size: 14px;
+        vertical-align: middle;
     }
 
-    .nb-table td {
-        padding: 10px;
-        border-top: 1px solid #eee;
-    }
-
-    .btn-delete {
-        padding: 4px 10px;
-        border: 1px solid red;
-        color: red;
-        background: #fff;
-        border-radius: 4px;
-        cursor: pointer;
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        text-decoration: none;
     }
 </style>
 
-<div class="nb-card">
+{{-- ===== Header ===== --}}
+<div class="page-header">
+    <h2><i class="bi bi-laptop me-1"></i> การจัดการโน้ตบุ๊ค</h2>
+    <p>จัดการอุปกรณ์โน้ตบุ๊คภายในระบบ</p>
+</div>
 
-    {{-- Header --}}
-    <div class="nb-header">
-        <div>
-            <h2>การจัดการโน้ตบุ๊ค</h2>
-            <p>จัดการอุปกรณ์โน้ตบุ๊คในระบบ</p>
-        </div>
-    </div>
+{{-- ===== Top Section ===== --}}
+<div class="row g-4 mb-4">
 
-    {{-- Top Layout --}}
-    <div class="nb-layout">
+    {{-- ===== Left : Summary List ===== --}}
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="card-title mb-3">
+                    <i class="bi bi-box-seam"></i> รายการโน้ตบุ๊ค
+                </div>
 
-        {{-- Left : Notebook List --}}
-        <div class="nb-box">
-            <h3>📦 รายการโน้ตบุ๊ค</h3>
-
-            <div class="nb-list">
                 @foreach($notebooks as $nb)
-                <div>
-                    {{ $nb->asset_code }} - {{ $nb->brand }} {{ $nb->model }}
-                    ({{ $nb->status }})
+                <div class="nb-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ $nb->asset_code }}</strong><br>
+                        <span class="text-muted">
+                            {{ $nb->brand }} {{ $nb->model }}
+                        </span>
+                    </div>
+
+                    <span class="nb-status
+                            status-{{ $nb->status }}">
+                        {{ $nb->status }}
+                    </span>
                 </div>
                 @endforeach
+
             </div>
         </div>
-
-        {{-- Right : Add Notebook --}}
-        <div class="nb-box">
-            <h3>
-                {{ isset($notebook) ? '✏️ แก้ไขโน้ตบุ๊ค' : '➕ เพิ่มโน้ตบุ๊ค' }}
-            </h3>
-
-            <form method="POST" action="{{ route('admin.notebooks.store') }}" enctype="multipart/form-data">
-
-                @csrf
-
-                @if(isset($notebook))
-                <input type="hidden" name="id" value="{{ $notebook->id }}">
-                @endif
-
-                <div class="form-group">
-                    <label>เลขครุภัณฑ์</label>
-                    <input type="text" name="asset_code"
-                        value="{{ $notebook->asset_code ?? '' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>ยี่ห้อ</label>
-                    <input type="text" name="brand"
-                        value="{{ $notebook->brand ?? '' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>รุ่น</label>
-                    <input type="text" name="model"
-                        value="{{ $notebook->model ?? '' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>สถานะ</label>
-                    <select name="status">
-                        <option value="available" @selected(($notebook->status ?? '')=='available')>พร้อมใช้งาน</option>
-                        <option value="borrowed" @selected(($notebook->status ?? '')=='borrowed')>ถูกยืม</option>
-                        <option value="repair" @selected(($notebook->status ?? '')=='repair')>ซ่อม</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>หมายเหตุ</label>
-                    <input type="text" name="note"
-                        value="{{ $notebook->note ?? '' }}">
-                </div>
-                
-                <div class="form-group">
-                    <label>รูปโน้ตบุ๊ค</label>
-                    <input type="file" name="image">
-                </div>
-
-                @if(isset($notebook) && $notebook->image)
-                <div style="margin-top:10px;">
-                    <img src="{{ asset('storage/notebooks/'.$notebook->image) }}"
-                        style="width:150px;border-radius:8px;">
-                </div>
-                @endif
-                <button class="btn-save">
-                    {{ isset($notebook) ? 'อัปเดตข้อมูล' : 'บันทึก' }}
-                </button>
-            </form>
-
-        </div>
-
     </div>
 
-    {{-- Bottom Table --}}
-    <h3>📋 รายการโน้ตบุ๊คทั้งหมด</h3>
+    {{-- ===== Right : Form ===== --}}
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-3">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ isset($notebook) ? 'แก้ไขโน้ตบุ๊ค' : 'เพิ่มโน้ตบุ๊ค' }}
+                </div>
 
-    <table class="nb-table">
-        <thead>
-            <tr>
-                <th>เลขครุภัณฑ์</th>
-                <th>ยี่ห้อ</th>
-                <th>รุ่น</th>
-                <th>สถานะ</th>
-                <th>จัดการ</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($notebooks as $nb)
-            <tr>
-                <td>{{ $nb->asset_code }}</td>
-                <td>{{ $nb->brand }}</td>
-                <td>{{ $nb->model }}</td>
-                <td>{{ $nb->status }}</td>
-                <td>
-                    <a href="{{ route('admin.notebooks.edit',$nb->id) }}"
-                        style="padding:4px 10px;border:1px solid #1e90ff;color:#1e90ff;border-radius:4px;text-decoration:none;">
-                        แก้ไข
-                    </a>
+                <form method="POST"
+                    action="{{ route('admin.notebooks.store') }}"
+                    enctype="multipart/form-data">
+                    @csrf
 
-                    <form method="POST" action="{{ route('admin.notebooks.delete',$nb->id) }}" style="display:inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn-delete">ลบ</button>
-                    </form>
-                </td>
+                    @if(isset($notebook))
+                    <input type="hidden" name="id" value="{{ $notebook->id }}">
+                    @endif
 
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">เลขครุภัณฑ์</label>
+                            <input type="text" name="asset_code"
+                                class="form-control"
+                                value="{{ $notebook->asset_code ?? '' }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">ยี่ห้อ</label>
+                            <input type="text" name="brand"
+                                class="form-control"
+                                value="{{ $notebook->brand ?? '' }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">รุ่น</label>
+                            <input type="text" name="model"
+                                class="form-control"
+                                value="{{ $notebook->model ?? '' }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">สถานะ</label>
+                            <select name="status" class="form-select">
+                                <option value="available" @selected(($notebook->status ?? '')=='available')>
+                                    พร้อมใช้งาน
+                                </option>
+                                <option value="borrowed" @selected(($notebook->status ?? '')=='borrowed')>
+                                    ถูกยืม
+                                </option>
+                                <option value="repair" @selected(($notebook->status ?? '')=='repair')>
+                                    ซ่อม
+                                </option>
+                                <option value="pending" @selected(($notebook->status ?? '')=='pending')>
+                                    รออนุมัติ
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">หมายเหตุ</label>
+                            <input type="text" name="note"
+                                class="form-control"
+                                value="{{ $notebook->note ?? '' }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">รูปโน้ตบุ๊ค</label>
+                            <input type="file" name="image" class="form-control" id="imageInput">
+                        </div>
+
+                        @if(isset($notebook) && $notebook->image)
+                        <div class="col-12">
+                            <img id="previewImage"
+                                src="{{ isset($notebook) && $notebook->image 
+                                ? asset('storage/'.$notebook->image) 
+                                : asset('images/no-image.png') }}"
+                                style="width:160px;border-radius:12px;margin-top:8px;">
+                        </div>
+
+                        @endif
+
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="button" class="btn btn-primary btn-save">
+                            {{ isset($notebook) ? 'อัปเดตข้อมูล' : 'บันทึกข้อมูล' }}
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
 
 </div>
 
+{{-- ===== Table ===== --}}
+<div class="card">
+    <div class="card-body">
+        <div class="card-title mb-3">
+            <i class="bi bi-table"></i> รายการโน้ตบุ๊คทั้งหมด
+        </div>
+
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>เลขครุภัณฑ์</th>
+                    <th>ยี่ห้อ</th>
+                    <th>รุ่น</th>
+                    <th>สถานะ</th>
+                    <th class="text-center">จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($notebooks as $nb)
+                <tr>
+                    <td>{{ $nb->asset_code }}</td>
+                    <td>{{ $nb->brand }}</td>
+                    <td>{{ $nb->model }}</td>
+                    <td>
+                        <span class="nb-status status-{{ $nb->status }}">
+                            {{ $nb->status }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('admin.notebooks.edit',$nb->id) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            แก้ไข
+                        </a>
+
+                        <form method="POST"
+                            action="{{ route('admin.notebooks.delete',$nb->id) }}"
+                            class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
+                                ลบ
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    // ===== Save / Update =====
+    document.querySelector('.btn-save')?.addEventListener('click', function() {
+        const form = this.closest('form');
+
+        Swal.fire({
+            title: 'ยืนยันการบันทึกข้อมูล',
+            text: 'คุณต้องการบันทึกข้อมูลโน้ตบุ๊คนี้หรือไม่?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'บันทึก',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#d1d5db'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
+    // ===== Delete =====
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'ยืนยันการลบข้อมูล',
+                text: 'ข้อมูลนี้จะไม่สามารถกู้คืนได้',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#d1d5db'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.getElementById('imageInput')?.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
 @endsection

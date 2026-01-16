@@ -24,7 +24,7 @@ class NotebookController extends Controller
                 'asset_code' => 'required|unique:notebooks,asset_code,' . $nb->id,
                 'brand' => 'required',
                 'model' => 'required',
-                'status' => 'required',
+                'status'     => 'required',
             ]);
 
             // อัปเดตข้อมูลปกติ
@@ -53,10 +53,11 @@ class NotebookController extends Controller
             'asset_code' => 'required|unique:notebooks,asset_code',
             'brand'      => 'required',
             'model'      => 'required',
-            'status'     => 'required',
+            
         ]);
 
-        $data = $request->only('asset_code', 'brand', 'model', 'status', 'note');
+        $data = $request->only('asset_code', 'brand', 'model', 'note');
+        $data['status'] = $request->status ?? 'pending';
 
         // ✅ ถ้ามีอัปโหลดรูป
         if ($request->hasFile('image')) {
@@ -66,7 +67,9 @@ class NotebookController extends Controller
 
         Notebook::create($data);
 
-        return redirect()->back()->with('success', 'เพิ่มโน้ตบุ๊คแล้ว');
+        return redirect()
+            ->route('admin.notebook_management')
+            ->with('success', 'เพิ่มโน้ตบุ๊คเรียบร้อยแล้ว');
     }
 
     public function edit($id)
@@ -88,6 +91,8 @@ class NotebookController extends Controller
 
         $nb->delete();
 
-        return redirect()->back()->with('success', 'ลบแล้ว');
+        return redirect()
+            ->route('admin.notebook_management')
+            ->with('deleted', 'ลบข้อมูลเรียบร้อยแล้ว');
     }
 }

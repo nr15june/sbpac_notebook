@@ -6,10 +6,12 @@
 
 <style>
     .form-card {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
+        max-width: 720px;
+        margin: auto;
     }
 
     .form-group {
@@ -17,18 +19,18 @@
     }
 
     .form-group label {
-        display: block;
-        margin-bottom: 6px;
         font-size: 14px;
         font-weight: 500;
+        margin-bottom: 6px;
+        display: block;
     }
 
     .form-group input,
     .form-group select {
         width: 100%;
         padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
         font-size: 14px;
     }
 
@@ -39,26 +41,19 @@
     }
 
     .btn-save {
-        background: #1e90ff;
+        background: #2563eb;
         color: #fff;
         border: none;
         padding: 12px 28px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .btn-save:hover {
-        background: #1b7fd8;
+        border-radius: 8px;
     }
 
     .btn-cancel {
-        background: #ccc;
-        color: #000;
+        background: #e5e7eb;
         padding: 12px 28px;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: 14px;
+        color: #111;
     }
 </style>
 
@@ -115,39 +110,49 @@
 </script>
 
 <div class="form-card">
-    <h2>เพิ่มพนักงาน</h2>
+    <h2>{{ isset($user) ? '✏️ แก้ไขพนักงาน' : '➕ เพิ่มพนักงาน' }}</h2>
     <p>กรอกข้อมูลพนักงาน</p>
 
-    <form method="POST" action="{{ route('admin.user.store') }}" id="userForm">
+    <form method="POST"
+        action="{{ isset($user)
+            ? route('admin.user.update',$user->id)
+            : route('admin.user.store') }}"
+        id="userForm">
+
         @csrf
+        @if(isset($user)) @method('PUT') @endif
 
         <div class="form-group">
             <label>เลขบัตรประชาชน</label>
             <input type="text"
                 name="id_card"
-                id="id_card"
                 maxlength="13"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                value="{{ old('id_card', $user->id_card ?? '') }}"
                 required>
         </div>
 
         <div class="form-group">
             <label>ชื่อ</label>
-            <input type="text" name="first_name" required>
+            <input type="text"
+                name="first_name"
+                value="{{ old('first_name', $user->first_name ?? '') }}"
+                required>
         </div>
 
         <div class="form-group">
             <label>นามสกุล</label>
-            <input type="text" name="last_name" required>
+            <input type="text"
+                name="last_name"
+                value="{{ old('last_name', $user->last_name ?? '') }}"
+                required>
         </div>
 
         <div class="form-group">
             <label>เบอร์โทรศัพท์</label>
             <input type="text"
                 name="phone"
-                id="phone"
                 maxlength="10"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                value="{{ old('phone', $user->phone ?? '') }}"
                 required>
         </div>
 
@@ -155,8 +160,11 @@
             <label>สำนัก / กอง / ศูนย์</label>
             <select name="department" id="department" required>
                 <option value="">-- เลือกหน่วยงาน --</option>
-                @foreach ($departments as $dept)
-                <option value="{{ $dept }}">{{ $dept }}</option>
+                @foreach($departments as $dept)
+                <option value="{{ $dept }}"
+                    @selected(old('department', $user->department ?? '')==$dept)>
+                    {{ $dept }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -164,32 +172,46 @@
         <div class="form-group">
             <label>กลุ่มงาน</label>
             <select name="workgroup" id="workgroup" required>
+                @if(isset($user))
+                <option value="{{ $user->workgroup }}" selected>
+                    {{ $user->workgroup }}
+                </option>
+                @else
                 <option value="">-- เลือกกลุ่มงาน --</option>
+                @endif
             </select>
         </div>
 
         <div class="form-group">
             <label>Email</label>
-            <input type="email" name="email" required>
+            <input type="email"
+                name="email"
+                value="{{ old('email', $user->email ?? '') }}"
+                required>
         </div>
 
+        @if(!isset($user))
         <div class="form-group">
             <label>รหัสผ่าน</label>
             <input type="password" name="password" required>
         </div>
+        @endif
 
         <div class="form-actions">
-            <button type="button" class="btn-save" onclick="confirmSave()">บันทึก</button>
-            <a href="{{ route('admin.user_management') }}" class="btn-cancel">ยกเลิก</a>
+            <button type="button" class="btn-save" id="btnConfirmSave">
+                {{ isset($user) ? 'อัปเดตข้อมูล' : 'บันทึกข้อมูล' }}
+            </button>
+            <a href="{{ route('admin.user_management') }}" class="btn-cancel">
+                ยกเลิก
+            </a>
         </div>
     </form>
 </div>
-
 <script>
     const departmentSelect = document.getElementById('department');
     const workgroupSelect = document.getElementById('workgroup');
 
-    departmentSelect.addEventListener('change', function() {
+    departmentSelect.addEventListener('change', function () {
         const selectedDept = this.value;
         workgroupSelect.innerHTML = '<option value="">-- เลือกกลุ่มงาน --</option>';
 
@@ -203,25 +225,38 @@
         }
     });
 
-    // ยืนยันก่อนบันทึก
-    function confirmSave() {
-        const idCard = document.getElementById('id_card').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+    // ===== ยืนยันก่อนบันทึก / อัปเดต =====
+    document.getElementById('btnConfirmSave').addEventListener('click', function () {
+
+        const idCard = document.querySelector('[name="id_card"]').value.trim();
+        const phone = document.querySelector('[name="phone"]').value.trim();
 
         if (idCard.length !== 13 || !/^\d+$/.test(idCard)) {
-            alert("❌ เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก");
+            Swal.fire('ผิดพลาด', 'เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก', 'error');
             return;
         }
 
         if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-            alert("❌ เบอร์โทรต้องเป็นตัวเลข 10 หลัก");
+            Swal.fire('ผิดพลาด', 'เบอร์โทรต้องเป็นตัวเลข 10 หลัก', 'error');
             return;
         }
 
-        if (confirm("คุณต้องการยืนยันการบันทึกข้อมูลพนักงานหรือไม่?")) {
-            document.getElementById('userForm').submit();
-        }
-    }
+        Swal.fire({
+            title: '{{ isset($user) ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการบันทึกข้อมูล" }}',
+            text: 'คุณต้องการ{{ isset($user) ? "แก้ไข" : "บันทึก" }}ข้อมูลพนักงานนี้หรือไม่?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#9ca3af'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('userForm').submit();
+            }
+        });
+    });
 </script>
+
 
 @endsection

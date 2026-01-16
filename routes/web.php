@@ -64,8 +64,17 @@ Route::get('/user_management/create', [AdminUserController::class, 'create'])
 Route::post('/user_management/store', [AdminUserController::class, 'store'])
     ->name('admin.user.store');
 
+Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])
+    ->name('admin.user.edit');
+
+Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
+    ->name('admin.user.update');
+
+Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
+    ->name('admin.user.delete');
+    
 //---------------------admin borrow history-----------------------//
-Route::get('/admin/borrow_history', [AdminBorrowController::class,'history'])
+Route::get('/admin/borrow_history', [AdminBorrowController::class, 'history'])
     ->name('admin.borrow_history');
 
 
@@ -84,15 +93,15 @@ Route::middleware(['auth'])->group(function () {
 
     // คืนเครื่อง
     Route::post('/user/return/{id}', [UserBorrowController::class, 'returnNotebook'])
-    ->name('user.borrow.return');
+        ->name('user.borrow.return');
 
     //---------------------user borrow list-----------------------//
     Route::get('/user/borrow_list', [UserBorrowController::class, 'borrowList'])
         ->name('user.borrow_list');
 
     //---------------------user borrow history-----------------------//
-    Route::get('/user/borrow_history', [UserBorrowController::class,'borrowHistory'])
-    ->name('user.borrow_history');
+    Route::get('/user/borrow_history', [UserBorrowController::class, 'borrowHistory'])
+        ->name('user.borrow_history');
 
     //---------------------user profile-----------------------//
     Route::get('/user/profile', function () {

@@ -1,126 +1,142 @@
 <!DOCTYPE html>
 <html lang="th">
 
-<meta charset="UTF-8">
-<title>@yield('title', 'ระบบยืมโน้ตบุ๊ค')</title>
-<link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8">
+    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ค')</title>
 
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-    body {
-        margin: 0;
-        font-family: "Sarabun", sans-serif;
-        background: #f4f6f9;
-        overflow: hidden;
-    }
+    {{-- Fonts --}}
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    /* ===== Topbar ===== */
-    .topbar {
-        height: 82px;
-        background: #ffffff;
-        border-bottom: 1px solid #dcdde1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 28px;
-    }
+    {{-- Bootstrap --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    .topbar-left {
-        display: flex;
-        align-items: center;
-    }
 
-    .topbar-left img {
-        width: 48px;
-        height: 48px;
-        margin-right: 14px;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: "Sarabun", sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
 
-    .org-name-th {
-        font-size: 16px;
-        font-weight: 700;
-    }
+        /* ===== Topbar ===== */
+        .topbar {
+            height: 72px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
 
-    .org-name-en {
-        font-size: 12px;
-        color: #666;
-        margin-top: 2px;
-    }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-    .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        font-size: 14px;
-    }
+        .topbar-left img {
+            width: 44px;
+            height: 44px;
+        }
 
-    .logout-btn {
-        padding: 6px 14px;
-        border: 1px solid #ccc;
-        border-radius: 20px;
-        text-decoration: none;
-        color: #333;
-        font-size: 13px;
-    }
+        .org-name-th {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
 
-    .logout-btn:hover {
-        background: #f1f2f6;
-    }
+        .org-name-en {
+            font-size: 12px;
+            color: #6b7280;
+        }
 
-    /* ===== Layout ===== */
-    .wrapper {
-        display: flex;
-        height: calc(100vh - 82px);
-    }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: #374151;
+        }
 
-    /* ===== Sidebar ===== */
-    .sidebar {
-        width: 200px;
-        background: #2f3542;
-        padding: 20px 14px;
-        color: #fff;
-        overflow: hidden;
-    }
+        .logout-btn {
+            padding: 6px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: .2s;
+        }
 
-    .sidebar-title {
-        font-size: 14px;
-        margin-bottom: 16px;
-        color: #ced6e0;
-    }
+        .logout-btn:hover {
+            background: #f3f4f6;
+        }
 
-    .menu-item {
-        display: block;
-        padding: 12px 14px;
-        margin-bottom: 10px;
-        border: 1px solid #57606f;
-        border-radius: 6px;
-        color: #dcdde1;
-        text-decoration: none;
-        font-size: 14px;
-        background: #2f3542;
-    }
+        /* ===== Layout ===== */
+        .wrapper {
+            display: flex;
+            height: calc(100vh - 72px);
+        }
 
-    .menu-item:hover {
-        background: #57606f;
-        color: #ffffff;
-    }
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 220px;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            padding: 24px 16px;
+            color: #e5e7eb;
+        }
 
-    .menu-item.active {
-        background: #747d8c;
-        color: #ffffff;
-        border-color: #747d8c;
-    }
+        .sidebar-title {
+            font-size: 12px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #9ca3af;
+        }
 
-    /* ===== Content ===== */
-    .content {
-        flex: 1;
-        padding: 28px;
-        overflow-y: auto;
-    }
-</style>
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .menu-item i {
+            font-size: 16px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .menu-item.active {
+            background: #ffffff;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* ===== Content ===== */
+        .content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
 
 <body>
 
@@ -135,12 +151,10 @@
         </div>
 
         <div class="topbar-right">
-            <span>👤 ผู้ดูแลระบบ</span>
-            <form method="POST" action="{{ route('logout') }}" >
+            <span><i class="bi bi-person-circle"></i> ผู้ดูแลระบบ</span>
+            <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="logout-btn" >
-                    ออกจากระบบ
-                </button>
+                <button type="submit" class="logout-btn">ออกจากระบบ</button>
             </form>
         </div>
     </div>
@@ -148,34 +162,38 @@
     <div class="wrapper">
 
         {{-- ===== Sidebar ===== --}}
-        <div class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-title">เมนูผู้ดูแลระบบ</div>
 
             <a href="{{ route('admin.borrow_management') }}"
                 class="menu-item {{ request()->routeIs('admin.borrow_management') ? 'active' : '' }}">
+                <i class="bi bi-clipboard-check"></i>
                 จัดการการยืมโน้ตบุ๊ค
             </a>
 
             <a href="{{ route('admin.notebook_management') }}"
                 class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
+                <i class="bi bi-laptop"></i>
                 จัดการโน้ตบุ๊ค
             </a>
 
             <a href="{{ route('admin.user_management') }}"
                 class="menu-item {{ request()->routeIs('admin.user_management') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
                 จัดการผู้ใช้งาน
             </a>
 
             <a href="{{ route('admin.borrow_history') }}"
                 class="menu-item {{ request()->routeIs('admin.borrow_history') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
                 ประวัติการยืม
             </a>
-        </div>
+        </aside>
 
         {{-- ===== Content ===== --}}
-        <div class="content">
+        <main class="content">
             @yield('content')
-        </div>
+        </main>
 
     </div>
 
