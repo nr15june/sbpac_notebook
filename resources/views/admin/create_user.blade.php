@@ -3,57 +3,86 @@
 @section('title', 'เพิ่มพนักงาน')
 
 @section('content')
-
 <style>
-    .form-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 28px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
-        max-width: 720px;
-        margin: auto;
+    body {
+        background: #f4f6f9;
+        font-family: 'Sarabun', sans-serif;
     }
 
-    .form-group {
-        margin-bottom: 16px;
-    }
-
-    .form-group label {
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .form-actions {
-        margin-top: 24px;
-        display: flex;
-        gap: 12px;
-    }
-
-    .btn-save {
-        background: #2563eb;
+    /* ===== Page Header ===== */
+    .page-header {
+        background: linear-gradient(135deg, #1e293b, #334155);
         color: #fff;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 8px;
+        border-radius: 14px;
+        padding: 14px 20px;
+        margin-bottom: 18px;
     }
 
-    .btn-cancel {
-        background: #e5e7eb;
-        padding: 12px 28px;
+    .page-header h4 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    /* ===== Form Wrapper ===== */
+    .form-wrapper {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 22px 26px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .08);
+    }
+
+    /* ===== Section ===== */
+    .section-card {
+        position: relative;
+        padding: 18px 20px 18px 28px;
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #111827;
+    }
+
+    /* ===== Form ===== */
+    .form-label {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 14px;
+        padding: 8px 12px;
         border-radius: 8px;
-        text-decoration: none;
-        color: #111;
+        border: 1px solid #d1d5db;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
+    }
+
+    /* ===== Buttons ===== */
+    .btn-primary {
+        background: #2563eb;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 22px;
+        font-size: 14px;
+    }
+
+    .btn-light {
+        border-radius: 8px;
+        padding: 8px 20px;
+        font-size: 14px;
     }
 </style>
 
@@ -109,109 +138,131 @@
     };
 </script>
 
-<div class="form-card">
-    <h2>{{ isset($user) ? '✏️ แก้ไขพนักงาน' : '➕ เพิ่มพนักงาน' }}</h2>
-    <p>กรอกข้อมูลพนักงาน</p>
+{{-- ===== FORM START ===== --}}
+<form method="POST"
+    action="{{ route('admin.user.store') }}"
+    id="userForm">
+    @csrf
 
-    <form method="POST"
-        action="{{ isset($user)
-            ? route('admin.user.update',$user->id)
-            : route('admin.user.store') }}"
-        id="userForm">
+    {{-- Header --}}
+    <div class="page-header d-flex align-items-center gap-3">
+        <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center"
+            style="width:48px;height:48px;font-size:22px;">
+            <i class="bi bi-person-plus"></i>
+        </div>
+        <div>
+            <h4>เพิ่มพนักงาน</h4>
+            <small class="opacity-75">กรอกข้อมูลพนักงานเพื่อเพิ่มเข้าสู่ระบบ</small>
+        </div>
+    </div>
 
-        @csrf
-        @if(isset($user)) @method('PUT') @endif
+    <div class="form-wrapper">
 
-        <div class="form-group">
-            <label>เลขบัตรประชาชน</label>
-            <input type="text"
-                name="id_card"
-                maxlength="13"
-                value="{{ old('id_card', $user->id_card ?? '') }}"
-                required>
+        {{-- ===== ข้อมูลส่วนตัว ===== --}}
+        <div class="card mb-4 border-0 bg-light rounded-4">
+            <div class="section-card">
+                <div class="section-title">👤 ข้อมูลส่วนตัว</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">เลขบัตรประชาชน</label>
+                        <input type="text" class="form-control"
+                            name="id_card" maxlength="13" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="text" class="form-control"
+                            name="phone" maxlength="10" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">ชื่อ</label>
+                        <input type="text" class="form-control"
+                            name="first_name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">นามสกุล</label>
+                        <input type="text" class="form-control"
+                            name="last_name" required>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>ชื่อ</label>
-            <input type="text"
-                name="first_name"
-                value="{{ old('first_name', $user->first_name ?? '') }}"
-                required>
+        {{-- ===== หน่วยงาน ===== --}}
+        <div class="card mb-4 border-0 bg-light rounded-4">
+            <div class="section-card">
+                <div class="section-title">🏢 หน่วยงาน</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">สำนัก / กอง / ศูนย์</label>
+                        <select class="form-select"
+                            name="department"
+                            id="department"
+                            required>
+                            <option value="">-- เลือกหน่วยงาน --</option>
+                            @foreach($departments as $dept)
+                            <option value="{{ $dept }}">{{ $dept }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">กลุ่มงาน</label>
+                        <select class="form-select"
+                            name="workgroup"
+                            id="workgroup"
+                            required>
+                            <option value="">-- เลือกกลุ่มงาน --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>นามสกุล</label>
-            <input type="text"
-                name="last_name"
-                value="{{ old('last_name', $user->last_name ?? '') }}"
-                required>
+        {{-- ===== ระบบ ===== --}}
+        <div class="card mb-4 border-0 bg-light rounded-4">
+            <div class="section-card">
+                <div class="section-title">🔐 ข้อมูลระบบ</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">อีเมล</label>
+                        <input type="email" class="form-control"
+                            name="email" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">รหัสผ่าน</label>
+                        <input type="password" class="form-control"
+                            name="password" required>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>เบอร์โทรศัพท์</label>
-            <input type="text"
-                name="phone"
-                maxlength="10"
-                value="{{ old('phone', $user->phone ?? '') }}"
-                required>
-        </div>
-
-        <div class="form-group">
-            <label>สำนัก / กอง / ศูนย์</label>
-            <select name="department" id="department" required>
-                <option value="">-- เลือกหน่วยงาน --</option>
-                @foreach($departments as $dept)
-                <option value="{{ $dept }}"
-                    @selected(old('department', $user->department ?? '')==$dept)>
-                    {{ $dept }}
-                </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>กลุ่มงาน</label>
-            <select name="workgroup" id="workgroup" required>
-                @if(isset($user))
-                <option value="{{ $user->workgroup }}" selected>
-                    {{ $user->workgroup }}
-                </option>
-                @else
-                <option value="">-- เลือกกลุ่มงาน --</option>
-                @endif
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email"
-                name="email"
-                value="{{ old('email', $user->email ?? '') }}"
-                required>
-        </div>
-
-        @if(!isset($user))
-        <div class="form-group">
-            <label>รหัสผ่าน</label>
-            <input type="password" name="password" required>
-        </div>
-        @endif
-
-        <div class="form-actions">
-            <button type="button" class="btn-save" id="btnConfirmSave">
-                {{ isset($user) ? 'อัปเดตข้อมูล' : 'บันทึกข้อมูล' }}
+        {{-- Actions --}}
+        <div class="d-flex justify-content-end gap-3 mt-4">
+            <button type="button"
+                class="btn btn-primary"
+                id="btnConfirmSave">
+                บันทึกข้อมูล
             </button>
-            <a href="{{ route('admin.user_management') }}" class="btn-cancel">
+            <a href="{{ route('admin.user_management') }}"
+                class="btn btn-light">
                 ยกเลิก
             </a>
         </div>
-    </form>
-</div>
+
+</form>
+{{-- ===== FORM END ===== --}}
+
 <script>
     const departmentSelect = document.getElementById('department');
     const workgroupSelect = document.getElementById('workgroup');
 
-    departmentSelect.addEventListener('change', function () {
+    departmentSelect.addEventListener('change', function() {
         const selectedDept = this.value;
         workgroupSelect.innerHTML = '<option value="">-- เลือกกลุ่มงาน --</option>';
 
@@ -225,31 +276,14 @@
         }
     });
 
-    // ===== ยืนยันก่อนบันทึก / อัปเดต =====
-    document.getElementById('btnConfirmSave').addEventListener('click', function () {
-
-        const idCard = document.querySelector('[name="id_card"]').value.trim();
-        const phone = document.querySelector('[name="phone"]').value.trim();
-
-        if (idCard.length !== 13 || !/^\d+$/.test(idCard)) {
-            Swal.fire('ผิดพลาด', 'เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก', 'error');
-            return;
-        }
-
-        if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-            Swal.fire('ผิดพลาด', 'เบอร์โทรต้องเป็นตัวเลข 10 หลัก', 'error');
-            return;
-        }
-
+    document.getElementById('btnConfirmSave').addEventListener('click', function() {
         Swal.fire({
-            title: '{{ isset($user) ? "ยืนยันการแก้ไขข้อมูล" : "ยืนยันการบันทึกข้อมูล" }}',
-            text: 'คุณต้องการ{{ isset($user) ? "แก้ไข" : "บันทึก" }}ข้อมูลพนักงานนี้หรือไม่?',
+            title: 'ยืนยันการบันทึกข้อมูล',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'ยืนยัน',
             cancelButtonText: 'ยกเลิก',
             confirmButtonColor: '#2563eb',
-            cancelButtonColor: '#9ca3af'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('userForm').submit();
@@ -257,6 +291,5 @@
         });
     });
 </script>
-
 
 @endsection

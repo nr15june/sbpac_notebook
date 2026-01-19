@@ -11,7 +11,7 @@
         color: #fff;
         border-radius: 16px;
         padding: 16px 20px;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
     }
 
     .page-header h2 {
@@ -21,7 +21,7 @@
     }
 
     .page-header p {
-        margin: 4px 0 0;
+        margin: 0;
         font-size: 13px;
         opacity: .75;
     }

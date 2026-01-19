@@ -4,115 +4,196 @@
 
 @section('content')
 
+
 <style>
-    .search-box {
-        margin-bottom: 15px;
+    body {
+        background: #f3f4f6;
+    }
+
+    /* ===== HEADER (เหมือน page-header) ===== */
+    .page-header {
+        background: linear-gradient(135deg, #1f2937, #334155);
+        color: #fff;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 28px;
         display: flex;
-        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .search-box input {
-        padding: 8px;
-        width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
+    .page-header h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
     }
 
-    .search-box button {
-        padding: 8px 16px;
+    .page-header p {
+        margin: 0;
+        opacity: .7;
+        font-size: 13px;
+    }
+
+    /* ===== TABLE WRAPPER ===== */
+    .table-responsive {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+        overflow: hidden;
+        /* บังคับให้โค้งจริง */
+    }
+
+    /* ===== TABLE ===== */
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* ===== TABLE HEADER (เส้นยาว) ===== */
+    .table thead tr {
+        background: #334155;
+    }
+
+    .table thead th {
+        background: transparent;
+        /* ใช้สีจาก tr */
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        padding: 14px 12px;
         border: none;
-        background: #2c3e50;
-        color: #fff;
-        border-radius: 6px;
     }
 
-    .history-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, .05);
+    /* โค้งเฉพาะหัวซ้าย-ขวา */
+    .table thead th:first-child {
+        border-top-left-radius: 16px;
     }
 
-    .history-table th {
-        background: #34495e;
-        color: #fff;
-        padding: 12px;
-        text-align: center;
+    .table thead th:last-child {
+        border-top-right-radius: 16px;
     }
 
-    .history-table td {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        text-align: center;
+    /* ===== TABLE BODY ===== */
+    .table tbody td {
+        font-size: 14px;
+        padding: 14px 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e5e7eb;
     }
 
-    .badge {
-        padding: 4px 10px;
-        border-radius: 12px;
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    .asset-code {
         font-size: 12px;
-        color: #fff;
+        color: #6b7280;
     }
 
-    .borrowed {
-        background: #27ae60;
+    /* ===== STATUS ===== */
+    .status-badge {
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
     }
 
-    .returned {
-        background: #3498db;
+    .status-returned {
+        background: #e0ecff;
+        color: #2563eb;
     }
 
-    .pending {
-        background: #f39c12;
+    .status-borrowed {
+        background: #dcfce7;
+        color: #15803d;
     }
 
-    .rejected {
-        background: #c0392b;
+    .status-pending {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #b91c1c;
     }
 </style>
 
-<h2>📚 ประวัติการยืมโน้ตบุ๊ค</h2>
+{{-- ===== HEADER ===== --}}
+<div class="page-header">
+    <div>
+        <h2>
+            <i class="bi bi-clock-history"></i>
+            ประวัติการยืมโน้ตบุ๊ค
+        </h2>
+        <p>รายการยืม–คืนอุปกรณ์ทั้งหมดในระบบ</p>
+    </div>
 
-<form class="search-box" method="GET">
-    <input type="text" name="q" value="{{ $q ?? '' }}"
-        placeholder="ค้นหาชื่อพนักงาน / รุ่น / Asset...">
-    <button>ค้นหา</button>
-</form>
+    <form method="GET" class="d-flex gap-2">
+        <input type="text"
+            name="q"
+            value="{{ $q ?? '' }}"
+            class="form-control form-control-sm"
+            style="width:260px"
+            placeholder="ค้นหาชื่อ / รุ่น / Asset">
+        <button class="btn btn-light btn-sm px-3">ค้นหา</button>
+    </form>
+</div>
 
-<table class="history-table">
-    <tr>
-        <th>ผู้ยืม</th>
-        <th>โน้ตบุ๊ค</th>
-        <th>วันที่ยืม</th>
-        <th>วันที่คืน</th>
-        <th>สถานะ</th>
-    </tr>
+{{-- ===== CONTENT ===== --}}
 
-    @foreach($borrowings as $b)
-    <tr>
-        <td>{{ $b->user->first_name }} {{ $b->user->last_name }}</td>
+<div class="table-responsive">
+    <table class="table align-middle mb-0">
+        <thead>
+            <tr>
+                <th class="text-start">ผู้ยืม</th>
+                <th class="text-start">โน้ตบุ๊ค</th>
+                <th style="width:14%">วันที่ยืม</th>
+                <th style="width:14%">วันที่คืน</th>
+                <th style="width:14%">สถานะ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($borrowings as $b)
+            <tr>
+                <td class="text-start">
+                    {{ $b->user->first_name }} {{ $b->user->last_name }}
+                </td>
+                <td>
+                    <div class="fw-medium">
+                        {{ $b->notebook->brand }} {{ $b->notebook->model }}
+                    </div>
+                    <div class="asset-code">{{ $b->notebook->asset_code }}</div>
+                </td>
+                <td class="text-center">{{ $b->borrow_date }}</td>
+                <td class="text-center">{{ $b->return_date ?? '-' }}</td>
+                <td class="text-center">
+                    <span class="status-badge status-{{ $b->status }}">
+                        @if($b->status=='returned') คืนแล้ว
+                        @elseif($b->status=='borrowed') กำลังยืม
+                        @elseif($b->status=='pending') รออนุมัติ
+                        @else ปฏิเสธ
+                        @endif
+                    </span>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    ไม่พบข้อมูลการยืม
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-        <td>
-            {{ $b->notebook->brand }} {{ $b->notebook->model }}
-            <div style="font-size:12px;color:#777">
-                {{ $b->notebook->asset_code }}
-            </div>
-        </td>
-
-        <td>{{ $b->borrow_date }}</td>
-        <td>{{ $b->return_date ?? '-' }}</td>
-
-        <td>
-            <span class="badge {{ $b->status }}">
-                @if($b->status == 'returned') คืนแล้ว
-                @elseif($b->status == 'borrowed') กำลังยืม
-                @elseif($b->status == 'pending') รออนุมัติ
-                @elseif($b->status == 'rejected') ปฏิเสธ
-                @endif
-            </span>
-        </td>
-    </tr>
-    @endforeach
-
-</table>
 
 @endsection
