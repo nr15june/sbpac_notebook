@@ -5,13 +5,36 @@
 @section('content')
 
 <style>
-    /* ===== HERO ===== */
+    /* ===== HERO (REFINED) ===== */
     .hero {
-        background: linear-gradient(135deg, #1e293b, #334155);
-        color: #fff;
-        border-radius: 20px;
-        padding: 32px;
-        margin-bottom: 32px;
+        background: linear-gradient(135deg, #1f2937, #334155);
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 18px 22px;
+        margin-bottom: 28px;
+    }
+
+    /* Title */
+    .hero-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .hero-title i {
+        font-size: 20px;
+        opacity: .9;
+    }
+
+    /* Subtitle */
+    .hero-subtitle {
+        font-size: 13px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, .75);
+        max-width: 640px;
     }
 
     /* ===== NOTEBOOK CARD ===== */
@@ -60,13 +83,15 @@
         object-fit: contain;
     }
 
-    /* ===== FORM ===== */
+    /* ===== BORROW FORM (MODERN CARD) ===== */
     .borrow-form {
-        background: #fff;
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
         border-radius: 24px;
-        padding: 32px;
-        margin-top: 48px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, .08);
+        padding: 40px;
+        margin-top: 56px;
+        box-shadow:
+            0 30px 60px rgba(15, 23, 42, .12),
+            0 0 0 1px #e5e7eb;
         display: none;
     }
 
@@ -74,12 +99,93 @@
         display: block;
     }
 
+    /* Header */
+    .borrow-form h4 {
+        font-weight: 700;
+        letter-spacing: -.3px;
+        margin-bottom: 20px;
+    }
+
+    /* ===== USER INFO CARD ===== */
     .borrow-user-box {
-        background: #f9fafb;
-        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, .06);
+        border: none;
+        margin-bottom: 32px;
+    }
+
+    /* ===== NOTICE ===== */
+    .borrow-note {
+        background: #eff6ff;
+        border-left: 4px solid #2563eb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 14px;
+        color: #1e3a8a;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .borrow-note i {
+        font-size: 18px;
+        margin-top: 2px;
+    }
+
+    /* ===== FORM HEADER ===== */
+    .borrow-form-header {
+        background: linear-gradient(135deg, #eef2ff, #f8fafc);
         border-radius: 16px;
-        padding: 20px;
+        padding: 16px 20px;
         margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .borrow-form-header-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #4f46e5;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .borrow-form-header-title {
+        font-weight: 700;
+        font-size: 15px;
+        color: #1f2937;
+    }
+
+    .borrow-form-header-subtitle {
+        font-size: 12.5px;
+        color: #6b7280;
+    }
+
+    /* ===== STEP LABEL ===== */
+    .form-step {
+        font-size: 13px;
+        font-weight: 700;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    /* ===== ACTION FOOTER ===== */
+    .borrow-form-footer {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px dashed #e5e7eb;
     }
 </style>
 
@@ -87,10 +193,13 @@
 
     {{-- HERO --}}
     <div class="hero">
-        <h3 class="fw-bold mb-1">ยืมโน้ตบุ๊ค</h3>
-        <p class="opacity-75 mb-0">
+        <div class="hero-title">
+            <i class="bi bi-box-arrow-in-down"></i>
+            <span>ยืมโน้ตบุ๊ค</span>
+        </div>
+        <div class="hero-subtitle">
             กรุณาเลือกอุปกรณ์ที่พร้อมใช้งาน และกรอกข้อมูลเพื่อขออนุมัติ
-        </p>
+        </div>
     </div>
 
     {{-- NOTEBOOK GRID --}}
@@ -157,11 +266,13 @@
                 <span id="notebook_name" class="text-primary"></span>
             </p>
 
+
+
             {{-- USER INFO --}}
             <div class="borrow-user-box">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <i class="bi bi-person-badge text-primary"></i>
-                    <span class="fw-semibold">ข้อมูลผู้ยืม</span>
+                <div class="form-step">
+                    <i class="bi bi-1-circle-fill"></i>
+                    ข้อมูลผู้ยืม
                 </div>
 
                 <div class="row g-3">
@@ -199,30 +310,41 @@
                             class="form-control form-control-sm"
                             value="{{ auth()->user()->phone }}">
                     </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">วันที่ยืม</label>
+                        <input type="date"
+                            name="borrow_date"
+                            id="borrow_date"
+                            class="form-control"
+                            required
+                            onchange="setReturnLimit()">
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">วันที่คืน</label>
+                        <input type="date" name="return_date" id="return_date"
+                            class="form-control"
+                            required>
+                    </div>
+                </div>
+            </div>
+            <div class="borrow-note">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    <b>หมายเหตุ:</b> สามารถยืมโน้ตบุ๊คได้ไม่เกิน <b>15 วัน</b>
+                    และต้องคืนภายในระยะเวลาที่กำหนด หากเกินกำหนดอาจไม่สามารถยืมครั้งถัดไปได้
                 </div>
             </div>
 
-            {{-- DATE --}}
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">วันที่ยืม</label>
-                    <input type="date" name="borrow_date" id="borrow_date"
-                        class="form-control"
-                        required onchange="setReturnLimit()">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">วันที่คืน</label>
-                    <input type="date" name="return_date" id="return_date"
-                        class="form-control"
-                        required>
-                </div>
+            <div class="borrow-form-footer">
+                <button type="button"
+                    class="btn btn-primary w-100 rounded-pill"
+                    onclick="confirmBorrow()">
+                    ยืนยันการยืม
+                </button>
             </div>
 
-            <button type="button"
-                class="btn btn-primary w-100 mt-4 rounded-pill"
-                onclick="confirmBorrow()">
-                ยืนยันการยืม
-            </button>
         </form>
     </div>
 
@@ -259,6 +381,11 @@
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date().toISOString().slice(0, 10);
+        borrow_date.min = today;
+    });
 </script>
 
 @endsection

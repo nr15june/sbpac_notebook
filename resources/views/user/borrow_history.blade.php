@@ -24,7 +24,7 @@
     .history-card {
         background: #ffffff;
         border-radius: 16px;
-        box-shadow: 0 10px 26px rgba(0,0,0,.06);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
         overflow: hidden;
     }
 
@@ -116,13 +116,99 @@
         color: #6b7280;
         background: #ffffff;
         border-radius: 16px;
-        box-shadow: 0 10px 26px rgba(0,0,0,.06);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+    }
+
+    /* ===== HISTORY HEADER CARD ===== */
+    .history-header {
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+        border-radius: 18px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow:
+            0 12px 30px rgba(0, 0, 0, .06),
+            0 0 0 1px #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    /* Left group */
+    .history-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    /* Icon */
+    .history-header-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    /* Title */
+    .history-header-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        color: #1f2937;
+    }
+
+    /* Subtitle */
+    .history-header-subtitle {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    /* Count badge */
+    .history-count {
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 999px;
+    }
+
+    .history-table tbody tr {
+        transition: background .2s ease;
+    }
+
+    .history-table td:first-child {
+        padding-left: 20px;
+    }
+
+    .history-table th:first-child {
+        padding-left: 20px;
     }
 </style>
 
-<div class="page-title">
-    📚 ประวัติการยืมของฉัน
+<div class="history-header">
+    <div class="history-header-left">
+        <div class="history-header-icon">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div>
+            <h3 class="history-header-title">ประวัติการยืมของฉัน</h3>
+            <div class="history-header-subtitle">
+                แสดงรายการยืม–คืนโน้ตบุ๊คทั้งหมดของคุณย้อนหลัง
+            </div>
+        </div>
+    </div>
+
+    <div class="history-count">
+        ทั้งหมด {{ $borrowings->count() }} รายการ
+    </div>
 </div>
+
 
 @if($borrowings->count() == 0)
 
@@ -146,8 +232,8 @@
         <tbody>
             @foreach($borrowings as $b)
             @php
-                $days = \Carbon\Carbon::parse($b->borrow_date)
-                            ->diffInDays($b->return_date, false);
+            $days = \Carbon\Carbon::parse($b->borrow_date)
+            ->diffInDays($b->return_date, false);
             @endphp
             <tr>
                 <td class="text-start">
@@ -164,11 +250,11 @@
 
                 <td>
                     @if($days > 0)
-                        <span class="duration duration-normal">{{ $days }} วัน</span>
+                    <span class="duration duration-normal">{{ $days }} วัน</span>
                     @elseif($days == 0)
-                        <span class="duration duration-zero">0 วัน</span>
+                    <span class="duration duration-zero">0 วัน</span>
                     @else
-                        <span class="duration duration-negative">{{ $days }} วัน</span>
+                    <span class="duration duration-negative">{{ $days }} วัน</span>
                     @endif
                 </td>
             </tr>
