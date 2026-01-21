@@ -75,13 +75,19 @@
 
     .nb-image {
         background: #f8fafc;
-        padding: 20px;
+        padding: 0;
+        height: 200px;
+        /* เต็มขึ้น */
+        overflow: hidden;
     }
 
     .nb-image img {
-        height: 140px;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
+        /* ไม่บิด ไม่ตัด */
     }
+
 
     /* ===== BORROW FORM (MODERN CARD) ===== */
     .borrow-form {
