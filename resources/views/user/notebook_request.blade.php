@@ -193,6 +193,48 @@
         padding-top: 20px;
         border-top: 1px dashed #e5e7eb;
     }
+
+    /* ===== ACCESSORIES BOX ===== */
+    .accessories-box {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 22px 24px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, .06);
+        margin-top: 18px;
+    }
+
+    .accessory-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: .2s;
+        cursor: pointer;
+    }
+
+    .accessory-item:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .accessory-item input {
+        width: 18px;
+        height: 18px;
+    }
+
+    .accessory-name {
+        font-weight: 600;
+        color: #111827;
+        font-size: 14px;
+    }
+
+    .accessory-sub {
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
 </style>
 
 <div class="container-fluid">
@@ -335,6 +377,28 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accessories-box">
+                <div class="form-step">
+                    <i class="bi bi-2-circle-fill"></i>
+                    อุปกรณ์เสริมที่ต้องการ
+                </div>
+
+                <div class="row g-3">
+                    @foreach($accessories as $acc)
+                    <div class="col-md-6">
+                        <label class="accessory-item w-100">
+                            <input type="checkbox" name="accessories[]" value="{{ $acc->id }}">
+                            <div>
+                                <div class="accessory-name">{{ $acc->name }}</div>
+                                <div class="accessory-sub">เลือกอุปกรณ์เสริมประกอบการยืม</div>
+                            </div>
+                        </label>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
             <div class="borrow-note">
                 <i class="bi bi-info-circle-fill"></i>
                 <div>

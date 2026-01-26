@@ -79,6 +79,10 @@
         font-size: 13px;
         color: #6b7280;
     }
+
+    .swal2-actions {
+        gap: 14px !important;
+    }
 </style>
 
 <div class="container-fluid py-4">
