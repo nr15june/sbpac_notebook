@@ -23,4 +23,16 @@ class Notebook extends Model
     {
         return $this->hasMany(Borrowing::class);
     }
+
+    public function getStatusTextAttribute()
+{
+    return match ($this->status) {
+        'available' => 'พร้อมใช้งาน',
+        'borrowed'  => 'ถูกยืม',
+        'repair'    => 'ซ่อม',
+        'pending'   => 'รออนุมัติ',
+        default     => 'ไม่ทราบสถานะ',
+    };
+}
+
 }

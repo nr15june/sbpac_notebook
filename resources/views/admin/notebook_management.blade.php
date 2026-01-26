@@ -140,10 +140,10 @@
                         </span>
                     </div>
 
-                    <span class="nb-status
-                            status-{{ $nb->status }}">
-                        {{ $nb->status }}
+                    <span class="nb-status status-{{ $nb->status }}">
+                        {{ $nb->status_text }}
                     </span>
+
                 </div>
                 @endforeach
 
@@ -275,7 +275,7 @@
                     <td>{{ $nb->model }}</td>
                     <td>
                         <span class="nb-status status-{{ $nb->status }}">
-                            {{ $nb->status }}
+                            {{ $nb->status_text }}
                         </span>
                     </td>
                     <td class="text-center">
