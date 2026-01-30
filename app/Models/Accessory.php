@@ -14,6 +14,7 @@ class Accessory extends Model
 
     public function borrowings()
     {
-        return $this->belongsToMany(Borrowing::class, 'borrowing_accessory');
+        return $this->belongsToMany(Borrowing::class, 'borrowing_accessory')
+            ->withPivot('is_returned', 'note');
     }
 }

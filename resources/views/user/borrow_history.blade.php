@@ -9,17 +9,6 @@
         background: #f3f4f6;
     }
 
-    /* ===== Page Title ===== */
-    .page-title {
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 18px;
-        color: #1f2937;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
     /* ===== Card Wrapper ===== */
     .history-card {
         background: #ffffff;
@@ -188,6 +177,26 @@
 
     .history-table th:first-child {
         padding-left: 20px;
+        text-align: left;
+    }
+
+    /* ===== Status Badge ===== */
+    .status-returned {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .return-date-text {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 6px;
     }
 </style>
 
@@ -209,7 +218,6 @@
     </div>
 </div>
 
-
 @if($borrowings->count() == 0)
 
 <div class="empty-box">
@@ -222,19 +230,24 @@
     <table class="history-table">
         <thead>
             <tr>
-                <th class="text-start">โน้ตบุ๊ค</th>
+                <th>โน้ตบุ๊ค</th>
                 <th style="width:18%">วันที่ยืม</th>
                 <th style="width:18%">วันที่คืน</th>
                 <th style="width:16%">ระยะเวลา</th>
+                <th style="width:16%">สถานะ</th>
             </tr>
         </thead>
 
         <tbody>
             @foreach($borrowings as $b)
             @php
-            $days = \Carbon\Carbon::parse($b->borrow_date)
-            ->diffInDays($b->return_date, false);
+                $borrowDate = \Carbon\Carbon::parse($b->borrow_date);
+                $returnDate = \Carbon\Carbon::parse($b->return_date);
+
+                // จำนวนวันใช้งาน (คืนจริง - ยืมจริง)
+                $days = $borrowDate->diffInDays($returnDate, false);
             @endphp
+
             <tr>
                 <td class="text-start">
                     <div class="nb-name">
@@ -245,17 +258,31 @@
                     </div>
                 </td>
 
-                <td>{{ $b->borrow_date }}</td>
-                <td>{{ $b->return_date }}</td>
+                <td>
+                    {{ $borrowDate->format('d M Y') }}
+                </td>
+
+                <td>
+                    {{ $returnDate->format('d M Y') }}
+                </td>
 
                 <td>
                     @if($days > 0)
-                    <span class="duration duration-normal">{{ $days }} วัน</span>
+                        <span class="duration duration-normal">{{ $days }} วัน</span>
                     @elseif($days == 0)
-                    <span class="duration duration-zero">0 วัน</span>
+                        <span class="duration duration-zero">0 วัน</span>
                     @else
-                    <span class="duration duration-negative">{{ $days }} วัน</span>
+                        <span class="duration duration-negative">{{ $days }} วัน</span>
                     @endif
+                </td>
+
+                <td>
+                    <span class="status-returned">
+                        <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
+                    </span>
+                    <div class="return-date-text">
+                        แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
+                    </div>
                 </td>
             </tr>
             @endforeach

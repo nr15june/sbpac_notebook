@@ -24,6 +24,7 @@ class UserBorrowController extends Controller
         // 🔐 VALIDATE + กฎ 15 วัน
         $request->validate([
             'notebook_id' => 'required|exists:notebooks,id',
+            'phone' => 'required|string|min:9|max:20',
             'borrow_date' => 'required|date',
             'return_date' => [
                 'required',
@@ -57,6 +58,7 @@ class UserBorrowController extends Controller
             // 📝 สร้างรายการยืม
             $borrowing = Borrowing::create([
                 'user_id'     => Auth::id(),
+                'phone'       => $request->phone,
                 'notebook_id' => $notebook->id,
                 'borrow_date' => $request->borrow_date,
                 'return_date' => $request->return_date,
@@ -75,7 +77,7 @@ class UserBorrowController extends Controller
 
     public function borrowList()
     {
-        $borrowings = Borrowing::with('notebook')
+        $borrowings = Borrowing::with(['notebook', 'accessories'])
             ->where('user_id', Auth::id())
             ->whereIn('status', ['pending', 'borrowed'])
             ->orderBy('created_at', 'desc')
@@ -112,7 +114,7 @@ class UserBorrowController extends Controller
 
     public function borrowHistory()
     {
-        $borrowings = Borrowing::with('notebook')
+        $borrowings = Borrowing::with(['notebook', 'accessories'])
             ->where('user_id', Auth::id())
             ->where('status', 'returned')
             ->orderBy('return_date', 'desc')

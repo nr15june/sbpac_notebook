@@ -177,6 +177,13 @@
                 จัดการโน้ตบุ๊ค
             </a>
 
+            <a href="{{ route('admin.return_management') }}"
+                class="menu-item {{ request()->routeIs('admin.return_management') ? 'active' : '' }}">
+                <i class="bi bi-arrow-return-left"></i>
+                จัดการคืนเครื่อง
+            </a>
+
+
             <a href="{{ route('admin.user_management') }}"
                 class="menu-item {{ request()->routeIs('admin.user_management') ? 'active' : '' }}">
                 <i class="bi bi-people"></i>

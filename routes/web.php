@@ -77,6 +77,14 @@ Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
 Route::get('/admin/borrow_history', [AdminBorrowController::class, 'history'])
     ->name('admin.borrow_history');
 
+//---------------------admin คืนเครื่องยืมโน๊ตบุ้ค-----------------------//
+Route::get('/admin/return_management', [AdminBorrowController::class, 'returnList'])
+    ->name('admin.return_management');
+
+Route::post('/admin/return_management/{id}/confirm', [AdminBorrowController::class, 'confirmReturn'])
+    ->name('admin.borrow.confirm_return');
+
+
 
 
 //===================== user routes =====================//
@@ -91,9 +99,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/borrow', [UserBorrowController::class, 'store'])
         ->name('user.borrow.store');
 
-    // คืนเครื่อง
-    Route::post('/user/return/{id}', [UserBorrowController::class, 'returnNotebook'])
-        ->name('user.borrow.return');
+    // คืนเครื่องฝั่งผู้ใช้งาน
+    // Route::post('/user/return/{id}', [UserBorrowController::class, 'returnNotebook'])
+    //     ->name('user.borrow.return');
 
     //---------------------user borrow list-----------------------//
     Route::get('/user/borrow_list', [UserBorrowController::class, 'borrowList'])

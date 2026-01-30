@@ -234,7 +234,6 @@
         font-size: 12px;
         color: #6b7280;
     }
-    
 </style>
 
 <div class="container-fluid">
@@ -354,9 +353,12 @@
 
                     <div class="col-md-6">
                         <label class="form-label small">เบอร์ติดต่อ</label>
-                        <input type="text" name="phone"
+                        <input type="text"
+                            name="phone"
                             class="form-control form-control-sm"
-                            value="{{ auth()->user()->phone }}">
+                            value="{{ old('phone') }}"
+                            placeholder="กรอกเบอร์โทรที่ติดต่อได้ (เช่น 08x-xxx-xxxx)"
+                            required>
                     </div>
 
                     <div class="col-md-6">

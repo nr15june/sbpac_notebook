@@ -152,6 +152,28 @@
                                         </span>
                                     </div>
                                 </div>
+                                {{-- Accessories --}}
+                                <div class="mt-2">
+                                    @if($b->accessories && $b->accessories->count() > 0)
+                                    <div class="text-muted" style="font-size: 11px;">
+                                        <i class="bi bi-bag-check me-1"></i> อุปกรณ์เสริม:
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                        @foreach($b->accessories as $acc)
+                                        <span class="badge bg-light text-dark border" style="font-size: 10px;">
+                                            <i class="bi bi-check2-circle me-1 text-success"></i>
+                                            {{ $acc->name }}
+                                        </span>
+                                        @endforeach
+                                    </div>
+                                    @else
+                                    <div class="text-muted" style="font-size: 11px;">
+                                        <i class="bi bi-bag me-1"></i> ไม่มีอุปกรณ์เสริม
+                                    </div>
+                                    @endif
+                                </div>
+
                             </td>
 
                             {{-- Dates --}}
@@ -190,20 +212,16 @@
                             {{-- Action --}}
                             <td class="text-center">
                                 @if($b->status === 'borrowed')
-                                <form method="POST" action="{{ route('user.borrow.return',$b->id) }}" id="returnForm{{ $b->id }}">
-                                    @csrf
-                                    <button type="button"
-                                        class="btn btn-sm btn-primary rounded-pill px-4 shadow-sm"
-                                        onclick="confirmReturn('{{ $b->id }}', '{{ $b->notebook->brand }} {{ $b->notebook->model }}')">
-                                        คืนเครื่อง
-                                    </button>
-                                </form>
+                                <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
+                                    <i class="bi bi-shield-check me-1"></i> รอแอดมินยืนยันการคืนเครื่อง
+                                </span>
                                 @else
                                 <button class="btn btn-sm btn-light disabled rounded-pill">
                                     <i class="bi bi-dash-lg"></i>
                                 </button>
                                 @endif
                             </td>
+
                         </tr>
                         @endforeach
                     </tbody>
@@ -214,30 +232,5 @@
     </div>
 </div>
 
-{{-- SweetAlert2 JS --}}
-<script>
-    function confirmReturn(id, notebookName) {
-        Swal.fire({
-            title: 'ยืนยันการคืนเครื่อง?',
-            text: `คุณกำลังจะดำเนินการคืนเครื่อง ${notebookName}`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#4f46e5',
-            cancelButtonColor: '#ef4444',
-            confirmButtonText: 'ใช่, ฉันคืนแล้ว',
-            cancelButtonText: 'ยกเลิก',
-            padding: '2em',
-            customClass: {
-                confirmButton: 'btn btn-primary px-4',
-                cancelButton: 'btn btn-outline-danger px-4'
-            },
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('returnForm' + id).submit();
-            }
-        });
-    }
-</script>
 
 @endsection

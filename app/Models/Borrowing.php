@@ -13,6 +13,7 @@ class Borrowing extends Model
 
     protected $fillable = [
         'user_id',
+        'phone',
         'notebook_id',
         'borrow_date',
         'return_date',
@@ -31,8 +32,10 @@ class Borrowing extends Model
 
     public function accessories()
     {
-        return $this->belongsToMany(Accessory::class, 'borrowing_accessory');
+        return $this->belongsToMany(Accessory::class, 'borrowing_accessory')
+            ->withPivot('is_returned', 'note');
     }
+
 
     // จำนวนวันที่ยืมไปแล้ว
     public function daysUsed()

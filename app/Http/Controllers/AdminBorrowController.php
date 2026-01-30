@@ -74,4 +74,39 @@ class AdminBorrowController extends Controller
 
         return view('admin.borrow_history', compact('borrowings', 'q'));
     }
+
+    public function returnList()
+    {
+        $borrowings = Borrowing::with(['notebook', 'user', 'accessories'])
+            ->where('status', 'borrowed')
+            ->orderBy('return_date', 'asc')
+            ->get();
+
+        return view('admin.return_management', compact('borrowings'));
+    }
+
+    public function confirmReturn($id)
+    {
+        DB::transaction(function () use ($id) {
+
+            $borrow = Borrowing::with('notebook')
+                ->where('id', $id)
+                ->where('status', 'borrowed')
+                ->firstOrFail();
+
+            // คืนสถานะเครื่อง
+            $borrow->notebook->update([
+                'status' => 'available'
+            ]);
+
+            // ปิดรายการยืม
+            $borrow->update([
+                'status'      => 'returned',
+                'return_date' => now()
+            ]);
+        });
+
+        return redirect()->route('admin.return_management')
+            ->with('success', 'คืนเครื่องเรียบร้อยแล้ว ✅');
+    }
 }
