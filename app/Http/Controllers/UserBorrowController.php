@@ -21,21 +21,43 @@ class UserBorrowController extends Controller
 
     public function store(Request $request)
     {
-        // 🔐 VALIDATE + กฎ 15 วัน
         $request->validate([
             'notebook_id' => 'required|exists:notebooks,id',
             'phone' => 'required|string|min:9|max:20',
-            'borrow_date' => 'required|date',
+
+            // ✅ วันที่ยืม = ต้องเป็นวันนี้เท่านั้น
+            'borrow_date' => [
+                'required',
+                'date',
+                function ($attr, $value, $fail) {
+                    $today = Carbon::today()->toDateString();
+                    if (Carbon::parse($value)->toDateString() !== $today) {
+                        $fail('วันที่ยืมต้องเป็นวันที่ปัจจุบันเท่านั้น');
+                    }
+                }
+            ],
+
+            // ✅ วันที่คืน = ต้องหลังวันยืม + ไม่เกิน 7 วัน
             'return_date' => [
                 'required',
                 'date',
                 'after_or_equal:borrow_date',
                 function ($attr, $value, $fail) use ($request) {
-                    $days = Carbon::parse($request->borrow_date)
-                        ->diffInDays(Carbon::parse($value));
 
-                    if ($days > 15) {
-                        $fail('ไม่สามารถยืมเกิน 15 วัน');
+                    $borrowDate = Carbon::parse($request->borrow_date)->startOfDay();
+                    $returnDate = Carbon::parse($value)->startOfDay();
+
+                    // ห้ามคืนย้อนหลัง
+                    if ($returnDate->lt($borrowDate)) {
+                        $fail('วันที่คืนต้องไม่น้อยกว่าวันที่ยืม');
+                        return;
+                    }
+
+                    // ✅ นับจำนวนวันห่าง (0-7)
+                    $days = $borrowDate->diffInDays($returnDate);
+
+                    if ($days > 7) {
+                        $fail('ไม่สามารถยืมเกิน 7 วัน');
                     }
                 }
             ],
@@ -43,19 +65,14 @@ class UserBorrowController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            // 🔒 ล็อกเครื่อง
             $notebook = Notebook::lockForUpdate()->findOrFail($request->notebook_id);
 
             if ($notebook->status !== 'available') {
                 throw new \Exception('เครื่องนี้ไม่พร้อมให้ยืม');
             }
 
-            // 🔐 เปลี่ยนเป็น pending
-            $notebook->update([
-                'status' => 'pending'
-            ]);
+            $notebook->update(['status' => 'pending']);
 
-            // 📝 สร้างรายการยืม
             $borrowing = Borrowing::create([
                 'user_id'     => Auth::id(),
                 'phone'       => $request->phone,
@@ -65,7 +82,6 @@ class UserBorrowController extends Controller
                 'status'      => 'pending',
             ]);
 
-            // 🎒 อุปกรณ์เสริม
             if ($request->accessories) {
                 $borrowing->accessories()->sync($request->accessories);
             }
@@ -74,6 +90,7 @@ class UserBorrowController extends Controller
         return redirect()->route('user.borrow_list')
             ->with('success', 'ส่งคำขอยืมแล้ว รอแอดมินอนุมัติ');
     }
+
 
     public function borrowList()
     {

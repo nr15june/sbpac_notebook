@@ -367,16 +367,20 @@
                             name="borrow_date"
                             id="borrow_date"
                             class="form-control"
-                            required
-                            onchange="setReturnLimit()">
-
+                            value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
+                            readonly
+                            required>
                     </div>
+
                     <div class="col-md-6">
                         <label class="form-label">วันที่คืน</label>
-                        <input type="date" name="return_date" id="return_date"
+                        <input type="date"
+                            name="return_date"
+                            id="return_date"
                             class="form-control"
                             required>
                     </div>
+
                 </div>
             </div>
 
@@ -404,7 +408,7 @@
             <div class="borrow-note">
                 <i class="bi bi-info-circle-fill"></i>
                 <div>
-                    <b>หมายเหตุ:</b> สามารถยืมโน้ตบุ๊คได้ไม่เกิน <b>15 วัน</b>
+                    <b>หมายเหตุ:</b> สามารถยืมโน้ตบุ๊คได้ไม่เกิน <b>7 วัน</b>
                     และต้องคืนภายในระยะเวลาที่กำหนด หากเกินกำหนดอาจไม่สามารถยืมครั้งถัดไปได้
                 </div>
             </div>
@@ -427,22 +431,48 @@
         borrowForm.classList.add('show');
         notebook_id.value = id;
         notebook_name.innerText = name + ' (' + asset + ')';
+
+        // ✅ เซ็ตวันให้ถูกต้องทุกครั้งที่เลือกเครื่อง
+        setBorrowTodayAndReturnLimit();
+
         borrowForm.scrollIntoView({
             behavior: 'smooth'
         });
     }
 
-    function setReturnLimit() {
-        let b = new Date(borrow_date.value);
-        let m = new Date(b);
-        m.setDate(m.getDate() + 14);
-        return_date.min = borrow_date.value;
-        return_date.max = m.toISOString().slice(0, 10);
+    function setBorrowTodayAndReturnLimit() {
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+
+        // ✅ วันที่ยืม = วันนี้เท่านั้น
+        borrow_date.value = todayStr;
+
+        // ✅ วันที่คืนเลือกได้ตั้งแต่วันนี้ถึงวันนี้+7
+        const maxDate = new Date(today);
+        maxDate.setDate(maxDate.getDate() + 7);
+        const maxStr = maxDate.toISOString().slice(0, 10);
+
+        return_date.min = todayStr;
+        return_date.max = maxStr;
+
+        // ✅ ถ้ายังไม่ได้เลือกวันคืน ให้ default เป็นวันนี้
+        if (!return_date.value) {
+            return_date.value = todayStr;
+        }
+
+        // ✅ ถ้าวันคืนหลุดเงื่อนไข ให้ reset
+        if (return_date.value < todayStr) {
+            return_date.value = todayStr;
+        }
+        if (return_date.value > maxStr) {
+            return_date.value = maxStr;
+        }
     }
 
     function confirmBorrow() {
         Swal.fire({
             title: 'ยืนยันการยืม',
+            text: 'คุณสามารถเลือกวันคืนได้ไม่เกิน 7 วัน นับจากวันนี้',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'ยืนยัน',
@@ -455,9 +485,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const today = new Date().toISOString().slice(0, 10);
-        borrow_date.min = today;
+        setBorrowTodayAndReturnLimit();
     });
 </script>
-
 @endsection
