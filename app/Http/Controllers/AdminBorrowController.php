@@ -11,7 +11,7 @@ class AdminBorrowController extends Controller
 {
     public function index()
     {
-        $borrowings = Borrowing::with(['user', 'notebook'])
+        $borrowings = Borrowing::with(['user', 'notebook', 'accessories'])
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -57,7 +57,7 @@ class AdminBorrowController extends Controller
     {
         $q = $request->q;
 
-        $borrowings = Borrowing::with(['user', 'notebook'])
+        $borrowings = Borrowing::with(['user', 'notebook', 'accessories'])
             ->when($q, function ($query) use ($q) {
                 $query->whereHas('user', function ($u) use ($q) {
                     $u->where('first_name', 'like', "%$q%")
@@ -85,25 +85,40 @@ class AdminBorrowController extends Controller
         return view('admin.return_management', compact('borrowings'));
     }
 
-    public function confirmReturn($id)
+    public function confirmReturn(Request $request, $id)
     {
-        DB::transaction(function () use ($id) {
+        DB::transaction(function () use ($request, $id) {
 
-            $borrow = Borrowing::with('notebook')
+            $borrow = Borrowing::with(['notebook', 'accessories'])
                 ->where('id', $id)
                 ->where('status', 'borrowed')
                 ->firstOrFail();
 
-            // คืนสถานะเครื่อง
+            $returned = $request->input('returned_accessories', []);
+            $note = $request->input('note');
+
+            // ✅ update pivot ของอุปกรณ์แต่ละชิ้น
+            foreach ($borrow->accessories as $acc) {
+
+                $isReturned = in_array($acc->id, $returned);
+
+                $borrow->accessories()->updateExistingPivot($acc->id, [
+                    'is_returned' => $isReturned ? 1 : 0,
+                    'note' => $note
+                ]);
+            }
+
+            // ✅ คืนสถานะเครื่อง
             $borrow->notebook->update([
                 'status' => 'available'
             ]);
 
-            // ปิดรายการยืม
+            // ✅ ปิดรายการยืม
             $borrow->update([
                 'status'      => 'returned',
                 'return_date' => now()
             ]);
+
         });
 
         return redirect()->route('admin.return_management')

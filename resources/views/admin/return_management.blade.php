@@ -27,9 +27,10 @@
 
     .return-card {
         border: none;
-        border-radius: 16px;
+        border-radius: 18px;
         box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
         transition: .25s;
+        overflow: hidden;
     }
 
     .return-card:hover {
@@ -48,12 +49,69 @@
         border-radius: 20px;
         font-size: 13px;
         font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .empty-state {
         text-align: center;
         padding: 100px 20px;
         color: #6b7280;
+    }
+
+    .section-title {
+        font-size: 12px;
+        color: #6b7280;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .acc-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 12px;
+    }
+
+    .acc-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 10px;
+    }
+
+    .acc-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .acc-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #111827;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .acc-help {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 8px;
+    }
+
+    .note-input {
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 13px;
     }
 </style>
 
@@ -83,105 +141,121 @@
     @foreach($borrowings as $b)
     <div class="col-xl-4 col-lg-6">
         <div class="card return-card h-100">
-            <div class="card-body">
+            <div class="card-body p-4">
 
                 {{-- User --}}
-                <h5 class="fw-bold mb-1">
-                    <i class="bi bi-person-circle"></i>
-                    {{ $b->user->first_name }} {{ $b->user->last_name }}
-                </h5>
-                <div class="text-muted small mt-1">
-                    <i class="bi bi-telephone me-1"></i>
-                    เบอร์ติดต่อ: <b>{{ $b->phone ?? '-' }}</b>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="fw-bold mb-1">
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ $b->user->first_name }} {{ $b->user->last_name }}
+                        </h5>
+
+                        <div class="text-muted small">
+                            <i class="bi bi-telephone me-1"></i>
+                            เบอร์ติดต่อ: <b>{{ $b->phone ?? '-' }}</b>
+                        </div>
+                    </div>
+
+                    <span class="badge bg-success px-3 py-2 rounded-pill">
+                        <i class="bi bi-check-circle-fill me-1"></i> กำลังใช้งาน
+                    </span>
                 </div>
 
+                <hr class="my-3">
 
                 {{-- Notebook --}}
-                <div class="mt-3">
-                    <strong>{{ $b->notebook->brand }} {{ $b->notebook->model }}</strong>
-                    <div class="asset">Asset: {{ $b->notebook->asset_code }}</div>
+                <div>
+                    <div class="section-title">
+                        <i class="bi bi-laptop"></i> ข้อมูลเครื่อง
+                    </div>
+
+                    <div class="fw-semibold">
+                        {{ $b->notebook->brand }} {{ $b->notebook->model }}
+                    </div>
+                    <div class="asset">
+                        Asset: {{ $b->notebook->asset_code }}
+                    </div>
                 </div>
-                {{-- Accessories (Checklist คืนทีละชิ้น) --}}
-                <div class="mt-3">
-                    <div class="text-muted small mb-2">
-                        <i class="bi bi-bag-check me-1"></i> อุปกรณ์เสริมที่ยืม:
-                    </div>
-
-                    @if($b->accessories && $b->accessories->count() > 0)
-                    @foreach($b->accessories as $acc)
-                    <div class="form-check">
-                        <input class="form-check-input acc-item-check"
-                            type="checkbox"
-                            id="acc{{ $b->id }}_{{ $acc->id }}"
-                            data-borrow-id="{{ $b->id }}">
-
-                        <label class="form-check-label small" for="acc{{ $b->id }}_{{ $acc->id }}">
-                            {{ $acc->name }}
-                        </label>
-                    </div>
-                    @endforeach
-
-                    <div class="text-muted small mt-2">
-                        *กรุณาติ๊กให้ครบทุกชิ้นก่อนยืนยันคืนเครื่อง
-                    </div>
-                    @else
-                    <div class="text-muted small">
-                        ไม่มีอุปกรณ์เสริม
-                    </div>
-                    @endif
-                </div>
-
-
 
                 {{-- Date --}}
-                <div class="d-flex gap-2 mt-3 flex-wrap">
+                <div class="mt-3 d-flex flex-wrap gap-2">
                     <span class="date-pill">
                         <i class="bi bi-calendar-event"></i>
                         ยืม: {{ \Carbon\Carbon::parse($b->borrow_date)->format('d M Y') }}
                     </span>
+
                     <span class="date-pill">
                         <i class="bi bi-calendar-check"></i>
                         กำหนดคืน: {{ \Carbon\Carbon::parse($b->return_date)->format('d M Y') }}
                     </span>
                 </div>
 
-                {{-- Status --}}
-                <div class="mt-3">
-                    <span class="badge bg-success px-3 py-2 rounded-pill">
-                        <i class="bi bi-check-circle-fill me-1"></i> กำลังใช้งาน
-                    </span>
-                </div>
+                {{-- FORM --}}
+                <form method="POST"
+                    action="{{ route('admin.borrow.confirm_return', $b->id) }}"
+                    class="confirm-return-form mt-4">
+                    @csrf
 
-                <div class="form-check mt-3">
-                    <input class="form-check-input accessory-check"
-                        type="checkbox"
-                        id="accCheck{{ $b->id }}"
-                        data-borrow-id="{{ $b->id }}">
+                    {{-- Accessories checklist --}}
+                    <div class="section-title">
+                        <i class="bi bi-bag-check"></i> อุปกรณ์เสริมที่ยืม (ติ๊กเฉพาะที่คืนแล้ว)
+                    </div>
 
-                    <label class="form-check-label small" for="accCheck{{ $b->id }}">
-                        ยืนยันว่า “คืนอุปกรณ์เสริมครบแล้ว”
-                    </label>
-                </div>
+                    <div class="acc-box">
+                        @if($b->accessories && $b->accessories->count() > 0)
 
+                        @foreach($b->accessories as $acc)
+                        <div class="acc-item">
+                            <div class="acc-name">
+                                <i class="bi bi-box-seam"></i>
+                                {{ $acc->name }}
+                            </div>
 
-                {{-- Actions --}}
-                <div class="d-flex gap-2 mt-4">
+                            <div class="form-check m-0">
+                                <input class="form-check-input"
+                                    type="checkbox"
+                                    name="returned_accessories[]"
+                                    value="{{ $acc->id }}"
+                                    id="acc{{ $b->id }}_{{ $acc->id }}">
 
-                    {{-- Confirm Return --}}
-                    <form method="POST"
-                        action="{{ route('admin.borrow.confirm_return',$b->id) }}"
-                        class="flex-fill confirm-return-form">
-                        @csrf
-                        <button type="button"
-                            class="btn btn-primary w-100 btn-confirm-return"
-                            data-borrow-id="{{ $b->id }}"
-                            disabled>
-                            <i class="bi bi-box-arrow-in-left"></i> ยืนยันคืนเครื่อง
-                        </button>
+                                <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
+                                    คืนแล้ว
+                                </label>
+                            </div>
+                        </div>
+                        @endforeach
 
-                    </form>
+                        <div class="acc-help">
+                            *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
+                        </div>
 
-                </div>
+                        @else
+                        <div class="text-muted small">
+                            ไม่มีอุปกรณ์เสริม
+                        </div>
+                        @endif
+                    </div>
+
+                    {{-- note --}}
+                    <div class="mt-3">
+                        <label class="form-label small mb-1">
+                            หมายเหตุ (หาย/ชำรุด/อื่นๆ)
+                        </label>
+                        <input type="text"
+                            name="note"
+                            class="form-control note-input"
+                            placeholder="เช่น เมาส์หาย / สายชาร์จชำรุด">
+                    </div>
+
+                    {{-- button --}}
+                    <button type="submit"
+                        class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-box-arrow-in-left me-1"></i> ยืนยันคืนเครื่อง
+                    </button>
+
+                </form>
+
 
             </div>
         </div>
@@ -193,50 +267,17 @@
 
 {{-- ===== SweetAlert Script ===== --}}
 <script>
-    function updateReturnButton(borrowId) {
-
-        const allChecks = document.querySelectorAll('.acc-item-check[data-borrow-id="' + borrowId + '"]');
-        const btn = document.querySelector('.btn-confirm-return[data-borrow-id="' + borrowId + '"]');
-
-        // ถ้าไม่มีอุปกรณ์เสริม -> กดคืนได้เลย
-        if (allChecks.length === 0) {
-            btn.disabled = false;
-            return;
-        }
-
-        // ต้องติ๊กครบทุกชิ้น
-        const allChecked = Array.from(allChecks).every(chk => chk.checked);
-        btn.disabled = !allChecked;
-    }
-
-    // โหลดครั้งแรก
-    document.querySelectorAll('.btn-confirm-return').forEach(btn => {
-        updateReturnButton(btn.dataset.borrowId);
-    });
-
-    // เวลาเปลี่ยน checkbox
-    document.querySelectorAll('.acc-item-check').forEach(chk => {
-        chk.addEventListener('change', function () {
-            updateReturnButton(this.dataset.borrowId);
-        });
-    });
-
-    // SweetAlert ตอนกดยืนยันคืน
-    document.querySelectorAll('.btn-confirm-return').forEach(btn => {
-        btn.addEventListener('click', function() {
-
-            const borrowId = this.dataset.borrowId;
-            const form = this.closest('form');
+    document.querySelectorAll('.confirm-return-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
             Swal.fire({
                 title: 'ยืนยันการคืนเครื่อง',
-                text: 'คุณต้องการยืนยันการคืนโน้ตบุ๊คนี้หรือไม่?',
-                icon: 'question',
+                text: 'ระบบจะบันทึกอุปกรณ์ที่ติ๊กว่า “คืนแล้ว” และสิ่งที่ไม่ติ๊กจะถูกบันทึกว่า “ยังไม่คืน/สูญหาย”',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'ยืนยันคืนเครื่อง',
                 cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#e5e7eb'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

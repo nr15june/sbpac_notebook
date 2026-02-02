@@ -40,6 +40,9 @@ Route::post('/admin/borrow_management/{id}/approve', [AdminBorrowController::cla
 
 Route::post('/admin/borrow_management/{id}/reject', [AdminBorrowController::class, 'reject'])
     ->name('admin.borrow.reject');
+Route::post('/admin/borrow/confirm-return/{id}', [AdminBorrowController::class,'confirmReturn'])
+    ->name('admin.borrow.confirm_return');
+
 
 //---------------------admin notebook management-----------------------//
 Route::get('/admin/notebooks', [NotebookController::class, 'index'])

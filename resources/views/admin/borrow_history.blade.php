@@ -124,6 +124,14 @@
         background: #fee2e2;
         color: #b91c1c;
     }
+
+    .table tbody td {
+        text-align: left;
+    }
+
+    .table td:last-child {
+        width: 30%;
+    }
 </style>
 
 {{-- ===== HEADER ===== --}}
@@ -157,6 +165,7 @@
                 <th class="text-start">โน้ตบุ๊ค</th>
                 <th style="width:14%">วันที่ยืม</th>
                 <th style="width:14%">วันที่คืน</th>
+                <th class="text-start">อุปกรณ์เสริม</th>
                 <th style="width:14%">สถานะ</th>
             </tr>
         </thead>
@@ -174,6 +183,44 @@
                 </td>
                 <td class="text-center">{{ $b->borrow_date }}</td>
                 <td class="text-center">{{ $b->return_date ?? '-' }}</td>
+                <td class="text-start">
+                    @if($b->accessories && $b->accessories->count() > 0)
+
+                    <div class="d-flex flex-wrap gap-1">
+                        @foreach($b->accessories as $acc)
+                        @php
+                        $returned = $acc->pivot->is_returned ?? 0;
+                        @endphp
+
+                        @if($returned)
+                        <span class="badge bg-success-subtle text-success border" style="font-size:11px;">
+                            <i class="bi bi-check2-circle me-1"></i> {{ $acc->name }}
+                        </span>
+                        @else
+                        <span class="badge bg-danger-subtle text-danger border" style="font-size:11px;">
+                            <i class="bi bi-x-circle me-1"></i> {{ $acc->name }} (ยังไม่คืน)
+                        </span>
+                        @endif
+                        @endforeach
+                    </div>
+
+                    {{-- ✅ หมายเหตุ --}}
+                    @php
+                    $note = optional($b->accessories->first())->pivot->note ?? null;
+                    @endphp
+
+                    @if($note)
+                    <div class="mt-2 small text-muted">
+                        <i class="bi bi-pencil-square me-1"></i>
+                        หมายเหตุ: <b>{{ $note }}</b>
+                    </div>
+                    @endif
+
+                    @else
+                    <span class="text-muted small">ไม่มีอุปกรณ์เสริม</span>
+                    @endif
+                </td>
+
                 <td class="text-center">
                     <span class="status-badge status-{{ $b->status }}">
                         @if($b->status=='returned') คืนแล้ว

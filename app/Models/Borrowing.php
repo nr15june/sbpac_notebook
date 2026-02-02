@@ -31,11 +31,10 @@ class Borrowing extends Model
     }
 
     public function accessories()
-    {
-        return $this->belongsToMany(Accessory::class, 'borrowing_accessory')
-            ->withPivot('is_returned', 'note');
-    }
-
+{
+    return $this->belongsToMany(\App\Models\Accessory::class, 'borrowing_accessory')
+        ->withPivot('is_returned', 'note');
+}
 
     // จำนวนวันที่ยืมไปแล้ว
     public function daysUsed()
