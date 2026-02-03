@@ -171,6 +171,13 @@
                 จัดการการยืมโน้ตบุ๊ค
             </a>
 
+            <a href="{{ route('admin.printers.index') }}"
+                class="menu-item {{ request()->routeIs('admin.printers.*') ? 'active' : '' }}">
+                <i class="bi bi-printer"></i>
+                จัดการเครื่องปริ้น
+            </a>
+
+
             <a href="{{ route('admin.notebook_management') }}"
                 class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
                 <i class="bi bi-laptop"></i>

@@ -1,10 +1,9 @@
 @extends('user.layouts')
 
-@section('title','รายการยืมโน้ตบุ๊ค')
+@section('title','รายการยืมของฉัน')
 
 @section('content')
 
-{{-- CSS เพิ่มเติมเพื่อความสวยงาม --}}
 <style>
     .hover-shadow:hover {
         box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .08) !important;
@@ -20,7 +19,7 @@
         border-top: none;
     }
 
-    .notebook-icon {
+    .device-icon {
         width: 45px;
         height: 45px;
         background: #eef2ff;
@@ -31,7 +30,11 @@
         border-radius: 12px;
     }
 
-    /* ===== PAGE HEADER CARD ===== */
+    .device-icon.printer {
+        background: #ecfeff;
+        color: #0e7490;
+    }
+
     .page-header-card {
         background: linear-gradient(180deg, #ffffff, #f8fafc);
         border-radius: 18px;
@@ -43,7 +46,6 @@
         position: relative;
     }
 
-    /* Accent bar */
     .page-header-card::before {
         content: "";
         position: absolute;
@@ -55,7 +57,6 @@
         background: linear-gradient(180deg, #4f46e5, #3b82f6);
     }
 
-    /* Icon */
     .page-header-icon {
         width: 46px;
         height: 46px;
@@ -68,7 +69,6 @@
         font-size: 22px;
     }
 
-    /* Text */
     .page-header-title {
         font-size: 22px;
         font-weight: 700;
@@ -80,25 +80,44 @@
         color: #6b7280;
     }
 
-    .swal2-actions {
-        gap: 14px !important;
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #eef2ff;
+        color: #4f46e5;
+        margin-top: 6px;
+        width: fit-content;
+    }
+
+    .type-badge.printer {
+        background: #ecfeff;
+        color: #0e7490;
+    }
+
+    .type-badge.notebook {
+        background: #ecfdf5;
+        color: #166534;
     }
 </style>
 
 <div class="container-fluid py-4">
 
-    {{-- ===== Page Header ===== --}}
     <div class="page-header-card">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
 
             <div class="d-flex align-items-center gap-3">
                 <div class="page-header-icon">
-                    <i class="bi bi-laptop"></i>
+                    <i class="bi bi-clipboard-check"></i>
                 </div>
                 <div>
                     <h3 class="page-header-title">รายการยืมของฉัน</h3>
                     <div class="page-header-subtitle">
-                        ติดตามสถานะและจัดการการคืนเครื่องโน้ตบุ๊คของคุณ
+                        แสดงรายการยืม (โน้ตบุ๊ค + เครื่องปริ้น) ที่กำลังดำเนินการ
                     </div>
                 </div>
             </div>
@@ -113,7 +132,6 @@
     </div>
 
 
-    {{-- ===== Main Card ===== --}}
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-0">
 
@@ -135,38 +153,58 @@
                             <th class="text-center py-3">จัดการ</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($borrowings as $b)
                         <tr class="hover-shadow">
-                            {{-- Notebook Info --}}
+                            {{-- Device Info --}}
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
-                                    <div class="notebook-icon me-3">
+                                    <div class="device-icon me-3 {{ $b['type'] === 'printer' ? 'printer' : '' }}">
+                                        @if($b['type'] === 'printer')
+                                        <i class="bi bi-printer fs-4"></i>
+                                        @else
                                         <i class="bi bi-laptop fs-4"></i>
+                                        @endif
                                     </div>
+
                                     <div>
-                                        <div class="fw-bold text-dark">{{ $b->notebook->brand }}</div>
-                                        <div class="text-muted small">{{ $b->notebook->model }}</div>
+                                        <div class="fw-bold text-dark">{{ $b['name'] }}</div>
+
                                         <span class="badge bg-light text-secondary border mt-1" style="font-size: 10px;">
-                                            <i class="bi bi-upc-scan me-1"></i>{{ $b->notebook->asset_code }}
+                                            <i class="bi bi-upc-scan me-1"></i>{{ $b['asset_code'] }}
                                         </span>
+
+                                        {{-- Type Badge --}}
+                                        @if($b['type'] === 'printer')
+                                        <div class="type-badge printer">
+                                            <i class="bi bi-printer"></i> เครื่องปริ้น
+                                        </div>
+                                        @else
+                                        <div class="type-badge notebook">
+                                            <i class="bi bi-laptop"></i> โน้ตบุ๊ค
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
-                                {{-- Accessories --}}
+
+                                {{-- Accessories (Notebook + Printer) --}}
                                 <div class="mt-2">
-                                    @if($b->accessories && $b->accessories->count() > 0)
+                                    @if(isset($b['accessories']) && $b['accessories']->count() > 0)
+
                                     <div class="text-muted" style="font-size: 11px;">
                                         <i class="bi bi-bag-check me-1"></i> อุปกรณ์เสริม:
                                     </div>
 
                                     <div class="d-flex flex-wrap gap-1 mt-1">
-                                        @foreach($b->accessories as $acc)
+                                        @foreach($b['accessories'] as $acc)
                                         <span class="badge bg-light text-dark border" style="font-size: 10px;">
                                             <i class="bi bi-check2-circle me-1 text-success"></i>
                                             {{ $acc->name }}
                                         </span>
                                         @endforeach
                                     </div>
+
                                     @else
                                     <div class="text-muted" style="font-size: 11px;">
                                         <i class="bi bi-bag me-1"></i> ไม่มีอุปกรณ์เสริม
@@ -180,38 +218,39 @@
                             <td class="text-center">
                                 <div class="small fw-medium text-dark">
                                     <i class="bi bi-calendar-event me-1 text-primary"></i>
-                                    {{ \Carbon\Carbon::parse($b->borrow_date)->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($b['borrow_date'])->format('d M Y') }}
                                 </div>
                                 <div class="text-muted" style="font-size: 11px;">
-                                    ถึง {{ \Carbon\Carbon::parse($b->return_date)->format('d M Y') }}
+                                    ถึง {{ \Carbon\Carbon::parse($b['return_date'])->format('d M Y') }}
                                 </div>
                             </td>
 
                             {{-- Status --}}
                             <td class="text-center">
-                                @if($b->isOverdue())
+                                @if($b['is_overdue'])
                                 <div class="badge bg-danger px-3 py-2 rounded-pill shadow-sm">
                                     <i class="bi bi-exclamation-triangle-fill me-1"></i> เกินกำหนดคืน
                                 </div>
-                                @elseif($b->status === 'pending')
+                                @elseif($b['status'] === 'pending')
                                 <div class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm">
                                     <i class="bi bi-clock-history me-1"></i> รอการยืนยัน
                                 </div>
-                                @elseif($b->status === 'borrowed')
+                                @elseif($b['status'] === 'borrowed')
                                 <div class="badge bg-success px-3 py-2 rounded-pill shadow-sm">
                                     <i class="bi bi-check-circle-fill me-1"></i> กำลังใช้งาน
                                 </div>
-                                @if(!$b->isOverdue())
+
                                 <div class="mt-1">
-                                    <span class="text-primary fw-bold" style="font-size: 12px;">เหลืออีก {{ $b->daysLeft() }} วัน</span>
+                                    <span class="text-primary fw-bold" style="font-size: 12px;">
+                                        เหลืออีก {{ $b['days_left'] }} วัน
+                                    </span>
                                 </div>
-                                @endif
                                 @endif
                             </td>
 
                             {{-- Action --}}
                             <td class="text-center">
-                                @if($b->status === 'borrowed')
+                                @if($b['status'] === 'borrowed')
                                 <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
                                     <i class="bi bi-shield-check me-1"></i> รอแอดมินยืนยันการคืนเครื่อง
                                 </span>
@@ -227,10 +266,10 @@
                     </tbody>
                 </table>
             </div>
+
             @endif
         </div>
     </div>
 </div>
-
 
 @endsection

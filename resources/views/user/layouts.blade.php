@@ -174,6 +174,13 @@
                 ยืมโน้ตบุ๊ค
             </a>
 
+            <a href="{{ route('user.printers.index') }}"
+                class="menu-item {{ request()->routeIs('user.printers.index') ? 'active' : '' }}">
+                <i class="bi bi-printer"></i>
+                ยืมเครื่องปริ้น
+            </a>
+
+
             <a href="{{ route('user.borrow_list') }}"
                 class="menu-item {{ request()->routeIs('user.borrow_list') ? 'active' : '' }}">
                 <i class="bi bi-clipboard-data"></i>

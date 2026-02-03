@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserBorrowController;
 use App\Http\Controllers\AdminBorrowController;
+use App\Http\Controllers\AdminPrinterController;
+use App\Http\Controllers\PrinterBorrowController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -87,6 +89,13 @@ Route::get('/admin/return_management', [AdminBorrowController::class, 'returnLis
 Route::post('/admin/return_management/{id}/confirm', [AdminBorrowController::class, 'confirmReturn'])
     ->name('admin.borrow.confirm_return');
 
+Route::prefix('admin')->group(function () {
+    Route::get('/printers', [AdminPrinterController::class, 'index'])->name('admin.printers.index');
+    Route::post('/printers', [AdminPrinterController::class, 'store'])->name('admin.printers.store');
+    Route::get('/printers/{id}/edit', [AdminPrinterController::class, 'edit'])->name('admin.printers.edit');
+    Route::put('/printers/{id}', [AdminPrinterController::class, 'update'])->name('admin.printers.update');
+    Route::delete('/printers/{id}', [AdminPrinterController::class, 'destroy'])->name('admin.printers.destroy');
+});
 
 
 
@@ -118,4 +127,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', function () {
         return view('user.profile');
     })->name('user.profile');
+
+    // หน้าแสดงเครื่องปริ้นให้ยืม
+    Route::get('/printers', [PrinterBorrowController::class, 'index'])->name('user.printers.index');
+
+    // กดยืมเครื่องปริ้น
+    Route::post('/printers/borrow', [PrinterBorrowController::class, 'borrow'])->name('user.printers.borrow');
+
+    // ดูประวัติการยืม
+    Route::get('/printers/history', [PrinterBorrowController::class, 'history'])->name('user.printers.history');
 });

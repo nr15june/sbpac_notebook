@@ -1,6 +1,6 @@
 @extends('user.layouts')
 
-@section('title','ประวัติการยืมโน้ตบุ๊ค')
+@section('title','ประวัติการยืม')
 
 @section('content')
 
@@ -9,7 +9,6 @@
         background: #f3f4f6;
     }
 
-    /* ===== Card Wrapper ===== */
     .history-card {
         background: #ffffff;
         border-radius: 16px;
@@ -17,14 +16,12 @@
         overflow: hidden;
     }
 
-    /* ===== Table ===== */
     .history-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
     }
 
-    /* ===== Table Header ===== */
     .history-table thead tr {
         background: #334155;
     }
@@ -45,7 +42,6 @@
         border-top-right-radius: 16px;
     }
 
-    /* ===== Table Body ===== */
     .history-table td {
         padding: 14px 12px;
         border-bottom: 1px solid #e5e7eb;
@@ -63,18 +59,16 @@
         border-bottom: none;
     }
 
-    /* ===== Notebook Info ===== */
-    .nb-name {
+    .item-name {
         font-weight: 600;
     }
 
-    .nb-asset {
+    .item-asset {
         font-size: 12.5px;
         color: #6b7280;
         margin-top: 2px;
     }
 
-    /* ===== Duration Badge ===== */
     .duration {
         display: inline-block;
         padding: 4px 12px;
@@ -98,7 +92,6 @@
         color: #dc2626;
     }
 
-    /* ===== Empty ===== */
     .empty-box {
         padding: 60px;
         text-align: center;
@@ -108,7 +101,6 @@
         box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
     }
 
-    /* ===== HISTORY HEADER CARD ===== */
     .history-header {
         background: linear-gradient(180deg, #ffffff, #f8fafc);
         border-radius: 18px;
@@ -123,14 +115,12 @@
         gap: 16px;
     }
 
-    /* Left group */
     .history-header-left {
         display: flex;
         align-items: center;
         gap: 14px;
     }
 
-    /* Icon */
     .history-header-icon {
         width: 48px;
         height: 48px;
@@ -143,7 +133,6 @@
         font-size: 22px;
     }
 
-    /* Title */
     .history-header-title {
         font-size: 22px;
         font-weight: 700;
@@ -151,13 +140,11 @@
         color: #1f2937;
     }
 
-    /* Subtitle */
     .history-header-subtitle {
         font-size: 13px;
         color: #6b7280;
     }
 
-    /* Count badge */
     .history-count {
         background: #eef2ff;
         color: #4f46e5;
@@ -180,7 +167,6 @@
         text-align: left;
     }
 
-    /* ===== Status Badge ===== */
     .status-returned {
         display: inline-flex;
         align-items: center;
@@ -191,6 +177,41 @@
         font-weight: 600;
         background: #f1f5f9;
         color: #334155;
+    }
+
+    .status-borrowed {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: #fff7ed;
+        color: #9a3412;
+    }
+
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 700;
+        background: #eef2ff;
+        color: #4f46e5;
+        white-space: nowrap;
+    }
+
+    .type-printer {
+        background: #ecfeff;
+        color: #0e7490;
+    }
+
+    .type-notebook {
+        background: #ecfdf5;
+        color: #166534;
     }
 
     .return-date-text {
@@ -208,7 +229,7 @@
         <div>
             <h3 class="history-header-title">ประวัติการยืมของฉัน</h3>
             <div class="history-header-subtitle">
-                แสดงรายการยืม–คืนโน้ตบุ๊คทั้งหมดของคุณย้อนหลัง
+                แสดงรายการยืม–คืน (โน้ตบุ๊ค + เครื่องปริ้น) ทั้งหมดของคุณย้อนหลัง
             </div>
         </div>
     </div>
@@ -221,7 +242,7 @@
 @if($borrowings->count() == 0)
 
 <div class="empty-box">
-    ยังไม่มีประวัติการยืม–คืนโน้ตบุ๊ค
+    ยังไม่มีประวัติการยืม
 </div>
 
 @else
@@ -230,7 +251,8 @@
     <table class="history-table">
         <thead>
             <tr>
-                <th>โน้ตบุ๊ค</th>
+                <th>อุปกรณ์</th>
+                <th style="width:12%">ประเภท</th>
                 <th style="width:18%">วันที่ยืม</th>
                 <th style="width:18%">วันที่คืน</th>
                 <th style="width:16%">ระยะเวลา</th>
@@ -241,30 +263,36 @@
         <tbody>
             @foreach($borrowings as $b)
             @php
-                $borrowDate = \Carbon\Carbon::parse($b->borrow_date);
-                $returnDate = \Carbon\Carbon::parse($b->return_date);
-
-                // จำนวนวันใช้งาน (คืนจริง - ยืมจริง)
+                $borrowDate = \Carbon\Carbon::parse($b['borrow_date']);
+                $returnDate = \Carbon\Carbon::parse($b['return_date']);
                 $days = $borrowDate->diffInDays($returnDate, false);
             @endphp
 
             <tr>
                 <td class="text-start">
-                    <div class="nb-name">
-                        {{ $b->notebook->brand }} {{ $b->notebook->model }}
+                    <div class="item-name">
+                        {{ $b['name'] }}
                     </div>
-                    <div class="nb-asset">
-                        Asset: {{ $b->notebook->asset_code }}
+                    <div class="item-asset">
+                        Asset: {{ $b['asset_code'] }}
                     </div>
                 </td>
 
                 <td>
-                    {{ $borrowDate->format('d M Y') }}
+                    @if($b['type'] === 'printer')
+                        <span class="type-badge type-printer">
+                            <i class="bi bi-printer"></i> เครื่องปริ้น
+                        </span>
+                    @else
+                        <span class="type-badge type-notebook">
+                            <i class="bi bi-laptop"></i> โน้ตบุ๊ค
+                        </span>
+                    @endif
                 </td>
 
-                <td>
-                    {{ $returnDate->format('d M Y') }}
-                </td>
+                <td>{{ $borrowDate->format('d M Y') }}</td>
+
+                <td>{{ $returnDate->format('d M Y') }}</td>
 
                 <td>
                     @if($days > 0)
@@ -277,14 +305,24 @@
                 </td>
 
                 <td>
-                    <span class="status-returned">
-                        <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
-                    </span>
-                    <div class="return-date-text">
-                        แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
-                    </div>
+                    @if($b['status'] === 'returned')
+                        <span class="status-returned">
+                            <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
+                        </span>
+                        <div class="return-date-text">
+                            แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
+                        </div>
+                    @else
+                        <span class="status-borrowed">
+                            <i class="bi bi-box-arrow-in-right"></i> กำลังยืม
+                        </span>
+                        <div class="return-date-text">
+                            กรุณาคืนภายใน {{ $returnDate->format('d M Y') }}
+                        </div>
+                    @endif
                 </td>
             </tr>
+
             @endforeach
         </tbody>
     </table>

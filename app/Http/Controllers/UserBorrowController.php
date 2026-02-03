@@ -8,13 +8,16 @@ use App\Models\Notebook;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\PrinterBorrowing;
+use App\Models\Accessory;
+
 
 class UserBorrowController extends Controller
 {
     public function index()
     {
         $notebooks = Notebook::with('borrowings')->get();
-        $accessories = \App\Models\Accessory::all();
+        $accessories = Accessory::where('type', 'notebook')->get();
 
         return view('user.notebook_request', compact('notebooks', 'accessories'));
     }
@@ -94,14 +97,77 @@ class UserBorrowController extends Controller
 
     public function borrowList()
     {
-        $borrowings = Borrowing::with(['notebook', 'accessories'])
+        // ✅ โน้ตบุ๊ค (ดึง accessories ด้วย)
+        $notebookBorrowings = Borrowing::with(['notebook', 'accessories'])
             ->where('user_id', Auth::id())
             ->whereIn('status', ['pending', 'borrowed'])
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // ✅ เครื่องปริ้น (ดึง accessories ด้วย)
+        $printerBorrowings = \App\Models\PrinterBorrowing::with(['printer', 'accessories'])
+            ->where('user_id', Auth::id())
+            ->whereIn('status', ['pending', 'borrowed'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // ✅ รวมข้อมูลให้อยู่ format เดียวกัน
+        $borrowings = collect();
+
+        foreach ($notebookBorrowings as $b) {
+            $borrowDate = \Carbon\Carbon::parse($b->borrow_date);
+            $returnDate = \Carbon\Carbon::parse($b->return_date);
+
+            $borrowings->push([
+                'type' => 'notebook',
+                'name' => $b->notebook->brand . ' ' . $b->notebook->model,
+                'asset_code' => $b->notebook->asset_code,
+                'borrow_date' => $b->borrow_date,
+                'return_date' => $b->return_date,
+                'status' => $b->status,
+
+                // ✅ accessories ของ notebook
+                'accessories' => $b->accessories ?? collect(),
+
+                'is_overdue' => method_exists($b, 'isOverdue') ? $b->isOverdue() : false,
+                'days_left' => method_exists($b, 'daysLeft') ? $b->daysLeft() : 0,
+            ]);
+        }
+
+        foreach ($printerBorrowings as $p) {
+            $borrowDate = \Carbon\Carbon::parse($p->borrow_date);
+            $returnDate = \Carbon\Carbon::parse($p->return_date);
+
+            // ✅ days_left printer (คำนวณเอง)
+            $daysLeft = now()->startOfDay()->diffInDays($returnDate->startOfDay(), false);
+            if ($daysLeft < 0) $daysLeft = 0;
+
+            // ✅ overdue printer
+            $isOverdue = now()->startOfDay()->gt($returnDate->startOfDay());
+
+            $borrowings->push([
+                'type' => 'printer',
+                'name' => $p->printer->brand . ' ' . $p->printer->model,
+                'asset_code' => $p->printer->asset_code,
+                'borrow_date' => $p->borrow_date,
+                'return_date' => $p->return_date,
+                'status' => $p->status,
+
+                // ✅ accessories ของ printer
+                'accessories' => $p->accessories ?? collect(),
+
+                'is_overdue' => $isOverdue,
+                'days_left' => $daysLeft,
+            ]);
+        }
+
+        // ✅ เรียงใหม่ (ล่าสุดขึ้นก่อน)
+        $borrowings = $borrowings->sortByDesc('borrow_date')->values();
+
         return view('user.borrow_list', compact('borrowings'));
     }
+
+
 
     public function returnNotebook($id)
     {
@@ -131,11 +197,41 @@ class UserBorrowController extends Controller
 
     public function borrowHistory()
     {
-        $borrowings = Borrowing::with(['notebook', 'accessories'])
+        // ✅ โน้ตบุ๊ค
+        $notebookBorrowings = Borrowing::with('notebook')
             ->where('user_id', Auth::id())
-            ->where('status', 'returned')
-            ->orderBy('return_date', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($b) {
+                return [
+                    'type' => 'notebook',
+                    'name' => $b->notebook->brand . ' ' . $b->notebook->model,
+                    'asset_code' => $b->notebook->asset_code,
+                    'borrow_date' => $b->borrow_date,
+                    'return_date' => $b->return_date,
+                    'status' => $b->status ?? 'returned',
+                ];
+            });
+
+        // ✅ เครื่องปริ้น
+        $printerBorrowings = PrinterBorrowing::with('printer')
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'type' => 'printer',
+                    'name' => ($p->printer->brand ?? '-') . ' ' . ($p->printer->model ?? '-'),
+                    'asset_code' => $p->printer->asset_code ?? '-',
+                    'borrow_date' => $p->borrow_date,
+                    'return_date' => $p->return_date,
+                    'status' => $p->status ?? 'borrowed',
+                ];
+            });
+
+        // ✅ รวม + เรียงจากล่าสุด
+        $borrowings = $notebookBorrowings
+            ->merge($printerBorrowings)
+            ->sortByDesc('borrow_date')
+            ->values();
 
         return view('user.borrow_history', compact('borrowings'));
     }
