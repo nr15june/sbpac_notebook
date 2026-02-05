@@ -60,12 +60,17 @@
         color: #166534;
     }
 
+    .status-pending {
+        background: #e0f2fe;
+        color: #075985;
+    }
+
     .status-borrowed {
         background: #fee2e2;
         color: #991b1b;
     }
 
-    .status-broken {
+    .status-repair {
         background: #fef3c7;
         color: #92400e;
     }
@@ -152,7 +157,12 @@
                     </div>
 
                     <span class="nb-status status-{{ $pr->status }}">
-                        {{ $pr->status == 'available' ? 'ว่าง' : ($pr->status == 'borrowed' ? 'ถูกยืม' : 'เสีย/ซ่อม') }}
+                        @switch($pr->status)
+                        @case('available') พร้อมใช้งาน @break
+                        @case('pending') รออนุมัติ @break
+                        @case('borrowed') ถูกยืม @break
+                        @case('repair') ซ่อม @break
+                        @endswitch
                     </span>
 
                 </div>
@@ -177,7 +187,7 @@
                     @csrf
 
                     @if(isset($printer))
-                        @method('PUT')
+                    @method('PUT')
                     @endif
 
                     <div class="row g-3">
@@ -187,15 +197,6 @@
                             <input type="text" name="asset_code"
                                 class="form-control"
                                 value="{{ old('asset_code', $printer->asset_code ?? '') }}" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">สถานะ</label>
-                            <select name="status" class="form-select">
-                                <option value="available" @selected(old('status', $printer->status ?? '')=='available')>ว่าง</option>
-                                <option value="borrowed" @selected(old('status', $printer->status ?? '')=='borrowed')>ถูกยืม</option>
-                                <option value="broken" @selected(old('status', $printer->status ?? '')=='broken')>เสีย/ซ่อม</option>
-                            </select>
                         </div>
 
                         <div class="col-md-6">
@@ -212,6 +213,16 @@
                                 value="{{ old('model', $printer->model ?? '') }}" required>
                         </div>
 
+                        <div class="col-md-6">
+                            <label class="form-label">สถานะ</label>
+                            <select name="status" class="form-select">
+                                <option value="available">พร้อมใช้งาน</option>
+                                <option value="pending">รออนุมัติ</option>
+                                <option value="borrowed">ถูกยืม</option>
+                                <option value="repair">ซ่อม</option>
+                            </select>
+                        </div>
+
                         <div class="col-12">
                             <label class="form-label">หมายเหตุ</label>
                             <input type="text" name="note"
@@ -224,14 +235,16 @@
                             <input type="file" name="image" class="form-control" id="imageInput">
                         </div>
 
-                        <div class="col-12">
-                            <img id="previewImage"
-                                src="{{ isset($printer) && $printer->image 
-                                    ? asset('storage/'.$printer->image) 
-                                    : asset('images/no-image.png') }}"
-                                style="width:160px;border-radius:12px;margin-top:8px;">
-                        </div>
-
+                        @if(isset($printer) && $printer->image)
+                        {{-- หน้าแก้ไข + มีรูปเดิม --}}
+                        <img id="previewImage"
+                            src="{{ asset('storage/'.$printer->image) }}"
+                            style="width:160px;border-radius:12px;margin-top:8px;">
+                        @else
+                        {{-- หน้าเพิ่มใหม่ หรือยังไม่มีรูป --}}
+                        <img id="previewImage"
+                            style="width:160px;border-radius:12px;margin-top:8px; display:none;">
+                        @endif
                     </div>
 
                     <div class="mt-4 text-end">
@@ -279,7 +292,7 @@
                     <td>{{ $pr->model }}</td>
                     <td>
                         <span class="nb-status status-{{ $pr->status }}">
-                            {{ $pr->status == 'available' ? 'ว่าง' : ($pr->status == 'borrowed' ? 'ถูกยืม' : 'เสีย/ซ่อม') }}
+                            {{ $pr->status == 'available' ? 'พร้อมใช้งาน' : ($pr->status == 'pending' ? 'รออนุมัติ' : ($pr->status == 'borrowed' ? 'ถูกยืม' : 'ซ่อม')) }}
                         </span>
                     </td>
                     <td class="text-center">
@@ -356,7 +369,9 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('previewImage').src = e.target.result;
+            const img = document.getElementById('previewImage');
+            img.src = e.target.result;
+            img.style.display = 'block'; // ✅ สำคัญมาก
         };
         reader.readAsDataURL(file);
     });

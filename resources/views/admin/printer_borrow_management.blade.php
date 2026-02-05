@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 
-@section('title','จัดการการยืมโน้ตบุ๊ก')
+@section('title','จัดการการยืมเครื่องปริ้น')
 
 @section('content')
 
@@ -19,7 +19,6 @@
         margin: 0;
         font-weight: 700;
         font-size: 22px;
-        letter-spacing: -.2px;
     }
 
     .page-header p {
@@ -48,11 +47,10 @@
         background: linear-gradient(90deg, #2563eb, #4f46e5);
     }
 
-    /* ===== USER BLOCK ===== */
+    /* ===== USER ===== */
     .user-row {
         display: flex;
         gap: 12px;
-        align-items: flex-start;
     }
 
     .user-avatar {
@@ -65,38 +63,32 @@
         align-items: center;
         justify-content: center;
         font-size: 20px;
-        flex: 0 0 auto;
     }
 
     .user-name {
         font-weight: 800;
-        margin: 0;
         font-size: 16px;
-        color: #0f172a;
-        line-height: 1.2;
+        margin: 0;
     }
 
     .user-phone {
         font-size: 12.5px;
         color: #64748b;
-        margin-top: 2px;
         display: flex;
         align-items: center;
         gap: 6px;
     }
 
-    /* ===== NOTEBOOK INFO ===== */
+    /* ===== PRINTER INFO ===== */
     .nb-title {
         font-weight: 800;
-        color: #0f172a;
-        margin: 0;
         font-size: 15px;
+        margin: 0;
     }
 
     .asset {
         font-size: 12px;
         color: #64748b;
-        margin-top: 2px;
     }
 
     .section-divider {
@@ -104,12 +96,12 @@
         margin: 14px 0;
     }
 
-    /* ===== DATE PILL ===== */
+    /* ===== DATE ===== */
     .pill-row {
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
         margin-top: 10px;
+        flex-wrap: wrap;
     }
 
     .date-pill {
@@ -122,26 +114,24 @@
         border-radius: 999px;
         font-size: 12.5px;
         font-weight: 600;
-        color: #0f172a;
     }
 
-    /* ===== ACCESSORY BOX ===== */
+    /* ===== ACCESSORIES ===== */
     .accessory-box {
         background: #f8fafc;
         border: 1px solid #e5e7eb;
         border-radius: 14px;
-        padding: 12px 12px;
+        padding: 12px;
         margin-top: 12px;
     }
 
     .accessory-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        margin-bottom: 8px;
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 12.5px;
-        color: #475569;
-        font-weight: 700;
-        margin-bottom: 8px;
     }
 
     .acc-chip {
@@ -151,14 +141,9 @@
         padding: 6px 10px;
         border-radius: 999px;
         border: 1px solid #e5e7eb;
-        background: #ffffff;
+        background: #fff;
         font-size: 12px;
         font-weight: 700;
-        color: #0f172a;
-    }
-
-    .acc-chip i {
-        font-size: 13px;
     }
 
     .acc-empty {
@@ -166,19 +151,14 @@
         color: #64748b;
     }
 
-    /* ===== ACTION BUTTONS ===== */
+    /* ===== ACTION ===== */
     .action-row {
         display: flex;
         gap: 10px;
         margin-top: 16px;
     }
 
-    .btn-approve {
-        border-radius: 14px;
-        padding: 10px 14px;
-        font-weight: 700;
-    }
-
+    .btn-approve,
     .btn-reject {
         border-radius: 14px;
         padding: 10px 14px;
@@ -199,27 +179,27 @@
 <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3">
     <div>
         <h2>
-            <i class="bi bi-clipboard-check me-1"></i>
-            รายการขอยืมโน้ตบุ๊ก
+            <i class="bi bi-printer me-1"></i>
+            รายการขอยืมเครื่องปริ้น
         </h2>
-        <p>ตรวจสอบและอนุมัติคำขอยืมอุปกรณ์</p>
+        <p>ตรวจสอบและอนุมัติคำขอยืมเครื่องปริ้น</p>
     </div>
 
     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
-        รออนุมัติ {{ $borrowings->count() }} รายการ
+        รออนุมัติ {{ $printerBorrowings->count() }} รายการ
     </span>
 </div>
 
-@if($borrowings->count() == 0)
+@if($printerBorrowings->isEmpty())
 <div class="empty-state">
     <i class="bi bi-inbox fs-1"></i>
     <h5 class="mt-3">ไม่มีรายการรออนุมัติ</h5>
-    <p>ระบบยังไม่มีคำขอยืมในขณะนี้</p>
+    <p>ยังไม่มีคำขอยืมเครื่องปริ้นในขณะนี้</p>
 </div>
 @else
 
 <div class="row g-4">
-    @foreach($borrowings as $b)
+    @foreach($printerBorrowings as $b)
     <div class="col-xl-4 col-lg-6">
         <div class="card borrow-card h-100">
             <div class="card-top-accent"></div>
@@ -232,28 +212,27 @@
                         <i class="bi bi-person-circle"></i>
                     </div>
 
-                    <div class="flex-grow-1">
+                    <div>
                         <p class="user-name">
                             {{ $b->user->first_name }} {{ $b->user->last_name }}
                         </p>
-
                         <div class="user-phone">
                             <i class="bi bi-telephone"></i>
-                            <span>{{ $b->phone ?? '-' }}</span>
+                            {{ $b->phone ?? '-' }}
                         </div>
                     </div>
                 </div>
 
                 <div class="section-divider"></div>
 
-                {{-- NOTEBOOK --}}
+                {{-- PRINTER --}}
                 <div>
                     <p class="nb-title mb-1">
-                        {{ $b->notebook->brand }} {{ $b->notebook->model }}
+                        {{ $b->printer?->brand }} {{ $b->printer?->model }}
                     </p>
                     <div class="asset">
                         <i class="bi bi-upc-scan me-1"></i>
-                        Asset: {{ $b->notebook->asset_code }}
+                        Asset: {{ $b->printer?->asset_code ?? '-' }}
                     </div>
                 </div>
 
@@ -264,21 +243,14 @@
                         อุปกรณ์เสริมที่ยืม
                     </div>
 
-                    @if($b->accessories && $b->accessories->count() > 0)
-                    <div class="d-flex flex-wrap gap-2">
-                        @foreach($b->accessories as $acc)
-                        <span class="acc-chip">
-                            <i class="bi bi-check2-circle text-success"></i>
-                            {{ $acc->name }}
-                        </span>
-                        @endforeach
-                    </div>
-                    @else
-                    <div class="acc-empty">
-                        <i class="bi bi-dash-circle me-1"></i>
-                        ไม่มีอุปกรณ์เสริม
-                    </div>
-                    @endif
+                    @forelse($b->accessories as $acc)
+                    <span class="acc-chip">
+                        <i class="bi bi-check2-circle text-success"></i>
+                        {{ $acc->name }}
+                    </span>
+                    @empty
+                    <div class="acc-empty">ไม่มีอุปกรณ์เสริม</div>
+                    @endforelse
                 </div>
 
                 {{-- DATE --}}
@@ -293,29 +265,21 @@
                     </span>
                 </div>
 
-                {{-- ACTIONS --}}
+                {{-- ACTION --}}
                 <div class="action-row">
-
-                    {{-- Approve --}}
-                    <form method="POST"
-                        action="{{ route('admin.borrow.approve',$b->id) }}"
-                        class="flex-fill approve-form">
+                    <form method="POST" action="{{ route('admin.printer.borrow.approve',$b->id) }}" class="flex-fill">
                         @csrf
                         <button type="button" class="btn btn-success w-100 btn-approve">
                             <i class="bi bi-check-circle me-1"></i> อนุมัติ
                         </button>
                     </form>
 
-                    {{-- Reject --}}
-                    <form method="POST"
-                        action="{{ route('admin.borrow.reject',$b->id) }}"
-                        class="flex-fill reject-form">
+                    <form method="POST" action="{{ route('admin.printer.borrow.reject',$b->id) }}" class="flex-fill">
                         @csrf
                         <button type="button" class="btn btn-outline-danger w-100 btn-reject">
                             <i class="bi bi-x-circle me-1"></i> ปฏิเสธ
                         </button>
                     </form>
-
                 </div>
 
             </div>
@@ -326,47 +290,33 @@
 
 @endif
 
-{{-- ===== SweetAlert Script ===== --}}
+{{-- ===== SweetAlert ===== --}}
 <script>
     document.querySelectorAll('.btn-approve').forEach(btn => {
         btn.addEventListener('click', function() {
             const form = this.closest('form');
-
             Swal.fire({
                 title: 'ยืนยันการอนุมัติ',
-                text: 'คุณต้องการอนุมัติการยืมโน้ตบุ๊กนี้หรือไม่?',
+                text: 'คุณต้องการอนุมัติการยืมเครื่องปริ้นนี้หรือไม่?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'อนุมัติ',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#16a34a',
-                cancelButtonColor: '#e5e7eb'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+                cancelButtonText: 'ยกเลิก'
+            }).then(r => r.isConfirmed && form.submit());
         });
     });
 
     document.querySelectorAll('.btn-reject').forEach(btn => {
         btn.addEventListener('click', function() {
             const form = this.closest('form');
-
             Swal.fire({
                 title: 'ยืนยันการปฏิเสธ',
                 text: 'คุณต้องการปฏิเสธคำขอยืมนี้หรือไม่?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'ปฏิเสธ',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#e5e7eb'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+                cancelButtonText: 'ยกเลิก'
+            }).then(r => r.isConfirmed && form.submit());
         });
     });
 </script>

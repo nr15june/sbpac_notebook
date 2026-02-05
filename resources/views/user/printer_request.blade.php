@@ -66,7 +66,7 @@
         color: #991b1b;
     }
 
-    .status-broken {
+    .status-pending {
         background: #fef3c7;
         color: #92400e;
     }
@@ -243,11 +243,12 @@
                 {{-- STATUS --}}
                 @if($pr->status === 'available')
                 <div class="nb-status status-free">✔ พร้อมให้ยืม</div>
-                @elseif($pr->status === 'broken')
-                <div class="nb-status status-broken">🔧 เสีย/ซ่อม</div>
+                @elseif($pr->status === 'pending')
+                <div class="nb-status status-pending">⏳ รออนุมัติ</div>
                 @else
                 <div class="nb-status status-busy">✖ ไม่พร้อมให้ยืม</div>
                 @endif
+
 
                 {{-- IMAGE --}}
                 <div class="nb-image text-center">

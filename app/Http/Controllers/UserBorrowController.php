@@ -97,7 +97,7 @@ class UserBorrowController extends Controller
 
     public function borrowList()
     {
-        // ✅ โน้ตบุ๊ค (ดึง accessories ด้วย)
+        // ✅ โน้ตบุ๊ก (ดึง accessories ด้วย)
         $notebookBorrowings = Borrowing::with(['notebook', 'accessories'])
             ->where('user_id', Auth::id())
             ->whereIn('status', ['pending', 'borrowed'])
@@ -197,7 +197,7 @@ class UserBorrowController extends Controller
 
     public function borrowHistory()
     {
-        // ✅ โน้ตบุ๊ค
+        // ✅ โน้ตบุ๊ก
         $notebookBorrowings = Borrowing::with('notebook')
             ->where('user_id', Auth::id())
             ->get()

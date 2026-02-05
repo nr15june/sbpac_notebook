@@ -120,7 +120,7 @@
     <div>
         <h2>
             <i class="bi bi-arrow-return-left me-1"></i>
-            รายการคืนโน้ตบุ๊ค
+            รายการคืนเครื่อง (โน้ตบุ๊ก + เครื่องปริ้น)
         </h2>
         <p>แอดมินเป็นผู้ยืนยันการคืนเครื่อง เพื่อป้องกันการคืนไม่ตรงกับความจริง</p>
     </div>
@@ -153,7 +153,7 @@
 
                         <div class="text-muted small">
                             <i class="bi bi-telephone me-1"></i>
-                            เบอร์ติดต่อ: <b>{{ $b->phone ?? '-' }}</b>
+                            เบอร์ติดต่อ: <b>{{ $b->model->phone ?? '-' }}</b>
                         </div>
                     </div>
 
@@ -164,17 +164,22 @@
 
                 <hr class="my-3">
 
-                {{-- Notebook --}}
+                {{-- Device --}}
                 <div>
                     <div class="section-title">
-                        <i class="bi bi-laptop"></i> ข้อมูลเครื่อง
+                        @if($b->type === 'notebook')
+                        <i class="bi bi-laptop"></i> ข้อมูลโน้ตบุ๊ก
+                        @else
+                        <i class="bi bi-printer"></i> ข้อมูลเครื่องปริ้น
+                        @endif
                     </div>
 
                     <div class="fw-semibold">
-                        {{ $b->notebook->brand }} {{ $b->notebook->model }}
+                        {{ $b->device->brand }} {{ $b->device->model }}
                     </div>
+
                     <div class="asset">
-                        Asset: {{ $b->notebook->asset_code }}
+                        Asset: {{ $b->device->asset_code }}
                     </div>
                 </div>
 
@@ -182,18 +187,20 @@
                 <div class="mt-3 d-flex flex-wrap gap-2">
                     <span class="date-pill">
                         <i class="bi bi-calendar-event"></i>
-                        ยืม: {{ \Carbon\Carbon::parse($b->borrow_date)->format('d M Y') }}
+                        ยืม: {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
                     </span>
 
                     <span class="date-pill">
                         <i class="bi bi-calendar-check"></i>
-                        กำหนดคืน: {{ \Carbon\Carbon::parse($b->return_date)->format('d M Y') }}
+                        กำหนดคืน: {{ \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y') }}
                     </span>
                 </div>
 
                 {{-- FORM --}}
                 <form method="POST"
-                    action="{{ route('admin.borrow.confirm_return', $b->id) }}"
+                    action="{{ $b->type === 'notebook'
+                        ? route('admin.borrow.confirm_return', $b->id)
+                        : route('admin.printer.confirm_return', $b->id) }}"
                     class="confirm-return-form mt-4">
                     @csrf
 
@@ -205,35 +212,34 @@
                     <div class="acc-box">
                         @if($b->accessories && $b->accessories->count() > 0)
 
-                        @foreach($b->accessories as $acc)
-                        <div class="acc-item">
-                            <div class="acc-name">
-                                <i class="bi bi-box-seam"></i>
-                                {{ $acc->name }}
+                            @foreach($b->accessories as $acc)
+                            <div class="acc-item">
+                                <div class="acc-name">
+                                    <i class="bi bi-box-seam"></i>
+                                    {{ $acc->name }}
+                                </div>
+
+                                <div class="form-check m-0">
+                                    <input class="form-check-input"
+                                        type="checkbox"
+                                        name="returned_accessories[]"
+                                        value="{{ $acc->id }}"
+                                        id="acc{{ $b->id }}_{{ $acc->id }}">
+
+                                    <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
+                                        คืนแล้ว
+                                    </label>
+                                </div>
                             </div>
+                            @endforeach
 
-                            <div class="form-check m-0">
-                                <input class="form-check-input"
-                                    type="checkbox"
-                                    name="returned_accessories[]"
-                                    value="{{ $acc->id }}"
-                                    id="acc{{ $b->id }}_{{ $acc->id }}">
-
-                                <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
-                                    คืนแล้ว
-                                </label>
+                            <div class="acc-help">
+                                *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
                             </div>
-                        </div>
-                        @endforeach
-
-                        <div class="acc-help">
-                            *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
-                        </div>
-
                         @else
-                        <div class="text-muted small">
-                            ไม่มีอุปกรณ์เสริม
-                        </div>
+                            <div class="text-muted small">
+                                ไม่มีอุปกรณ์เสริม
+                            </div>
                         @endif
                     </div>
 
@@ -255,7 +261,6 @@
                     </button>
 
                 </form>
-
 
             </div>
         </div>

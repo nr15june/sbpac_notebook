@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>เข้าสู่ระบบ | ระบบยืมโน้ตบุ๊ค ศอ.บต.</title>
+    <title>เข้าสู่ระบบ | ระบบยืมโน้ตบุ๊ก ศอ.บต.</title>
     <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 

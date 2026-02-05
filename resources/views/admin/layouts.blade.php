@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ค')</title>
+    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ก')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -168,7 +168,19 @@
             <a href="{{ route('admin.borrow_management') }}"
                 class="menu-item {{ request()->routeIs('admin.borrow_management') ? 'active' : '' }}">
                 <i class="bi bi-clipboard-check"></i>
-                จัดการการยืมโน้ตบุ๊ค
+                จัดการยืมโน้ตบุ๊ก
+            </a>
+
+            <a href="{{ route('admin.notebook_management') }}"
+                class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
+                <i class="bi bi-laptop"></i>
+                จัดการโน้ตบุ๊ก
+            </a>
+
+            <a href="{{ route('admin.printer.borrow_management') }}"
+                class="menu-item {{ request()->routeIs('admin.printer.borrow_management') ? 'active' : '' }}">
+                <i class="bi bi-printer-fill"></i>
+                จัดการยืมเครื่องปริ้น
             </a>
 
             <a href="{{ route('admin.printers.index') }}"
@@ -177,19 +189,11 @@
                 จัดการเครื่องปริ้น
             </a>
 
-
-            <a href="{{ route('admin.notebook_management') }}"
-                class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
-                <i class="bi bi-laptop"></i>
-                จัดการโน้ตบุ๊ค
-            </a>
-
             <a href="{{ route('admin.return_management') }}"
                 class="menu-item {{ request()->routeIs('admin.return_management') ? 'active' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
                 จัดการคืนเครื่อง
             </a>
-
 
             <a href="{{ route('admin.user_management') }}"
                 class="menu-item {{ request()->routeIs('admin.user_management') ? 'active' : '' }}">

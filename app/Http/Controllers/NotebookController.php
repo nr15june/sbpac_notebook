@@ -69,7 +69,7 @@ class NotebookController extends Controller
 
         return redirect()
             ->route('admin.notebook_management')
-            ->with('success', 'เพิ่มโน้ตบุ๊คเรียบร้อยแล้ว');
+            ->with('success', 'เพิ่มโน้ตบุ๊กเรียบร้อยแล้ว');
     }
 
     public function edit($id)

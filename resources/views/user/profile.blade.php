@@ -147,7 +147,7 @@
                 {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
             </h3>
             <div class="profile-hero-subtitle">
-                ข้อมูลผู้ใช้งานในระบบยืม–คืนโน้ตบุ๊ค
+                ข้อมูลผู้ใช้งานในระบบยืม–คืนโน้ตบุ๊ก
             </div>
         </div>
     </div>

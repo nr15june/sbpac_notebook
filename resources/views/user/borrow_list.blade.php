@@ -117,7 +117,7 @@
                 <div>
                     <h3 class="page-header-title">รายการยืมของฉัน</h3>
                     <div class="page-header-subtitle">
-                        แสดงรายการยืม (โน้ตบุ๊ค + เครื่องปริ้น) ที่กำลังดำเนินการ
+                        แสดงรายการยืม (โน้ตบุ๊ก + เครื่องปริ้น) ที่กำลังดำเนินการ
                     </div>
                 </div>
             </div>
@@ -182,7 +182,7 @@
                                         </div>
                                         @else
                                         <div class="type-badge notebook">
-                                            <i class="bi bi-laptop"></i> โน้ตบุ๊ค
+                                            <i class="bi bi-laptop"></i> โน้ตบุ๊ก
                                         </div>
                                         @endif
                                     </div>
@@ -218,10 +218,10 @@
                             <td class="text-center">
                                 <div class="small fw-medium text-dark">
                                     <i class="bi bi-calendar-event me-1 text-primary"></i>
-                                    {{ \Carbon\Carbon::parse($b['borrow_date'])->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($b['borrow_date'])->translatedFormat('d M Y') }}
                                 </div>
                                 <div class="text-muted" style="font-size: 11px;">
-                                    ถึง {{ \Carbon\Carbon::parse($b['return_date'])->format('d M Y') }}
+                                    ถึง {{ \Carbon\Carbon::parse($b['return_date'])->translatedFormat('d M Y') }}
                                 </div>
                             </td>
 

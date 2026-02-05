@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ค')</title>
+    <title>@yield('title', 'ระบบยืมโน้ตบุ๊ก')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('images/sbpac-logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -171,7 +171,7 @@
             <a href="{{ route('user.notebook_request') }}"
                 class="menu-item {{ request()->routeIs('user.notebook_request') ? 'active' : '' }}">
                 <i class="bi bi-box-arrow-in-down"></i>
-                ยืมโน้ตบุ๊ค
+                ยืมโน้ตบุ๊ก
             </a>
 
             <a href="{{ route('user.printers.index') }}"

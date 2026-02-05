@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 
-@section('title','จัดการโน้ตบุ๊ค')
+@section('title','จัดการโน้ตบุ๊ก')
 
 @section('content')
 
@@ -116,8 +116,8 @@
 
 {{-- ===== Header ===== --}}
 <div class="page-header">
-    <h2><i class="bi bi-laptop me-1"></i> การจัดการโน้ตบุ๊ค</h2>
-    <p>จัดการอุปกรณ์โน้ตบุ๊คภายในระบบ</p>
+    <h2><i class="bi bi-laptop me-1"></i> การจัดการโน้ตบุ๊ก</h2>
+    <p>จัดการอุปกรณ์โน้ตบุ๊กภายในระบบ</p>
 </div>
 
 {{-- ===== Top Section ===== --}}
@@ -128,7 +128,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="card-title mb-3">
-                    <i class="bi bi-box-seam"></i> รายการโน้ตบุ๊ค
+                    <i class="bi bi-box-seam"></i> รายการโน้ตบุ๊ก
                 </div>
 
                 @foreach($notebooks as $nb)
@@ -157,7 +157,7 @@
             <div class="card-body">
                 <div class="card-title mb-3">
                     <i class="bi bi-plus-circle"></i>
-                    {{ isset($notebook) ? 'แก้ไขโน้ตบุ๊ค' : 'เพิ่มโน้ตบุ๊ค' }}
+                    {{ isset($notebook) ? 'แก้ไขโน้ตบุ๊ก' : 'เพิ่มโน้ตบุ๊ก' }}
                 </div>
 
                 <form method="POST"
@@ -198,15 +198,16 @@
                                 <option value="available" @selected(($notebook->status ?? '')=='available')>
                                     พร้อมใช้งาน
                                 </option>
+                                <option value="pending" @selected(($notebook->status ?? '')=='pending')>
+                                    รออนุมัติ
+                                </option>
                                 <option value="borrowed" @selected(($notebook->status ?? '')=='borrowed')>
                                     ถูกยืม
                                 </option>
                                 <option value="repair" @selected(($notebook->status ?? '')=='repair')>
                                     ซ่อม
                                 </option>
-                                <option value="pending" @selected(($notebook->status ?? '')=='pending')>
-                                    รออนุมัติ
-                                </option>
+
                             </select>
                         </div>
 
@@ -218,20 +219,22 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label">รูปโน้ตบุ๊ค</label>
+                            <label class="form-label">รูปโน้ตบุ๊ก</label>
                             <input type="file" name="image" class="form-control" id="imageInput">
                         </div>
 
-                        @if(isset($notebook) && $notebook->image)
                         <div class="col-12">
+                            @if(isset($notebook) && $notebook->image)
+                            {{-- หน้าแก้ไข + มีรูปเดิม --}}
                             <img id="previewImage"
-                                src="{{ isset($notebook) && $notebook->image 
-                                ? asset('storage/'.$notebook->image) 
-                                : asset('images/no-image.png') }}"
+                                src="{{ asset('storage/'.$notebook->image) }}"
                                 style="width:160px;border-radius:12px;margin-top:8px;">
+                            @else
+                            {{-- หน้าเพิ่มใหม่ หรือยังไม่มีรูป --}}
+                            <img id="previewImage"
+                                style="width:160px;border-radius:12px;margin-top:8px; display:none;">
+                            @endif
                         </div>
-
-                        @endif
 
                     </div>
 
@@ -254,7 +257,7 @@
 <div class="card">
     <div class="card-body">
         <div class="card-title mb-3">
-            <i class="bi bi-table"></i> รายการโน้ตบุ๊คทั้งหมด
+            <i class="bi bi-table"></i> รายการโน้ตบุ๊กทั้งหมด
         </div>
 
         <table class="table align-middle">
@@ -310,7 +313,7 @@
 
         Swal.fire({
             title: 'ยืนยันการบันทึกข้อมูล',
-            text: 'คุณต้องการบันทึกข้อมูลโน้ตบุ๊คนี้หรือไม่?',
+            text: 'คุณต้องการบันทึกข้อมูลโน้ตบุ๊กนี้หรือไม่?',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'บันทึก',
@@ -353,7 +356,9 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('previewImage').src = e.target.result;
+            const img = document.getElementById('previewImage');
+            img.src = e.target.result;
+            img.style.display = 'block'; // ✅ สำคัญ
         };
         reader.readAsDataURL(file);
     });

@@ -229,7 +229,7 @@
         <div>
             <h3 class="history-header-title">ประวัติการยืมของฉัน</h3>
             <div class="history-header-subtitle">
-                แสดงรายการยืม–คืน (โน้ตบุ๊ค + เครื่องปริ้น) ทั้งหมดของคุณย้อนหลัง
+                แสดงรายการยืม–คืน (โน้ตบุ๊ก + เครื่องปริ้น) ทั้งหมดของคุณย้อนหลัง
             </div>
         </div>
     </div>
@@ -251,21 +251,22 @@
     <table class="history-table">
         <thead>
             <tr>
-                <th>อุปกรณ์</th>
-                <th style="width:12%">ประเภท</th>
-                <th style="width:18%">วันที่ยืม</th>
-                <th style="width:18%">วันที่คืน</th>
-                <th style="width:16%">ระยะเวลา</th>
-                <th style="width:16%">สถานะ</th>
+                <th style="width:30%" class="text-start">อุปกรณ์</th>
+                <th style="width:12%" class="text-center">ประเภท</th>
+                <th style="width:14%" class="text-center">วันที่ยืม</th>
+                <th style="width:14%" class="text-center">วันที่คืน</th>
+                <th style="width:10%" class="text-center">ระยะเวลา</th>
+                <th style="width:20%" class="text-center">สถานะ</th>
             </tr>
+
         </thead>
 
         <tbody>
             @foreach($borrowings as $b)
             @php
-                $borrowDate = \Carbon\Carbon::parse($b['borrow_date']);
-                $returnDate = \Carbon\Carbon::parse($b['return_date']);
-                $days = $borrowDate->diffInDays($returnDate, false);
+            $borrowDate = \Carbon\Carbon::parse($b['borrow_date']);
+            $returnDate = \Carbon\Carbon::parse($b['return_date']);
+            $days = $borrowDate->diffInDays($returnDate, false);
             @endphp
 
             <tr>
@@ -280,45 +281,45 @@
 
                 <td>
                     @if($b['type'] === 'printer')
-                        <span class="type-badge type-printer">
-                            <i class="bi bi-printer"></i> เครื่องปริ้น
-                        </span>
+                    <span class="type-badge type-printer">
+                        <i class="bi bi-printer"></i> เครื่องปริ้น
+                    </span>
                     @else
-                        <span class="type-badge type-notebook">
-                            <i class="bi bi-laptop"></i> โน้ตบุ๊ค
-                        </span>
+                    <span class="type-badge type-notebook">
+                        <i class="bi bi-laptop"></i> โน้ตบุ๊ก
+                    </span>
                     @endif
                 </td>
 
-                <td>{{ $borrowDate->format('d M Y') }}</td>
+                <td>{{ $borrowDate->translatedFormat('d M Y') }}</td>
 
-                <td>{{ $returnDate->format('d M Y') }}</td>
+                <td>{{ $returnDate->translatedFormat('d M Y') }}</td>
 
                 <td>
                     @if($days > 0)
-                        <span class="duration duration-normal">{{ $days }} วัน</span>
+                    <span class="duration duration-normal">{{ $days }} วัน</span>
                     @elseif($days == 0)
-                        <span class="duration duration-zero">0 วัน</span>
+                    <span class="duration duration-zero">0 วัน</span>
                     @else
-                        <span class="duration duration-negative">{{ $days }} วัน</span>
+                    <span class="duration duration-negative">{{ $days }} วัน</span>
                     @endif
                 </td>
 
                 <td>
                     @if($b['status'] === 'returned')
-                        <span class="status-returned">
-                            <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
-                        </span>
-                        <div class="return-date-text">
-                            แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
-                        </div>
+                    <span class="status-returned">
+                        <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
+                    </span>
+                    <div class="return-date-text">
+                        แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
+                    </div>
                     @else
-                        <span class="status-borrowed">
-                            <i class="bi bi-box-arrow-in-right"></i> กำลังยืม
-                        </span>
-                        <div class="return-date-text">
-                            กรุณาคืนภายใน {{ $returnDate->format('d M Y') }}
-                        </div>
+                    <span class="status-borrowed">
+                        <i class="bi bi-box-arrow-in-right"></i> กำลังยืม
+                    </span>
+                    <div class="return-date-text">
+                        กรุณาคืนภายใน {{ $returnDate->format('d M Y') }}
+                    </div>
                     @endif
                 </td>
             </tr>

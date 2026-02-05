@@ -46,7 +46,7 @@ class PrinterBorrowController extends Controller
             'phone'       => $request->phone,
             'borrow_date' => $request->borrow_date,
             'return_date' => $request->return_date,
-            'status'      => 'borrowed',
+            'status'      => 'pending',
         ]);
 
         // ✅ บันทึกอุปกรณ์เสริม
@@ -56,10 +56,11 @@ class PrinterBorrowController extends Controller
 
         // ✅ อัปเดตสถานะเครื่องปริ้น
         $printer->update([
-            'status' => 'borrowed'
+            'status' => 'pending'
         ]);
 
-        return redirect()->back()->with('success', 'ยืมเครื่องปริ้นสำเร็จ');
+        return redirect()->route('user.borrow_list')
+            ->with('success', 'ส่งคำขอยืมแล้ว รอแอดมินอนุมัติ');
     }
 
 

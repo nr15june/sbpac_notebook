@@ -9,6 +9,7 @@ use App\Http\Controllers\UserBorrowController;
 use App\Http\Controllers\AdminBorrowController;
 use App\Http\Controllers\AdminPrinterController;
 use App\Http\Controllers\PrinterBorrowController;
+use App\Http\Controllers\AdminPrinterBorrowController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -88,6 +89,9 @@ Route::get('/admin/return_management', [AdminBorrowController::class, 'returnLis
 
 Route::post('/admin/return_management/{id}/confirm', [AdminBorrowController::class, 'confirmReturn'])
     ->name('admin.borrow.confirm_return');
+Route::post('/admin/printer/confirm-return/{id}', [AdminPrinterBorrowController::class, 'confirmReturn'])
+    ->name('admin.printer.confirm_return');
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/printers', [AdminPrinterController::class, 'index'])->name('admin.printers.index');
@@ -95,6 +99,16 @@ Route::prefix('admin')->group(function () {
     Route::get('/printers/{id}/edit', [AdminPrinterController::class, 'edit'])->name('admin.printers.edit');
     Route::put('/printers/{id}', [AdminPrinterController::class, 'update'])->name('admin.printers.update');
     Route::delete('/printers/{id}', [AdminPrinterController::class, 'destroy'])->name('admin.printers.destroy');
+
+    // Admin Printer Borrow Management
+    Route::get('/printer_borrow_management', [AdminPrinterBorrowController::class, 'index'])
+        ->name('admin.printer.borrow_management');
+
+    Route::post('/printer_borrow/approve/{id}', [AdminPrinterBorrowController::class, 'approve'])
+        ->name('admin.printer.borrow.approve');
+
+    Route::post('/printer_borrow/reject/{id}', [AdminPrinterBorrowController::class, 'reject'])
+        ->name('admin.printer.borrow.reject');
 });
 
 
@@ -104,7 +118,7 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth'])->group(function () {
 
     //---------------------user notebook request-----------------------//
-    // ขอจอง / ยืมโน้ตบุ๊ค
+    // ขอจอง / ยืมโน้ตบุ๊ก
     Route::get('/user/notebook_request', [UserBorrowController::class, 'index'])
         ->name('user.notebook_request');
 

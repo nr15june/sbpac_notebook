@@ -139,7 +139,7 @@
     <div>
         <h2>
             <i class="bi bi-clock-history"></i>
-            ประวัติการยืมโน้ตบุ๊ค
+            ประวัติการยืมโน้ตบุ๊ก
         </h2>
         <p>รายการยืม–คืนอุปกรณ์ทั้งหมดในระบบ</p>
     </div>
@@ -161,12 +161,12 @@
     <table class="table align-middle mb-0">
         <thead>
             <tr>
-                <th class="text-start">ผู้ยืม</th>
-                <th class="text-start">โน้ตบุ๊ค</th>
-                <th style="width:14%">วันที่ยืม</th>
-                <th style="width:14%">วันที่คืน</th>
-                <th class="text-start">อุปกรณ์เสริม</th>
-                <th style="width:14%">สถานะ</th>
+                <th style="width:14%" class="text-start">ผู้ยืม</th>
+                <th style="width:26%" class="text-start">โน้ตบุ๊ก</th>
+                <th style="width:10%" class="text-center">วันที่ยืม</th>
+                <th style="width:10%" class="text-center">วันที่คืน</th>
+                <th style="width:26%" class="text-start">อุปกรณ์เสริม</th>
+                <th style="width:14%" class="text-center">สถานะ</th>
             </tr>
         </thead>
         <tbody>
@@ -181,8 +181,15 @@
                     </div>
                     <div class="asset-code">{{ $b->notebook->asset_code }}</div>
                 </td>
-                <td class="text-center">{{ $b->borrow_date }}</td>
-                <td class="text-center">{{ $b->return_date ?? '-' }}</td>
+                <td class="text-center">
+                    {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
+                </td>
+
+                <td class="text-center">
+                    {{ $b->return_date
+                        ? \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y')
+                    : '-' }}
+                </td>
                 <td class="text-start">
                     @if($b->accessories && $b->accessories->count() > 0)
 

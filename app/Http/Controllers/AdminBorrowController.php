@@ -6,6 +6,7 @@ use App\Models\Borrowing;
 use App\Models\Notebook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\PrinterBorrowing;
 
 class AdminBorrowController extends Controller
 {
@@ -76,14 +77,50 @@ class AdminBorrowController extends Controller
     }
 
     public function returnList()
-    {
-        $borrowings = Borrowing::with(['notebook', 'user', 'accessories'])
-            ->where('status', 'borrowed')
-            ->orderBy('return_date', 'asc')
-            ->get();
+{
+    // 🔹 โน้ตบุ๊ก
+    $notebooks = Borrowing::with(['notebook', 'user', 'accessories'])
+        ->where('status', 'borrowed')
+        ->get()
+        ->map(function ($b) {
+            return (object)[
+                'type' => 'notebook',
+                'id' => $b->id,
+                'user' => $b->user,
+                'device' => $b->notebook,
+                'borrow_date' => $b->borrow_date,
+                'return_date' => $b->return_date,
+                'accessories' => $b->accessories,
+                'model' => $b,
+            ];
+        });
 
-        return view('admin.return_management', compact('borrowings'));
-    }
+    // 🔹 เครื่องปริ้น
+    $printers = PrinterBorrowing::with(['printer', 'user', 'accessories'])
+        ->where('status', 'borrowed')
+        ->get()
+        ->map(function ($b) {
+            return (object)[
+                'type' => 'printer',
+                'id' => $b->id,
+                'user' => $b->user,
+                'device' => $b->printer,
+                'borrow_date' => $b->borrow_date,
+                'return_date' => $b->return_date,
+                'accessories' => $b->accessories,
+                'model' => $b,
+            ];
+        });
+
+    // ✅ รวม + sort
+    $borrowings = $notebooks
+        ->concat($printers)
+        ->sortBy('return_date')
+        ->values();
+
+    return view('admin.return_management', compact('borrowings'));
+}
+
 
     public function confirmReturn(Request $request, $id)
     {
@@ -118,7 +155,6 @@ class AdminBorrowController extends Controller
                 'status'      => 'returned',
                 'return_date' => now()
             ]);
-
         });
 
         return redirect()->route('admin.return_management')
