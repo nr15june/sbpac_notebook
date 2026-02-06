@@ -17,7 +17,9 @@ class Borrowing extends Model
         'notebook_id',
         'borrow_date',
         'return_date',
-        'status'
+        'status',
+        'reject_reason',
+        'rejected_at',
     ];
 
     public function notebook()
@@ -31,10 +33,10 @@ class Borrowing extends Model
     }
 
     public function accessories()
-{
-    return $this->belongsToMany(\App\Models\Accessory::class, 'borrowing_accessory')
-        ->withPivot('is_returned', 'note');
-}
+    {
+        return $this->belongsToMany(\App\Models\Accessory::class, 'borrowing_accessory')
+            ->withPivot('is_returned', 'note');
+    }
 
     // จำนวนวันที่ยืมไปแล้ว
     public function daysUsed()

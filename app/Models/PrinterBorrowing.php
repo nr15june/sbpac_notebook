@@ -18,8 +18,15 @@ class PrinterBorrowing extends Model
         'borrow_date',
         'return_date',
         'status',
+        'reject_reason',
+        'rejected_at',
     ];
 
+    protected $casts = [
+        'borrow_date' => 'date',
+        'return_date' => 'date',
+        'rejected_at' => 'datetime',
+    ];
     // ความสัมพันธ์กับ User
     public function user()
     {

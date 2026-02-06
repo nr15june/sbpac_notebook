@@ -47,6 +47,7 @@ class PrinterBorrowController extends Controller
             'borrow_date' => $request->borrow_date,
             'return_date' => $request->return_date,
             'status'      => 'pending',
+            
         ]);
 
         // ✅ บันทึกอุปกรณ์เสริม

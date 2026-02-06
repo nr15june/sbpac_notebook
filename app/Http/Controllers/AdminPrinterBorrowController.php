@@ -38,9 +38,9 @@ class AdminPrinterBorrowController extends Controller
     }
 
     // ✅ ปฏิเสธ
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        DB::transaction(function () use ($id) {
+        DB::transaction(function () use ($request, $id) {
 
             $borrow = PrinterBorrowing::lockForUpdate()->findOrFail($id);
 
@@ -48,12 +48,22 @@ class AdminPrinterBorrowController extends Controller
                 throw new \Exception('รายการนี้ถูกจัดการไปแล้ว');
             }
 
-            $borrow->printer->update(['status' => 'available']);
-            $borrow->update(['status' => 'rejected']);
+            // คืนสถานะเครื่อง
+            $borrow->printer->update([
+                'status' => 'available'
+            ]);
+
+            // อัปเดตสถานะการยืม
+            $borrow->update([
+                'status' => 'rejected',
+                'reject_reason' => $request->reject_reason ?? 'ไม่ผ่านการอนุมัติ',
+                'rejected_at' => now(),
+            ]);
         });
 
         return back()->with('success', 'ปฏิเสธการยืมเครื่องปริ้นแล้ว ✅');
     }
+
     public function confirmReturn(Request $request, $id)
     {
         DB::transaction(function () use ($request, $id) {

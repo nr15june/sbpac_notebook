@@ -306,19 +306,36 @@
                 </td>
 
                 <td>
+                    {{-- ✅ คืนแล้ว --}}
                     @if($b['status'] === 'returned')
                     <span class="status-returned">
                         <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
                     </span>
                     <div class="return-date-text">
-                        แอดมินยืนยันเมื่อ {{ $returnDate->format('d M Y') }}
+                        แอดมินยืนยันเมื่อ {{ $returnDate->translatedFormat('d M Y') }}
                     </div>
+
+                    {{-- ❌ ถูกปฏิเสธ --}}
+                    @elseif($b['status'] === 'rejected')
+                    <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
+                        <i class="bi bi-x-circle me-1"></i> ถูกปฏิเสธ
+                    </span>
+                    <div class="return-date-text">
+                        เหตุผล: {{ $b['reject_reason'] ?? 'ไม่ระบุเหตุผล' }}<br>
+                        @if(!empty($b['rejected_at']))
+                        แจ้งผลเมื่อ {{ \Carbon\Carbon::parse($b['rejected_at'])->translatedFormat('d M Y') }}
+                        @else
+                        แจ้งผลแล้ว
+                        @endif
+                    </div>
+
+                    {{-- ⏳ กำลังยืม --}}
                     @else
                     <span class="status-borrowed">
                         <i class="bi bi-box-arrow-in-right"></i> กำลังยืม
                     </span>
                     <div class="return-date-text">
-                        กรุณาคืนภายใน {{ $returnDate->format('d M Y') }}
+                        กรุณาคืนภายใน {{ $returnDate->translatedFormat('d M Y') }}
                     </div>
                     @endif
                 </td>

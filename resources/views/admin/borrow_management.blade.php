@@ -311,10 +311,14 @@
                         action="{{ route('admin.borrow.reject',$b->id) }}"
                         class="flex-fill reject-form">
                         @csrf
+
+                        <input type="hidden" name="reject_reason">
+
                         <button type="button" class="btn btn-outline-danger w-100 btn-reject">
                             <i class="bi bi-x-circle me-1"></i> ปฏิเสธ
                         </button>
                     </form>
+
 
                 </div>
 
@@ -352,18 +356,21 @@
     document.querySelectorAll('.btn-reject').forEach(btn => {
         btn.addEventListener('click', function() {
             const form = this.closest('form');
+            const input = form.querySelector('input[name="reject_reason"]');
 
             Swal.fire({
-                title: 'ยืนยันการปฏิเสธ',
-                text: 'คุณต้องการปฏิเสธคำขอยืมนี้หรือไม่?',
-                icon: 'warning',
+                title: 'ปฏิเสธคำขอยืม',
+                input: 'textarea',
+                inputLabel: 'เหตุผลในการปฏิเสธ',
+                inputPlaceholder: 'กรุณาระบุเหตุผล',
+                inputValidator: v => !v && 'กรุณาระบุเหตุผล',
                 showCancelButton: true,
                 confirmButtonText: 'ปฏิเสธ',
                 cancelButtonText: 'ยกเลิก',
                 confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#e5e7eb'
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
+                    input.value = result.value;
                     form.submit();
                 }
             });

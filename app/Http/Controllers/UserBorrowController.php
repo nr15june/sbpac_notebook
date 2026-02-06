@@ -208,7 +208,10 @@ class UserBorrowController extends Controller
                     'asset_code' => $b->notebook->asset_code,
                     'borrow_date' => $b->borrow_date,
                     'return_date' => $b->return_date,
-                    'status' => $b->status ?? 'returned',
+                    'status'        => $b->status ?? 'returned',
+                    'reject_reason' => $b->reject_reason,
+                    'rejected_at'   => $b->rejected_at,
+
                 ];
             });
 
@@ -224,6 +227,8 @@ class UserBorrowController extends Controller
                     'borrow_date' => $p->borrow_date,
                     'return_date' => $p->return_date,
                     'status' => $p->status ?? 'borrowed',
+                    'reject_reason' => $p->reject_reason,
+                    'rejected_at'   => $p->rejected_at,
                 ];
             });
 

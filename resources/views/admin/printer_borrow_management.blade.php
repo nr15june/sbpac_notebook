@@ -254,13 +254,13 @@
                 </div>
 
                 {{-- DATE --}}
-                <div class="pill-row">
+                <div class="mt-3 d-flex flex-wrap gap-2">
                     <span class="date-pill">
-                        <i class="bi bi-calendar-event text-primary"></i>
+                        <i class="bi bi-calendar-event"></i>
                         {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
                     </span>
                     <span class="date-pill">
-                        <i class="bi bi-calendar-check text-success"></i>
+                        <i class="bi bi-calendar-check"></i>
                         {{ \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y') }}
                     </span>
                 </div>
@@ -274,12 +274,18 @@
                         </button>
                     </form>
 
-                    <form method="POST" action="{{ route('admin.printer.borrow.reject',$b->id) }}" class="flex-fill">
+                    <form method="POST"
+                        action="{{ route('admin.printer.borrow.reject',$b->id) }}"
+                        class="flex-fill reject-form">
                         @csrf
+
+                        <input type="hidden" name="reject_reason" value="ไม่ผ่านการพิจารณา">
+
                         <button type="button" class="btn btn-outline-danger w-100 btn-reject">
                             <i class="bi bi-x-circle me-1"></i> ปฏิเสธ
                         </button>
                     </form>
+
                 </div>
 
             </div>
@@ -293,30 +299,36 @@
 {{-- ===== SweetAlert ===== --}}
 <script>
     document.querySelectorAll('.btn-approve').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('form');
+        btn.addEventListener('click', () => {
             Swal.fire({
                 title: 'ยืนยันการอนุมัติ',
-                text: 'คุณต้องการอนุมัติการยืมเครื่องปริ้นนี้หรือไม่?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'อนุมัติ',
-                cancelButtonText: 'ยกเลิก'
-            }).then(r => r.isConfirmed && form.submit());
+                confirmButtonText: 'อนุมัติ'
+            }).then(r => r.isConfirmed && btn.closest('form').submit());
         });
     });
 
     document.querySelectorAll('.btn-reject').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('form');
+        btn.addEventListener('click', () => {
+            const form = btn.closest('form');
+            const input = form.querySelector('input[name="reject_reason"]');
+
             Swal.fire({
-                title: 'ยืนยันการปฏิเสธ',
-                text: 'คุณต้องการปฏิเสธคำขอยืมนี้หรือไม่?',
-                icon: 'warning',
+                title: 'ปฏิเสธคำขอยืม',
+                input: 'textarea',
+                inputLabel: 'เหตุผลในการปฏิเสธ',
+                inputPlaceholder: 'กรุณาระบุเหตุผล',
+                inputValidator: v => !v && 'กรุณาระบุเหตุผล',
                 showCancelButton: true,
                 confirmButtonText: 'ปฏิเสธ',
-                cancelButtonText: 'ยกเลิก'
-            }).then(r => r.isConfirmed && form.submit());
+                icon: 'warning'
+            }).then(r => {
+                if (r.isConfirmed) {
+                    input.value = r.value;
+                    form.submit();
+                }
+            });
         });
     });
 </script>
