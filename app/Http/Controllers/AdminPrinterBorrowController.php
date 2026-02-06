@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class AdminPrinterBorrowController extends Controller
 {
-    // ✅ หน้าแอดมิน: แสดงรายการ "รออนุมัติ" เครื่องปริ้น
+    // ✅ หน้าแอดมิน: แสดงรายการ "รออนุมัติ" เครื่องปริ้น 
     public function index()
     {
         $printerBorrowings = PrinterBorrowing::with(['user', 'printer', 'accessories'])
