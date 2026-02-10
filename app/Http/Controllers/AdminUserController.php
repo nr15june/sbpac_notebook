@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
@@ -94,7 +95,21 @@ class AdminUserController extends Controller
 
         ]);
 
+        $baseUsername = Str::lower(
+            preg_replace('/\s+/', '', $request->first_name)
+        );
+
+        $username = $baseUsername;
+        $i = 1;
+
+        // กันซ้ำ
+        while (User::where('username', $username)->exists()) {
+            $username = $baseUsername . $i;
+            $i++;
+        }
+
         User::create([
+            'username'   => $username,
             'name' => $request->first_name . ' ' . $request->last_name,
             'id_card' => $request->id_card,
             'first_name' => $request->first_name,
@@ -108,7 +123,7 @@ class AdminUserController extends Controller
         ]);
 
         return redirect()->route('admin.user_management')
-            ->with('success', 'เพิ่มพนักงานเรียบร้อยแล้ว');
+            ->with('success', "เพิ่มพนักงานเรียบร้อยแล้ว (username: {$username})");
     }
 
     public function edit($id)

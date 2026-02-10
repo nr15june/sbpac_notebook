@@ -10,27 +10,28 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'username' => 'required|string',
             'password' => 'required'
         ]);
 
-        // พยายาม login เป็น Admin ก่อน
+        // 🔐 Login Admin
         if (Auth::guard('admin')->attempt([
-            'email' => $request->email,
+            'username' => $request->username,
             'password' => $request->password
         ])) {
             return redirect()->route('admin.borrow_management');
         }
 
-        // ถ้าไม่ใช่ admin → ลอง login เป็น user
+        // 🔐 Login User
         if (Auth::guard('web')->attempt([
-            'email' => $request->email,
+            'username' => $request->username,
             'password' => $request->password,
             'role' => 'user'
         ])) {
             return redirect()->route('user.notebook_request');
         }
 
-        return back()->with('error','Email หรือ Password ไม่ถูกต้อง');
+
+        return back()->with('error', 'Username หรือ Password ไม่ถูกต้อง');
     }
 }

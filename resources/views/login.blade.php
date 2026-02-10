@@ -110,10 +110,11 @@
 
         <form method="POST" action="{{ route('login.submit') }}">
             @csrf
-            
+
             <div class="form-group">
-                <div class="form-label">Email</div>
-                <input type="email" name="email" class="form-control" placeholder="email">
+                <div class="form-label">Username</div>
+                <input type="text" name="username" class="form-control" placeholder="username">
+
             </div>
 
             <div class="form-group">
