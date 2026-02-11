@@ -190,7 +190,7 @@
             <form method="GET" action="{{ route('admin.user_management') }}" class="user-search">
                 <input type="text" name="search"
                     value="{{ request('search') }}"
-                    placeholder="ค้นหาชื่อ / เลขบัตรประชาชน">
+                    placeholder="ค้นหาชื่อ ">
                 <button type="submit">ค้นหา</button>
             </form>
 
@@ -212,7 +212,6 @@
 
         <table class="user-table">
             <colgroup>
-                <col style="width:15%">
                 <col style="width:18%">
                 <col style="width:13%">
                 <col style="width:30%">
@@ -220,8 +219,7 @@
             </colgroup>
             <thead>
                 <tr>
-                    <th>เลขบัตรประชาชน</th>
-                    <th>ชื่อ – สกุล</th>
+                    <th>ชื่อ – สกุล (Username)</th>
                     <th>เบอร์โทรศัพท์</th>
                     <th>กลุ่มงาน</th>
                     <th>จัดการ</th>
@@ -230,8 +228,14 @@
             <tbody>
                 @forelse ($users as $user)
                 <tr>
-                    <td>{{ $user->id_card }}</td>
-                    <td>{{ $user->first_name }} {{ $user->last_name }}</td>
+                    <td>
+                        <div style="font-weight:500;">
+                            {{ $user->first_name }} {{ $user->last_name }}
+                        </div>
+                        <div style="font-size:12px;color:#64748b;">
+    Username: {{ $user->username }}
+</div>
+                    </td>
                     <td>{{ $user->phone }}</td>
                     <td>{{ $user->workgroup }}</td>
                     <td>

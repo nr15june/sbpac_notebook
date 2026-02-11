@@ -132,6 +132,28 @@
     .table td:last-child {
         width: 30%;
     }
+
+    /* ===== TYPE BADGE (เหมือนฝั่ง user) ===== */
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .type-notebook {
+        background: #ecfdf5;
+        color: #166534;
+    }
+
+    .type-printer {
+        background: #ecfeff;
+        color: #0e7490;
+    }
 </style>
 
 {{-- ===== HEADER ===== --}}
@@ -161,38 +183,69 @@
     <table class="table align-middle mb-0">
         <thead>
             <tr>
-                <th style="width:14%" class="text-start">ผู้ยืม</th>
-                <th style="width:26%" class="text-start">โน้ตบุ๊ก</th>
+                <th style="width:16%" class="text-start">ผู้ยืม</th>
+                <th style="width:22%" class="text-start">อุปกรณ์</th>
+                <th style="width:10%" class="text-center">ประเภท</th>
                 <th style="width:10%" class="text-center">วันที่ยืม</th>
                 <th style="width:10%" class="text-center">วันที่คืน</th>
-                <th style="width:26%" class="text-start">อุปกรณ์เสริม</th>
-                <th style="width:14%" class="text-center">สถานะ</th>
+                <th style="width:20%" class="text-start">อุปกรณ์เสริม</th>
+                <th style="width:12%" class="text-center">สถานะ</th>
             </tr>
         </thead>
         <tbody>
             @forelse($borrowings as $b)
             <tr>
-                <td class="text-start">
-                    {{ $b->user->first_name }} {{ $b->user->last_name }}
-                </td>
+
+                {{-- 👤 ผู้ยืม --}}
                 <td>
+                    <div class="fw-medium">
+                        {{ $b->user->first_name }} {{ $b->user->last_name }}
+                    </div>
+                </td>
+
+                {{-- 💻 / 🖨️ อุปกรณ์ --}}
+                <td>
+                    @if($b->type === 'notebook')
                     <div class="fw-medium">
                         {{ $b->notebook->brand }} {{ $b->notebook->model }}
                     </div>
-                    <div class="asset-code">{{ $b->notebook->asset_code }}</div>
+                    <div class="asset-code">Asset: {{ $b->notebook->asset_code }}</div>
+                    @else
+                    <div class="fw-medium">
+                        {{ $b->printer->brand }} {{ $b->printer->model }}
+                    </div>
+                    <div class="asset-code">Asset: {{ $b->printer->asset_code }}</div>
+                    @endif
                 </td>
+
+                {{-- 📦 ประเภท --}}
+                <td class="text-center">
+                    @if($b->type === 'notebook')
+                    <span class="type-badge type-notebook">
+                        <i class="bi bi-laptop"></i> โน้ตบุ๊ก
+                    </span>
+                    @else
+                    <span class="type-badge type-printer">
+                        <i class="bi bi-printer"></i> เครื่องปริ้น
+                    </span>
+                    @endif
+                </td>
+
+                {{-- 📅 วันที่ยืม --}}
                 <td class="text-center">
                     {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
                 </td>
 
+                {{-- 📅 วันที่คืน --}}
                 <td class="text-center">
                     {{ $b->return_date
-                        ? \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y')
-                    : '-' }}
+            ? \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y')
+            : '-' }}
                 </td>
-                <td class="text-start">
-                    @if($b->accessories && $b->accessories->count() > 0)
 
+                {{-- 🔌 อุปกรณ์เสริม --}}
+                <td>
+                    @if($b->accessories && $b->accessories->count() > 0)
                     <div class="d-flex flex-wrap gap-1">
                         @foreach($b->accessories as $acc)
                         @php
@@ -201,33 +254,21 @@
 
                         @if($returned)
                         <span class="badge bg-success-subtle text-success border" style="font-size:11px;">
-                            <i class="bi bi-check2-circle me-1"></i> {{ $acc->name }}
+                            {{ $acc->name }}
                         </span>
                         @else
                         <span class="badge bg-danger-subtle text-danger border" style="font-size:11px;">
-                            <i class="bi bi-x-circle me-1"></i> {{ $acc->name }} (ยังไม่คืน)
+                            {{ $acc->name }} (ยังไม่คืน)
                         </span>
                         @endif
                         @endforeach
                     </div>
-
-                    {{-- ✅ หมายเหตุ --}}
-                    @php
-                    $note = optional($b->accessories->first())->pivot->note ?? null;
-                    @endphp
-
-                    @if($note)
-                    <div class="mt-2 small text-muted">
-                        <i class="bi bi-pencil-square me-1"></i>
-                        หมายเหตุ: <b>{{ $note }}</b>
-                    </div>
-                    @endif
-
                     @else
                     <span class="text-muted small">ไม่มีอุปกรณ์เสริม</span>
                     @endif
                 </td>
 
+                {{-- 📌 สถานะ --}}
                 <td class="text-center">
                     <span class="status-badge status-{{ $b->status }}">
                         @if($b->status=='returned') คืนแล้ว
@@ -237,15 +278,17 @@
                         @endif
                     </span>
                 </td>
+
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="text-center text-muted py-4">
+                <td colspan="7" class="text-center text-muted py-4">
                     ไม่พบข้อมูลการยืม
                 </td>
             </tr>
             @endforelse
         </tbody>
+
     </table>
 </div>
 

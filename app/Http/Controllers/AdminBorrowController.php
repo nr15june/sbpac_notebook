@@ -64,20 +64,44 @@ class AdminBorrowController extends Controller
     {
         $q = $request->q;
 
-        $borrowings = Borrowing::with(['user', 'notebook', 'accessories'])
-            ->when($q, function ($query) use ($q) {
-                $query->whereHas('user', function ($u) use ($q) {
-                    $u->where('first_name', 'like', "%$q%")
-                        ->orWhere('last_name', 'like', "%$q%");
-                })
-                    ->orWhereHas('notebook', function ($n) use ($q) {
-                        $n->where('brand', 'like', "%$q%")
-                            ->orWhere('model', 'like', "%$q%")
-                            ->orWhere('asset_code', 'like', "%$q%");
-                    });
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // 🔹 Notebook
+        $notebooks = Borrowing::with(['user', 'notebook', 'accessories'])
+            ->get()
+            ->map(function ($b) {
+                return (object)[
+                    'type' => 'notebook',
+                    'user' => $b->user,
+                    'notebook' => $b->notebook,
+                    'printer' => null,
+                    'borrow_date' => $b->borrow_date,
+                    'return_date' => $b->return_date,
+                    'status' => $b->status,
+                    'accessories' => $b->accessories,
+                    'created_at' => $b->created_at,
+                ];
+            });
+
+        // 🔹 Printer
+        $printers = PrinterBorrowing::with(['user', 'printer', 'accessories'])
+            ->get()
+            ->map(function ($b) {
+                return (object)[
+                    'type' => 'printer',
+                    'user' => $b->user,
+                    'notebook' => null,
+                    'printer' => $b->printer,
+                    'borrow_date' => $b->borrow_date,
+                    'return_date' => $b->return_date,
+                    'status' => $b->status,
+                    'accessories' => $b->accessories,
+                    'created_at' => $b->created_at,
+                ];
+            });
+
+        $borrowings = $notebooks
+            ->concat($printers)
+            ->sortByDesc('created_at')
+            ->values();
 
         return view('admin.borrow_history', compact('borrowings', 'q'));
     }

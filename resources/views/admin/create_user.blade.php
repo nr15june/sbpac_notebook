@@ -140,9 +140,13 @@
 
 {{-- ===== FORM START ===== --}}
 <form method="POST"
-    action="{{ route('admin.user.store') }}"
+    action="{{ isset($user) ? route('admin.user.update', $user->id) : route('admin.user.store') }}"
     id="userForm">
+
     @csrf
+    @if(isset($user))
+    @method('PUT')
+    @endif
 
     {{-- Header --}}
     <div class="page-header d-flex align-items-center gap-3">
@@ -157,108 +161,108 @@
     </div>
 
     <div class="form-wrapper">
+        <div class="section-card">
+            <div class="mb-3">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control"
+                    value="{{ old('username', $user->username ?? '') }}">
+                <small class="text-muted">
+                    ถ้าไม่กรอก ระบบจะสร้างให้อัตโนมัติ
+                </small>
+            </div>
+            {{-- ===== ข้อมูลส่วนตัว ===== --}}
+            <div class="section-title">👤 ข้อมูลส่วนตัว</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <input type="text" class="form-control"
+                        name="first_name"
+                        value="{{ old('first_name', $user->first_name ?? '') }}"
+                        required>
+                </div>
 
-        {{-- ===== ข้อมูลส่วนตัว ===== --}}
-        <div class="card mb-4 border-0 bg-light rounded-4">
-            <div class="section-card">
-                <div class="section-title">👤 ข้อมูลส่วนตัว</div>
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">เลขบัตรประชาชน</label>
-                        <input type="text" class="form-control"
-                            name="id_card" maxlength="13" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">เบอร์โทรศัพท์</label>
-                        <input type="text" class="form-control"
-                            name="phone" maxlength="10" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">ชื่อ</label>
-                        <input type="text" class="form-control"
-                            name="first_name" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">นามสกุล</label>
-                        <input type="text" class="form-control"
-                            name="last_name" required>
-                    </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control"
+                        name="last_name"
+                        value="{{ old('last_name', $user->last_name ?? '') }}"
+                        required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">สำนัก / กอง / ศูนย์</label>
+                    <select class="form-select"
+                        name="department"
+                        id="department"
+                        required>
+                        <option value="">-- เลือกหน่วยงาน --</option>
+                        @foreach($departments as $dept)
+                        <option value="{{ $dept }}"
+                            {{ old('department', $user->department ?? '') == $dept ? 'selected' : '' }}>
+                            {{ $dept }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">กลุ่มงาน</label>
+                    <select class="form-select"
+                        name="workgroup"
+                        id="workgroup"
+                        required>
+                        <option value="">-- เลือกกลุ่มงาน --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">เบอร์โทรศัพท์</label>
+                    <input type="text" class="form-control"
+                        name="phone"
+                        value="{{ old('phone', $user->phone ?? '') }}"
+                        maxlength="10"
+                        required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password"
+                        class="form-control"
+                        name="password"
+                        required>
                 </div>
             </div>
         </div>
-
-        {{-- ===== หน่วยงาน ===== --}}
-        <div class="card mb-4 border-0 bg-light rounded-4">
-            <div class="section-card">
-                <div class="section-title">🏢 หน่วยงาน</div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">สำนัก / กอง / ศูนย์</label>
-                        <select class="form-select"
-                            name="department"
-                            id="department"
-                            required>
-                            <option value="">-- เลือกหน่วยงาน --</option>
-                            @foreach($departments as $dept)
-                            <option value="{{ $dept }}">{{ $dept }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">กลุ่มงาน</label>
-                        <select class="form-select"
-                            name="workgroup"
-                            id="workgroup"
-                            required>
-                            <option value="">-- เลือกกลุ่มงาน --</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ===== ระบบ ===== --}}
-        <div class="card mb-4 border-0 bg-light rounded-4">
-            <div class="section-card">
-                <div class="section-title">🔐 ข้อมูลระบบ</div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">อีเมล</label>
-                        <input type="email" class="form-control"
-                            name="email" required>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label class="form-label">รหัสผ่าน</label>
-                        <input type="password" class="form-control"
-                            name="password" required>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Actions --}}
         <div class="d-flex justify-content-end gap-3 mt-4">
-            <button type="button"
-                class="btn btn-primary"
-                id="btnConfirmSave">
-                บันทึกข้อมูล
-            </button>
-            <a href="{{ route('admin.user_management') }}"
-                class="btn btn-light">
-                ยกเลิก
-            </a>
+            <button type="button" class="btn btn-primary" id="btnConfirmSave"> บันทึกข้อมูล </button>
+            <a href="{{ route('admin.user_management') }}" class="btn btn-light"> ยกเลิก </a>
         </div>
+    </div>
 
 </form>
 {{-- ===== FORM END ===== --}}
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const oldDepartment = "{{ old('department', $user->department ?? '') }}";
+        const oldWorkgroup = "{{ old('workgroup', $user->workgroup ?? '') }}";
+
+        if (oldDepartment) {
+            departmentSelect.value = oldDepartment;
+            departmentSelect.dispatchEvent(new Event('change'));
+
+            setTimeout(() => {
+                workgroupSelect.value = oldWorkgroup;
+            }, 100);
+        }
+    });
+
+
     const departmentSelect = document.getElementById('department');
     const workgroupSelect = document.getElementById('workgroup');
 

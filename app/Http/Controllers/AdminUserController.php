@@ -35,7 +35,7 @@ class AdminUserController extends Controller
             $usersQuery->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%$search%")
                     ->orWhere('last_name', 'like', "%$search%")
-                    ->orWhere('id_card', 'like', "%$search%");
+                    ->orWhere('username', 'like', "%$search%");
             });
         }
 
@@ -84,46 +84,40 @@ class AdminUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_card' => 'required|unique:users,id_card',
+            'username'   => 'nullable|alpha_num|unique:users,username',
             'first_name' => 'required',
             'last_name'  => 'required',
-            'phone'     => 'required|digits:10',
+            'phone'      => 'required|digits:10',
             'department' => 'required|string',
             'workgroup'  => 'required|string',
-            'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-
         ]);
 
-        $baseUsername = Str::lower(
-            preg_replace('/\s+/', '', $request->first_name)
-        );
+        if ($request->filled('username')) {
 
-        $username = $baseUsername;
-        $i = 1;
+            // ถ้าแอดมินกรอกเอง
+            $username = strtolower($request->username);
+        } else {
 
-        // กันซ้ำ
-        while (User::where('username', $username)->exists()) {
-            $username = $baseUsername . $i;
-            $i++;
+            // ถ้าไม่กรอก → สร้างแบบ sb001
+            $lastId = User::max('id');
+            $nextNumber = $lastId ? $lastId + 1 : 1;
+            $username = 'sb' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         }
 
         User::create([
             'username'   => $username,
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'id_card' => $request->id_card,
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'phone'      => $request->phone,
             'department' => $request->department,
             'workgroup'  => $request->workgroup,
-            'email'      => $request->email,
             'password'   => Hash::make($request->password),
             'role'       => 'user',
         ]);
 
         return redirect()->route('admin.user_management')
-            ->with('success', "เพิ่มพนักงานเรียบร้อยแล้ว (username: {$username})");
+            ->with('success', "เพิ่มพนักงานเรียบร้อยแล้ว (Username: {$username})");
     }
 
     public function edit($id)
@@ -153,26 +147,22 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'id_card'    => 'required|unique:users,id_card,' . $user->id,
+            'username'   => 'required|alpha_num|unique:users,username,' . $user->id,
             'first_name' => 'required',
             'last_name'  => 'required',
             'phone'      => 'required|digits:10',
             'department' => 'required',
             'workgroup'  => 'required',
-            'email'      => 'required|email|unique:users,email,' . $user->id,
         ]);
 
         $user->update([
-            'name'       => $request->first_name . ' ' . $request->last_name,
-            'id_card'    => $request->id_card,
+            'username'   => strtolower($request->username),
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'phone'      => $request->phone,
             'department' => $request->department,
             'workgroup'  => $request->workgroup,
-            'email'      => $request->email,
         ]);
-
         return redirect()->route('admin.user_management')
             ->with('success', 'แก้ไขข้อมูลพนักงานเรียบร้อยแล้ว');
     }

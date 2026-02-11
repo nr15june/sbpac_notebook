@@ -5,6 +5,59 @@
 @section('content')
 
 <style>
+    .list-header {
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+        border-radius: 18px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow:
+            0 12px 30px rgba(0, 0, 0, .06),
+            0 0 0 1px #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .list-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .list-header-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    .list-header-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        color: #1f2937;
+    }
+
+    .list-header-subtitle {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .list-count {
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 999px;
+    }
+
     .hover-shadow:hover {
         box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .08) !important;
         transition: all 0.3s ease;
@@ -84,14 +137,12 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 12px;
+        padding: 4px 10px;
         border-radius: 999px;
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 700;
-        background: #eef2ff;
-        color: #4f46e5;
-        margin-top: 6px;
         width: fit-content;
+        margin-top: 2px;
     }
 
     .type-badge.printer {
@@ -105,32 +156,24 @@
     }
 </style>
 
-<div class="container-fluid py-4">
-
-    <div class="page-header-card">
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-
-            <div class="d-flex align-items-center gap-3">
-                <div class="page-header-icon">
-                    <i class="bi bi-clipboard-check"></i>
-                </div>
-                <div>
-                    <h3 class="page-header-title">รายการยืมของฉัน</h3>
-                    <div class="page-header-subtitle">
-                        แสดงรายการยืม (โน้ตบุ๊ก + เครื่องปริ้น) ที่กำลังดำเนินการ
-                    </div>
-                </div>
+<div class="container pt-0.5 pb-4">
+    <div class="list-header">
+        <div class="list-header-left">
+            <div class="list-header-icon">
+                <i class="bi bi-clipboard-check"></i>
             </div>
-
             <div>
-                <span class="badge bg-primary-subtle text-primary px-3 py-2">
-                    รวมทั้งหมด {{ $borrowings->count() }} รายการ
-                </span>
+                <h3 class="list-header-title">รายการยืมของฉัน</h3>
+                <div class="list-header-subtitle">
+                    แสดงรายการยืม (โน้ตบุ๊ก + เครื่องปริ้น) ที่กำลังดำเนินการ
+                </div>
             </div>
+        </div>
 
+        <div class="list-count">
+            ทั้งหมด {{ $borrowings->count() }} รายการ
         </div>
     </div>
-
 
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-0">
