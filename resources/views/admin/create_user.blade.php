@@ -160,6 +160,26 @@
         </div>
     </div>
 
+    {{-- ✅ แจ้งเตือนเมื่อ Validation ผิด --}}
+    @if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'กรอกข้อมูลไม่ถูกต้อง',
+                html: `
+            <div style="text-align:left;font-size:14px;">
+                {!! implode('<br>', $errors->all()) !!}
+            </div>
+        `,
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#dc2626'
+            });
+        });
+    </script>
+    @endif
+
+
     <div class="form-wrapper">
         <div class="section-card">
             <div class="mb-3">

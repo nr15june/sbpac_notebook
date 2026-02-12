@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2026 at 09:51 AM
+-- Generation Time: Feb 12, 2026 at 05:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,10 +40,10 @@ CREATE TABLE `accessories` (
 --
 
 INSERT INTO `accessories` (`id`, `name`, `type`, `created_at`, `updated_at`) VALUES
-(1, 'Mouse', 'notebook', '2026-02-10 02:05:12', '2026-02-10 02:05:12'),
-(2, 'Charging Cable', 'notebook', '2026-02-10 02:05:12', '2026-02-10 02:05:12'),
-(3, 'USB Printer Cable', 'printer', '2026-02-10 02:05:12', '2026-02-10 02:05:12'),
-(4, 'Spare Ink Cartridge', 'printer', '2026-02-10 02:05:12', '2026-02-10 02:05:12');
+(1, 'เมาส์', 'notebook', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
+(2, 'สายชาร์จ', 'notebook', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
+(3, 'สาย USB ', 'printer', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
+(4, 'ตลับหมึก', 'printer', '2026-02-11 20:56:36', '2026-02-11 20:56:36');
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `name`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'adminit', 'Administrator', '$2y$12$pxVmoJNg.8gChJ5K4ioyGOuXje1KJbnJHNgP4UeffhZfWBznocl0i', '2026-02-10 02:21:52', '2026-02-10 02:21:52');
+(1, 'adminit', 'ผู้ดูแลระบบ', '$2y$12$QllvtsZTnNxGZQdbOL/tjublpuRzmnLNKoihyHF.4MPvpK93pzl9q', '2026-02-11 21:00:07', '2026-02-11 21:00:07');
 
 -- --------------------------------------------------------
 
@@ -92,8 +92,7 @@ CREATE TABLE `borrowings` (
 --
 
 INSERT INTO `borrowings` (`id`, `user_id`, `phone`, `notebook_id`, `borrow_date`, `return_date`, `status`, `reject_reason`, `rejected_at`, `created_at`, `updated_at`) VALUES
-(1, 4, '0789659845', 1, '2026-02-11', '2026-02-11', 'returned', NULL, NULL, '2026-02-10 21:24:52', '2026-02-10 21:25:16'),
-(2, 4, '0789659845', 1, '2026-02-11', '2026-02-11', 'returned', NULL, NULL, '2026-02-11 01:48:10', '2026-02-11 01:48:29');
+(1, 1, '0659864589', 1, '2026-02-12', '2026-02-12', 'returned', NULL, NULL, '2026-02-11 21:02:12', '2026-02-11 21:02:42');
 
 -- --------------------------------------------------------
 
@@ -115,9 +114,7 @@ CREATE TABLE `borrowing_accessory` (
 
 INSERT INTO `borrowing_accessory` (`id`, `borrowing_id`, `accessory_id`, `is_returned`, `note`) VALUES
 (1, 1, 1, 1, NULL),
-(2, 1, 2, 1, NULL),
-(3, 2, 1, 1, NULL),
-(4, 2, 2, 1, NULL);
+(2, 1, 2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -241,8 +238,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (28, '2026_02_10_084414_update_status_enum_on_printers_table', 1),
 (29, '2026_02_10_084735_seed_default_accessories', 1),
 (30, '2026_02_10_085946_add_username_to_users_table', 1),
-(31, '2026_02_11_022955_remove_id_card_from_users_table', 2),
-(32, '2026_02_11_025636_drop_name_and_email_verified_at_from_users_table', 3);
+(31, '2026_02_11_022955_remove_id_card_from_users_table', 1),
+(32, '2026_02_11_025636_drop_name_and_email_verified_at_from_users_table', 1);
 
 -- --------------------------------------------------------
 
@@ -267,7 +264,7 @@ CREATE TABLE `notebooks` (
 --
 
 INSERT INTO `notebooks` (`id`, `asset_code`, `brand`, `model`, `status`, `note`, `image`, `created_at`, `updated_at`) VALUES
-(1, '111', 'hp', 'hp', 'available', NULL, 'notebooks/hqhqVeWdFGPBVOLYP1kJB5w3I4g0so2szjxKmyaq.jpg', '2026-02-10 21:23:26', '2026-02-11 01:48:29');
+(1, '1254145', 'dell', 'dell', 'available', NULL, 'notebooks/BBDp2T4FA4xdUAIQt32ZX1AoiTNgtiQpFEEUYis4.jpg', '2026-02-11 21:01:23', '2026-02-11 21:02:42');
 
 -- --------------------------------------------------------
 
@@ -304,7 +301,7 @@ CREATE TABLE `printers` (
 --
 
 INSERT INTO `printers` (`id`, `asset_code`, `brand`, `model`, `status`, `note`, `image`, `created_at`, `updated_at`) VALUES
-(1, '112', 'Epson', 'Epson', 'available', NULL, 'printers/vL30aTz0yYlOrd2L6NFXi5J2dhFMzJDcGApLfuz8.png', '2026-02-10 21:23:57', '2026-02-11 01:49:12');
+(1, '1254126', 'hp', 'hp', 'available', NULL, 'printers/Zv5NhdayZkvHpZObKzymnp5OiC1agDQ6xZUcB5s9.png', '2026-02-11 21:01:48', '2026-02-11 21:03:18');
 
 -- --------------------------------------------------------
 
@@ -331,8 +328,7 @@ CREATE TABLE `printer_borrowings` (
 --
 
 INSERT INTO `printer_borrowings` (`id`, `user_id`, `printer_id`, `phone`, `borrow_date`, `return_date`, `status`, `reject_reason`, `rejected_at`, `created_at`, `updated_at`) VALUES
-(1, 4, 1, '0748548745', '2026-02-11', '2026-02-11', 'returned', NULL, NULL, '2026-02-10 21:24:23', '2026-02-10 21:25:12'),
-(2, 4, 1, '0748548745', '2026-02-11', '2026-02-12', 'rejected', '-', '2026-02-11 01:49:12', '2026-02-11 01:49:02', '2026-02-11 01:49:12');
+(1, 1, 1, '0659864589', '2026-02-12', '2026-02-12', 'returned', NULL, NULL, '2026-02-11 21:03:02', '2026-02-11 21:03:18');
 
 -- --------------------------------------------------------
 
@@ -355,9 +351,8 @@ CREATE TABLE `printer_borrowing_accessory` (
 --
 
 INSERT INTO `printer_borrowing_accessory` (`id`, `printer_borrowing_id`, `accessory_id`, `is_returned`, `note`, `created_at`, `updated_at`) VALUES
-(1, 1, 3, 1, NULL, NULL, NULL),
-(2, 1, 4, 1, NULL, NULL, NULL),
-(3, 2, 3, 0, NULL, NULL, NULL);
+(1, 1, 3, 1, 'หาย', NULL, NULL),
+(2, 1, 4, 0, 'หาย', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -379,8 +374,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Kgf51y8kdqQ3qyIC9C0ZGhCbPlT0jgOyfnuUkcih', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiWkx4M2ZzdmZFc2E5bnVPSnJRSFBsdW40b21zTlZFczJCcEZwWW5zUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC91c2VyX21hbmFnZW1lbnQiO3M6NToicm91dGUiO3M6MjE6ImFkbWluLnVzZXJfbWFuYWdlbWVudCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O30=', 1770799882),
-('WCTgiob84WlNEDL8IjOSOWfk7vWdjqqXGCGMojmH', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZkZTN2lVUVBtV0pleDVLNDNkU2J2U2lsaUk3NzFQZFRtREdBZHZ1YiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1770799039);
+('saehQfr9weaTrY7YGjbCqLlVRUZcjFcZ36dZRmTP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWmQ4STZJOWJ0enpsNW9TSTUyOVRmQUJmS3o5am81akx5amUweW1ZZyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fX0=', 1770869050);
 
 -- --------------------------------------------------------
 
@@ -408,10 +402,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `phone`, `department`, `workgroup`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'sbpac', 'นูรี', 'เจะลง', '0987456321', 'กองบริหารยุทธศาสตร์การพัฒนาจังหวัดชายแดนภาคใต้', 'กลุ่มงานบริหารยุทธศาสตร์การสื่อสารสร้างความเข้าใจที่ดี', '$2y$12$047WR3QMiRqTNmXeKxGTv.3udKh4BiJxgwqVt7JtI0z6WZfeqoq.K', 'user', NULL, '2026-02-10 20:13:52', '2026-02-10 20:13:52'),
-(2, 'user', 'ฮานัน', 'สาเระ', '0987987987', 'กองบริหารยุทธศาสตร์การพัฒนาจังหวัดชายแดนภาคใต้', 'กลุ่มงานบริหารยุทธศาสตร์การสื่อสารสร้างความเข้าใจที่ดี', '$2y$12$iVxQ8w1zEt67NJ1er0nr7uCCjk6k5M.313pZx5NkgrF5ZdYW6VLnW', 'user', NULL, '2026-02-10 21:01:24', '2026-02-10 21:01:24'),
-(3, 'sb0003', 'ใจดี', 'ดีงาม', '0987878787', 'สำนักงานเลขาธิการ', 'กลุ่มงานบริหารทรัพยากรบุคคล', '$2y$12$4nEdROsXBh/aiKYPRlbmueMzIrw1kM/h5cKUx4LWasfAH2pORGU8u', 'user', NULL, '2026-02-10 21:08:07', '2026-02-10 21:08:07'),
-(4, 'fasai', 'ฟ้าใส', 'สว่าง', '0789659845', 'สำนักงานเลขาธิการ', 'กลุ่มงานคลัง', '$2y$12$8cSwXfx39sdvIpEc2SeOSuaShayIYvL/wcgE94E1WLsDPX4pES97u', 'user', NULL, '2026-02-10 21:16:17', '2026-02-10 21:16:17');
+(1, 'fasai', 'ฟ้าใส', 'หวาน', '0984521654', 'กองบริหารยุทธศาสตร์การพัฒนาจังหวัดชายแดนภาคใต้', 'กลุ่มงานบริหารงบประมาณ', '$2y$12$4GJQU9Tc0BC5N0VaOO/VM.rRglnWGWZaakBIFt/fiwxBrT8K3ENb2', 'user', NULL, '2026-02-11 21:01:04', '2026-02-11 21:01:04');
 
 --
 -- Indexes for dumped tables
@@ -555,13 +546,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `borrowings`
 --
 ALTER TABLE `borrowings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `borrowing_accessory`
 --
 ALTER TABLE `borrowing_accessory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -597,19 +588,19 @@ ALTER TABLE `printers`
 -- AUTO_INCREMENT for table `printer_borrowings`
 --
 ALTER TABLE `printer_borrowings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `printer_borrowing_accessory`
 --
 ALTER TABLE `printer_borrowing_accessory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

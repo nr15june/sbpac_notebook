@@ -26,11 +26,11 @@
         opacity: .75;
     }
 
-    /* ===== Cards ===== */
+     /* ===== Cards ===== */
     .card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+        box-shadow: 0 10px 25px rgba(0,0,0,.06);
     }
 
     .card-title {
@@ -263,6 +263,7 @@
         <table class="table align-middle">
             <thead>
                 <tr>
+                    <th>รูป</th>
                     <th>เลขครุภัณฑ์</th>
                     <th>ยี่ห้อ</th>
                     <th>รุ่น</th>
@@ -273,14 +274,33 @@
             <tbody>
                 @foreach($notebooks as $nb)
                 <tr>
+                    {{-- รูป --}}
+                    <td>
+                        @if($nb->image)
+                        <img src="{{ asset('storage/'.$nb->image) }}"
+                            style="width:70px;height:50px;object-fit:cover;border-radius:8px;">
+                        @else
+                        <span class="text-muted">ไม่มีรูป</span>
+                        @endif
+                    </td>
+
+                    {{-- เลขครุภัณฑ์ --}}
                     <td>{{ $nb->asset_code }}</td>
+
+                    {{-- ยี่ห้อ --}}
                     <td>{{ $nb->brand }}</td>
+
+                    {{-- รุ่น --}}
                     <td>{{ $nb->model }}</td>
+
+                    {{-- สถานะ --}}
                     <td>
                         <span class="nb-status status-{{ $nb->status }}">
                             {{ $nb->status_text }}
                         </span>
                     </td>
+
+                    {{-- จัดการ --}}
                     <td class="text-center">
                         <a href="{{ route('admin.notebooks.edit',$nb->id) }}"
                             class="btn btn-sm btn-outline-primary">
@@ -292,15 +312,16 @@
                             class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
+                            <button type="button"
+                                class="btn btn-sm btn-outline-danger btn-delete">
                                 ลบ
                             </button>
-
                         </form>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
+
         </table>
 
     </div>

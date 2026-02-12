@@ -193,7 +193,7 @@
                     <div class="row g-3">
 
                         <div class="col-md-6">
-                            <label class="form-label">รหัสครุภัณฑ์</label>
+                            <label class="form-label">เลขครุภัณฑ์</label>
                             <input type="text" name="asset_code"
                                 class="form-control"
                                 value="{{ old('asset_code', $printer->asset_code ?? '') }}" required>
@@ -273,7 +273,7 @@
             <thead>
                 <tr>
                     <th>รูป</th>
-                    <th>รหัสครุภัณฑ์</th>
+                    <th>เลขครุภัณฑ์</th>
                     <th>ยี่ห้อ</th>
                     <th>รุ่น</th>
                     <th>สถานะ</th>

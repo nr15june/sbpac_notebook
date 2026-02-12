@@ -14,25 +14,25 @@ return new class extends Migration
     {
         DB::table('accessories')->insert([
             [
-                'name' => 'Mouse',
+                'name' => 'เมาส์',
                 'type' => 'notebook',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Charging Cable',
+                'name' => 'สายชาร์จ',
                 'type' => 'notebook',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'USB Printer Cable',
+                'name' => 'สาย USB ',
                 'type' => 'printer',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Spare Ink Cartridge',
+                'name' => 'ตลับหมึก',
                 'type' => 'printer',
                 'created_at' => now(),
                 'updated_at' => now(),
