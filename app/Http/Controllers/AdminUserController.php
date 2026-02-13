@@ -91,6 +91,17 @@ class AdminUserController extends Controller
             'department' => 'required|string',
             'workgroup'  => 'required|string',
             'password'   => 'required|min:6',
+        ], [
+            'username.alpha_num' => 'Username ใช้ได้เฉพาะตัวอักษรและตัวเลข',
+            'username.unique' => 'Username นี้มีผู้ใช้งานแล้ว กรุณาใช้ชื่ออื่น',
+            'first_name.required' => 'กรุณากรอกชื่อ',
+            'last_name.required' => 'กรุณากรอกนามสกุล',
+            'phone.required' => 'กรุณากรอกเบอร์โทรศัพท์',
+            'phone.digits' => 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก',
+            'department.required' => 'กรุณาเลือกหน่วยงาน',
+            'workgroup.required' => 'กรุณาเลือกกลุ่มงาน',
+            'password.required' => 'กรุณากรอกรหัสผ่าน',
+            'password.min' => 'รหัสผ่านต้องไม่น้อยกว่า 6 ตัวอักษร',
         ]);
 
         if ($request->filled('username')) {
@@ -153,6 +164,16 @@ class AdminUserController extends Controller
             'phone'      => 'required|digits:10',
             'department' => 'required',
             'workgroup'  => 'required',
+        ], [
+            'username.required' => 'กรุณากรอก Username',
+            'username.alpha_num' => 'Username ใช้ได้เฉพาะตัวอักษรและตัวเลข',
+            'username.unique' => 'Username นี้มีผู้ใช้งานแล้ว กรุณาใช้ชื่ออื่น',
+            'first_name.required' => 'กรุณากรอกชื่อ',
+            'last_name.required' => 'กรุณากรอกนามสกุล',
+            'phone.required' => 'กรุณากรอกเบอร์โทรศัพท์',
+            'phone.digits' => 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก',
+            'department.required' => 'กรุณาเลือกหน่วยงาน',
+            'workgroup.required' => 'กรุณาเลือกกลุ่มงาน',
         ]);
 
         $user->update([
