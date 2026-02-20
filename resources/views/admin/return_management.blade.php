@@ -212,34 +212,34 @@
                     <div class="acc-box">
                         @if($b->accessories && $b->accessories->count() > 0)
 
-                            @foreach($b->accessories as $acc)
-                            <div class="acc-item">
-                                <div class="acc-name">
-                                    <i class="bi bi-box-seam"></i>
-                                    {{ $acc->name }}
-                                </div>
-
-                                <div class="form-check m-0">
-                                    <input class="form-check-input"
-                                        type="checkbox"
-                                        name="returned_accessories[]"
-                                        value="{{ $acc->id }}"
-                                        id="acc{{ $b->id }}_{{ $acc->id }}">
-
-                                    <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
-                                        คืนแล้ว
-                                    </label>
-                                </div>
+                        @foreach($b->accessories as $acc)
+                        <div class="acc-item">
+                            <div class="acc-name">
+                                <i class="bi bi-box-seam"></i>
+                                {{ $acc->name }}
                             </div>
-                            @endforeach
 
-                            <div class="acc-help">
-                                *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
+                            <div class="form-check m-0">
+                                <input class="form-check-input"
+                                    type="checkbox"
+                                    name="returned_accessories[]"
+                                    value="{{ $acc->id }}"
+                                    id="acc{{ $b->id }}_{{ $acc->id }}">
+
+                                <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
+                                    คืนแล้ว
+                                </label>
                             </div>
+                        </div>
+                        @endforeach
+
+                        <div class="acc-help">
+                            *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
+                        </div>
                         @else
-                            <div class="text-muted small">
-                                ไม่มีอุปกรณ์เสริม
-                            </div>
+                        <div class="text-muted small">
+                            ไม่มีอุปกรณ์เสริม
+                        </div>
                         @endif
                     </div>
 
@@ -248,10 +248,16 @@
                         <label class="form-label small mb-1">
                             หมายเหตุ (หาย/ชำรุด/อื่นๆ)
                         </label>
+                        @php
+                        $notePlaceholder = $b->type === 'notebook'
+                        ? 'เช่น เมาส์หาย / สายชาร์จชำรุด'
+                        : 'เช่น สาย USB หาย / ตลับหมึกชำรุด';
+                        @endphp
+
                         <input type="text"
                             name="note"
                             class="form-control note-input"
-                            placeholder="เช่น เมาส์หาย / สายชาร์จชำรุด">
+                            placeholder="{{ $notePlaceholder }}">
                     </div>
 
                     {{-- button --}}

@@ -28,16 +28,10 @@ class UserBorrowController extends Controller
             'notebook_id' => 'required|exists:notebooks,id',
             'phone' => 'required|string|min:9|max:20',
 
-            // ✅ วันที่ยืม = ต้องเป็นวันนี้เท่านั้น
             'borrow_date' => [
                 'required',
                 'date',
-                function ($attr, $value, $fail) {
-                    $today = Carbon::today()->toDateString();
-                    if (Carbon::parse($value)->toDateString() !== $today) {
-                        $fail('วันที่ยืมต้องเป็นวันที่ปัจจุบันเท่านั้น');
-                    }
-                }
+                'after_or_equal:' . Carbon::today()->toDateString(),
             ],
 
             // ✅ วันที่คืน = ต้องหลังวันยืม + ไม่เกิน 7 วัน

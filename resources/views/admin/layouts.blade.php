@@ -163,49 +163,84 @@
 
         {{-- ===== Sidebar ===== --}}
         <aside class="sidebar">
-            <div class="sidebar-title">เมนูผู้ดูแลระบบ</div>
 
-            <a href="{{ route('admin.borrow_management') }}"
-                class="menu-item {{ request()->routeIs('admin.borrow_management') ? 'active' : '' }}">
-                <i class="bi bi-clipboard-check"></i>
-                จัดการยืมโน้ตบุ๊ก
+            {{-- ===== จัดการครุภัณฑ์ ===== --}}
+            <a class="menu-item d-flex justify-content-between align-items-center"
+                data-bs-toggle="collapse"
+                href="#assetMenu"
+                role="button">
+                <span><i class="bi bi-box-seam"></i> จัดการครุภัณฑ์</span>
+                <i class="bi bi-chevron-down small"></i>
             </a>
 
-            <a href="{{ route('admin.notebook_management') }}"
-                class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
-                <i class="bi bi-laptop"></i>
-                จัดการโน้ตบุ๊ก
+            @php
+            $assetOpen = request()->routeIs('admin.notebook_management')
+            || request()->routeIs('admin.printers.*');
+            @endphp
+
+            <div class="collapse ps-3 {{ $assetOpen ? 'show' : '' }}" id="assetMenu">
+                <a href="{{ route('admin.notebook_management') }}"
+                    class="menu-item {{ request()->routeIs('admin.notebook_management') ? 'active' : '' }}">
+                    <i class="bi bi-laptop"></i> โน้ตบุ๊ก
+                </a>
+
+                <a href="{{ route('admin.printers.index') }}"
+                    class="menu-item {{ request()->routeIs('admin.printers.*') ? 'active' : '' }}">
+                    <i class="bi bi-printer"></i> เครื่องปริ้น
+                </a>
+            </div>
+
+
+            {{-- ===== จัดการการยืม ===== --}}
+            <a class="menu-item d-flex justify-content-between align-items-center"
+                data-bs-toggle="collapse"
+                href="#borrowMenu"
+                role="button">
+                <span><i class="bi bi-clipboard-check"></i> จัดการการยืม</span>
+                <i class="bi bi-chevron-down small"></i>
             </a>
 
-            <a href="{{ route('admin.printer.borrow_management') }}"
-                class="menu-item {{ request()->routeIs('admin.printer.borrow_management') ? 'active' : '' }}">
-                <i class="bi bi-printer-fill"></i>
-                จัดการยืมเครื่องปริ้น
-            </a>
+            @php
+            $borrowOpen = request()->routeIs('admin.borrow_management')
+            || request()->routeIs('admin.printer.borrow_management');
+            @endphp
 
-            <a href="{{ route('admin.printers.index') }}"
-                class="menu-item {{ request()->routeIs('admin.printers.*') ? 'active' : '' }}">
-                <i class="bi bi-printer"></i>
-                จัดการเครื่องปริ้น
-            </a>
+            <div class="collapse ps-3 {{ $borrowOpen ? 'show' : '' }}" id="borrowMenu">
+                <a href="{{ route('admin.borrow_management') }}"
+                    class="menu-item {{ request()->routeIs('admin.borrow_management') ? 'active' : '' }}">
+                    <i class="bi bi-laptop"></i> ยืมโน้ตบุ๊ก
+                </a>
 
+                <a href="{{ route('admin.printer.borrow_management') }}"
+                    class="menu-item {{ request()->routeIs('admin.printer.borrow_management') ? 'active' : '' }}">
+                    <i class="bi bi-printer-fill"></i> ยืมเครื่องปริ้น
+                </a>
+            </div>
+
+
+            {{-- ===== จัดการการคืน ===== --}}
             <a href="{{ route('admin.return_management') }}"
                 class="menu-item {{ request()->routeIs('admin.return_management') ? 'active' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
-                จัดการคืนเครื่อง
+                จัดการการคืนเครื่อง
             </a>
 
+
+            {{-- ===== จัดการผู้ใช้งาน ===== --}}
             <a href="{{ route('admin.user_management') }}"
                 class="menu-item {{ request()->routeIs('admin.user_management') ? 'active' : '' }}">
                 <i class="bi bi-people"></i>
                 จัดการผู้ใช้งาน
             </a>
 
+
+            {{-- ===== ประวัติ ===== --}}
             <a href="{{ route('admin.borrow_history') }}"
                 class="menu-item {{ request()->routeIs('admin.borrow_history') ? 'active' : '' }}">
                 <i class="bi bi-clock-history"></i>
                 ประวัติการยืม
             </a>
+
         </aside>
 
         {{-- ===== Content ===== --}}
@@ -214,7 +249,7 @@
         </main>
 
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

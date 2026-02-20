@@ -30,7 +30,7 @@ class PrinterBorrowing extends Model
     // ความสัมพันธ์กับ User
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     // ความสัมพันธ์กับ Printer

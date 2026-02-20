@@ -312,34 +312,30 @@
 
                     <div class="col-md-6">
                         <label class="form-label small">ชื่อ</label>
-                        <input type="text"
+                        <input type="text" name="first_name"
                             class="form-control form-control-sm"
-                            value="{{ auth()->user()->first_name }}"
-                            disabled>
+                            value="{{ auth()->user()->first_name }}">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label small">นามสกุล</label>
-                        <input type="text"
+                        <input type="text" name="last_name"
                             class="form-control form-control-sm"
-                            value="{{ auth()->user()->last_name }}"
-                            disabled>
+                            value="{{ auth()->user()->last_name }}">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label small">สำนัก / กอง / ศูนย์</label>
-                        <input type="text"
+                        <input type="text" name="department"
                             class="form-control form-control-sm"
-                            value="{{ auth()->user()->department }}"
-                            disabled>
+                            value="{{ auth()->user()->department }}">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label small">กลุ่มงาน</label>
-                        <input type="text"
+                        <input type="text" name="workgroup"
                             class="form-control form-control-sm"
-                            value="{{ auth()->user()->workgroup }}"
-                            disabled>
+                            value="{{ auth()->user()->workgroup }}">
                     </div>
 
                     <div class="col-md-6">
@@ -359,7 +355,7 @@
                             id="borrow_date"
                             class="form-control"
                             value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
-                            readonly
+                            min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
                             required>
                     </div>
 
@@ -385,7 +381,10 @@
                     @foreach($accessories as $acc)
                     <div class="col-md-6">
                         <label class="accessory-item w-100">
-                            <input type="checkbox" name="accessories[]" value="{{ $acc->id }}">
+                            <input type="checkbox"
+                                name="accessories[]"
+                                value="{{ $acc->id }}"
+                                checked>
                             <div>
                                 <div class="accessory-name">{{ $acc->name }}</div>
                                 <div class="accessory-sub">เลือกอุปกรณ์เสริมประกอบการยืม</div>
@@ -400,8 +399,8 @@
             <div class="borrow-note">
                 <i class="bi bi-info-circle-fill"></i>
                 <div>
-                    <b>หมายเหตุ:</b> สามารถยืมเครื่องปริ้นได้ไม่เกิน <b>7 วัน</b>
-                    และต้องคืนภายในระยะเวลาที่กำหนด
+                    <b>หมายเหตุ:</b> สามารถยืมโน้ตบุ๊กได้ไม่เกิน <b>7 วัน</b>
+                    และต้องคืนภายในระยะเวลาที่กำหนด หากเกินกำหนดอาจไม่สามารถยืมครั้งถัดไปได้
                 </div>
             </div>
 
@@ -409,7 +408,7 @@
                 <button type="button"
                     class="btn btn-primary w-100 rounded-pill"
                     onclick="confirmBorrow()">
-                    ยืนยันการยืมเครื่องปริ้น
+                    ยืนยันการยืม
                 </button>
             </div>
 
@@ -424,60 +423,80 @@
         printer_id.value = id;
         printer_name.innerText = name + ' (' + asset + ')';
 
-        // ✅ เซ็ตวันยืม/วันคืนเหมือน notebook
-        setBorrowTodayAndReturnLimit();
+        return_date.value = '';
+
+        setBorrowLimit();
 
         borrowForm.scrollIntoView({
             behavior: 'smooth'
         });
     }
 
-    function setBorrowTodayAndReturnLimit() {
-        const today = new Date();
-        const todayStr = today.toISOString().slice(0, 10);
+    function setBorrowLimit() {
 
-        // ✅ วันที่ยืม = วันนี้เท่านั้น
-        borrow_date.value = todayStr;
+        const borrowInput = document.getElementById('borrow_date');
+        const returnInput = document.getElementById('return_date');
 
-        // ✅ วันที่คืนเลือกได้ตั้งแต่วันนี้ถึงวันนี้+7
-        const maxDate = new Date(today);
+        if (!borrowInput.value) return;
+
+        const borrowDate = new Date(borrowInput.value);
+        const borrowStr = borrowInput.value;
+
+        const maxDate = new Date(borrowDate);
         maxDate.setDate(maxDate.getDate() + 7);
         const maxStr = maxDate.toISOString().slice(0, 10);
 
-        return_date.min = todayStr;
-        return_date.max = maxStr;
+        returnInput.min = borrowStr;
+        returnInput.max = maxStr;
 
-        // ✅ ถ้ายังไม่ได้เลือกวันคืน ให้ default เป็นวันนี้
-        if (!return_date.value) {
-            return_date.value = todayStr;
+        if (!returnInput.value) {
+            returnInput.value = borrowStr;
         }
 
-        // ✅ ถ้าวันคืนหลุดเงื่อนไข ให้ reset
-        if (return_date.value < todayStr) {
-            return_date.value = todayStr;
+        if (returnInput.value < borrowStr) {
+            returnInput.value = borrowStr;
         }
-        if (return_date.value > maxStr) {
-            return_date.value = maxStr;
+
+        if (returnInput.value > maxStr) {
+            returnInput.value = maxStr;
         }
     }
 
     function confirmBorrow() {
+
+        const form = document.getElementById('borrowSubmitForm');
+
+        if (!form.checkValidity()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรอกข้อมูลไม่ครบ',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วนก่อนยืนยัน'
+            });
+
+            form.reportValidity();
+            return;
+        }
+
         Swal.fire({
-            title: 'ยืนยันการยืม',
-            text: 'คุณสามารถเลือกวันคืนได้ไม่เกิน 7 วัน นับจากวันนี้',
+            title: 'ยืนยันการยืมเครื่องปริ้น',
+            text: 'วันที่คืนต้องไม่เกิน 7 วันนับจากวันที่ยืม',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'ยืนยัน',
             cancelButtonText: 'ยกเลิก'
         }).then(r => {
             if (r.isConfirmed) {
-                borrowSubmitForm.submit();
+                form.submit();
             }
         });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        setBorrowTodayAndReturnLimit();
+
+        setBorrowLimit();
+
+        document.getElementById('borrow_date')
+            .addEventListener('change', setBorrowLimit);
     });
 </script>
 

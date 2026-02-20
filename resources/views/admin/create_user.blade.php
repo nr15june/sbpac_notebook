@@ -186,9 +186,6 @@
                 <label>Username</label>
                 <input type="text" name="username" class="form-control"
                     value="{{ old('username', $user->username ?? '') }}">
-                <small class="text-muted">
-                    ถ้าไม่กรอก ระบบจะสร้างให้อัตโนมัติ
-                </small>
             </div>
             {{-- ===== ข้อมูลส่วนตัว ===== --}}
             <div class="section-title">👤 ข้อมูลส่วนตัว</div>

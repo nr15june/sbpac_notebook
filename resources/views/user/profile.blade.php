@@ -166,11 +166,11 @@
             <div class="profile-label">นามสกุล</div>
             <div class="profile-value">{{ auth()->user()->last_name }}</div>
 
-            <div class="profile-label">เลขบัตรประชาชน</div>
+            <!-- <div class="profile-label">เลขบัตรประชาชน</div>
             <div class="profile-value highlight">{{ auth()->user()->id_card }}</div>
 
             <div class="profile-label">อีเมล</div>
-            <div class="profile-value">{{ auth()->user()->email }}</div>
+            <div class="profile-value">{{ auth()->user()->email }}</div> -->
 
             <div class="profile-label">เบอร์โทร</div>
             <div class="profile-value">{{ auth()->user()->phone }}</div>

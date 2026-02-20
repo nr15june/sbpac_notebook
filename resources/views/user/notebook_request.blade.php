@@ -368,7 +368,7 @@
                             id="borrow_date"
                             class="form-control"
                             value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
-                            readonly
+                            min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
                             required>
                     </div>
 
@@ -394,7 +394,10 @@
                     @foreach($accessories as $acc)
                     <div class="col-md-6">
                         <label class="accessory-item w-100">
-                            <input type="checkbox" name="accessories[]" value="{{ $acc->id }}">
+                            <input type="checkbox"
+                                name="accessories[]"
+                                value="{{ $acc->id }}"
+                                checked>
                             <div>
                                 <div class="accessory-name">{{ $acc->name }}</div>
                                 <div class="accessory-sub">เลือกอุปกรณ์เสริมประกอบการยืม</div>
@@ -432,7 +435,8 @@
         notebook_id.value = id;
         notebook_name.innerText = name + ' (' + asset + ')';
 
-        // ✅ เซ็ตวันให้ถูกต้องทุกครั้งที่เลือกเครื่อง
+        return_date.value = '';
+
         setBorrowTodayAndReturnLimit();
 
         borrowForm.scrollIntoView({
@@ -441,51 +445,73 @@
     }
 
     function setBorrowTodayAndReturnLimit() {
-        const today = new Date();
-        const todayStr = today.toISOString().slice(0, 10);
 
-        // ✅ วันที่ยืม = วันนี้เท่านั้น
-        borrow_date.value = todayStr;
+        const borrowInput = document.getElementById('borrow_date');
+        const returnInput = document.getElementById('return_date');
 
-        // ✅ วันที่คืนเลือกได้ตั้งแต่วันนี้ถึงวันนี้+7
-        const maxDate = new Date(today);
+        if (!borrowInput.value) return;
+
+        const borrowDate = new Date(borrowInput.value);
+        const borrowStr = borrowInput.value;
+
+        const maxDate = new Date(borrowDate);
         maxDate.setDate(maxDate.getDate() + 7);
         const maxStr = maxDate.toISOString().slice(0, 10);
 
-        return_date.min = todayStr;
-        return_date.max = maxStr;
+        // จำกัดช่วงวันที่คืน
+        returnInput.min = borrowStr;
+        returnInput.max = maxStr;
 
-        // ✅ ถ้ายังไม่ได้เลือกวันคืน ให้ default เป็นวันนี้
-        if (!return_date.value) {
-            return_date.value = todayStr;
+        if (!returnInput.value) {
+            returnInput.value = borrowStr;
         }
 
-        // ✅ ถ้าวันคืนหลุดเงื่อนไข ให้ reset
-        if (return_date.value < todayStr) {
-            return_date.value = todayStr;
+        if (returnInput.value < borrowStr) {
+            returnInput.value = borrowStr;
         }
-        if (return_date.value > maxStr) {
-            return_date.value = maxStr;
+
+        if (returnInput.value > maxStr) {
+            returnInput.value = maxStr;
         }
     }
 
     function confirmBorrow() {
+
+        const form = document.getElementById('borrowSubmitForm');
+
+        // ✅ ถ้ากรอกไม่ครบ
+        if (!form.checkValidity()) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรอกข้อมูลไม่ครบ',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วนก่อนยืนยันการยืม'
+            });
+
+            form.reportValidity(); // แสดงจุดที่ขาด
+            return;
+        }
+
+        // ✅ ถ้าครบแล้ว ค่อยถามยืนยัน
         Swal.fire({
             title: 'ยืนยันการยืม',
-            text: 'คุณสามารถเลือกวันคืนได้ไม่เกิน 7 วัน นับจากวันนี้',
+            text: 'คุณสามารถเลือกวันคืนได้ไม่เกิน 7 วัน นับจากวันที่ยืม',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'ยืนยัน',
             cancelButtonText: 'ยกเลิก'
         }).then(r => {
             if (r.isConfirmed) {
-                borrowSubmitForm.submit();
+                form.submit();
             }
         });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         setBorrowTodayAndReturnLimit();
+
+        document.getElementById('borrow_date')
+            .addEventListener('change', setBorrowTodayAndReturnLimit);
     });
 </script>
 @endsection
