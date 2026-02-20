@@ -72,6 +72,9 @@ class UserBorrowController extends Controller
 
             $borrowing = Borrowing::create([
                 'user_id'     => Auth::id(),
+                'borrower_first_name' => $request->first_name,
+                'borrower_last_name'  => $request->last_name,
+                'borrower_phone'      => $request->phone,
                 'phone'       => $request->phone,
                 'notebook_id' => $notebook->id,
                 'borrow_date' => $request->borrow_date,
@@ -205,7 +208,7 @@ class UserBorrowController extends Controller
                     'status'        => $b->status ?? 'returned',
                     'reject_reason' => $b->reject_reason,
                     'rejected_at'   => $b->rejected_at,
-
+                    'borrower_name' => $b->borrower_first_name . ' ' . $b->borrower_last_name,
                 ];
             });
 
@@ -223,6 +226,7 @@ class UserBorrowController extends Controller
                     'status' => $p->status ?? 'borrowed',
                     'reject_reason' => $p->reject_reason,
                     'rejected_at'   => $p->rejected_at,
+                    'borrower_name' => $p->borrower_first_name . ' ' . $p->borrower_last_name,
                 ];
             });
 

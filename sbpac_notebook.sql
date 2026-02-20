@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2026 at 05:04 AM
+-- Generation Time: Feb 20, 2026 at 09:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,10 +40,10 @@ CREATE TABLE `accessories` (
 --
 
 INSERT INTO `accessories` (`id`, `name`, `type`, `created_at`, `updated_at`) VALUES
-(1, 'เมาส์', 'notebook', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
-(2, 'สายชาร์จ', 'notebook', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
-(3, 'สาย USB ', 'printer', '2026-02-11 20:56:36', '2026-02-11 20:56:36'),
-(4, 'ตลับหมึก', 'printer', '2026-02-11 20:56:36', '2026-02-11 20:56:36');
+(1, 'เมาส์', 'notebook', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
+(2, 'สายชาร์จ', 'notebook', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
+(3, 'สาย USB ', 'printer', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
+(4, 'ตลับหมึก', 'printer', '2026-02-20 01:37:37', '2026-02-20 01:37:37');
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `name`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'adminit', 'ผู้ดูแลระบบ', '$2y$12$QllvtsZTnNxGZQdbOL/tjublpuRzmnLNKoihyHF.4MPvpK93pzl9q', '2026-02-11 21:00:07', '2026-02-11 21:00:07');
+(1, 'adminit', 'ผู้ดูแลระบบ', '$2y$12$W7XqJUHFyfFoeEB1i9gCfep.Ls8O5Ojg976B9iZetPpC/b92jWdSO', '2026-02-20 01:38:57', '2026-02-20 01:38:57');
 
 -- --------------------------------------------------------
 
@@ -76,6 +76,9 @@ INSERT INTO `admins` (`id`, `username`, `name`, `password`, `created_at`, `updat
 CREATE TABLE `borrowings` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
+  `borrower_first_name` varchar(255) NOT NULL,
+  `borrower_last_name` varchar(255) NOT NULL,
+  `borrower_phone` varchar(255) NOT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `notebook_id` bigint(20) UNSIGNED NOT NULL,
   `borrow_date` date NOT NULL,
@@ -86,13 +89,6 @@ CREATE TABLE `borrowings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `borrowings`
---
-
-INSERT INTO `borrowings` (`id`, `user_id`, `phone`, `notebook_id`, `borrow_date`, `return_date`, `status`, `reject_reason`, `rejected_at`, `created_at`, `updated_at`) VALUES
-(1, 1, '0659864589', 1, '2026-02-12', '2026-02-12', 'returned', NULL, NULL, '2026-02-11 21:02:12', '2026-02-11 21:02:42');
 
 -- --------------------------------------------------------
 
@@ -107,14 +103,6 @@ CREATE TABLE `borrowing_accessory` (
   `is_returned` tinyint(1) NOT NULL DEFAULT 0,
   `note` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `borrowing_accessory`
---
-
-INSERT INTO `borrowing_accessory` (`id`, `borrowing_id`, `accessory_id`, `is_returned`, `note`) VALUES
-(1, 1, 1, 1, NULL),
-(2, 1, 2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -239,7 +227,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (29, '2026_02_10_084735_seed_default_accessories', 1),
 (30, '2026_02_10_085946_add_username_to_users_table', 1),
 (31, '2026_02_11_022955_remove_id_card_from_users_table', 1),
-(32, '2026_02_11_025636_drop_name_and_email_verified_at_from_users_table', 1);
+(32, '2026_02_11_025636_drop_name_and_email_verified_at_from_users_table', 1),
+(33, '2026_02_19_044754_add_deleted_at_to_users_table', 1),
+(34, '2026_02_20_024532_add_borrower_fields_to_borrowings_table', 1),
+(35, '2026_02_20_031549_add_borrower_fields_to_printer_borrowings_table', 1);
 
 -- --------------------------------------------------------
 
@@ -258,13 +249,6 @@ CREATE TABLE `notebooks` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `notebooks`
---
-
-INSERT INTO `notebooks` (`id`, `asset_code`, `brand`, `model`, `status`, `note`, `image`, `created_at`, `updated_at`) VALUES
-(1, '1254145', 'dell', 'dell', 'available', NULL, 'notebooks/BBDp2T4FA4xdUAIQt32ZX1AoiTNgtiQpFEEUYis4.jpg', '2026-02-11 21:01:23', '2026-02-11 21:02:42');
 
 -- --------------------------------------------------------
 
@@ -296,13 +280,6 @@ CREATE TABLE `printers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `printers`
---
-
-INSERT INTO `printers` (`id`, `asset_code`, `brand`, `model`, `status`, `note`, `image`, `created_at`, `updated_at`) VALUES
-(1, '1254126', 'hp', 'hp', 'available', NULL, 'printers/Zv5NhdayZkvHpZObKzymnp5OiC1agDQ6xZUcB5s9.png', '2026-02-11 21:01:48', '2026-02-11 21:03:18');
-
 -- --------------------------------------------------------
 
 --
@@ -312,6 +289,9 @@ INSERT INTO `printers` (`id`, `asset_code`, `brand`, `model`, `status`, `note`, 
 CREATE TABLE `printer_borrowings` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
+  `borrower_first_name` varchar(255) DEFAULT NULL,
+  `borrower_last_name` varchar(255) DEFAULT NULL,
+  `borrower_phone` varchar(255) DEFAULT NULL,
   `printer_id` bigint(20) UNSIGNED NOT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `borrow_date` date NOT NULL,
@@ -322,13 +302,6 @@ CREATE TABLE `printer_borrowings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `printer_borrowings`
---
-
-INSERT INTO `printer_borrowings` (`id`, `user_id`, `printer_id`, `phone`, `borrow_date`, `return_date`, `status`, `reject_reason`, `rejected_at`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, '0659864589', '2026-02-12', '2026-02-12', 'returned', NULL, NULL, '2026-02-11 21:03:02', '2026-02-11 21:03:18');
 
 -- --------------------------------------------------------
 
@@ -345,14 +318,6 @@ CREATE TABLE `printer_borrowing_accessory` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `printer_borrowing_accessory`
---
-
-INSERT INTO `printer_borrowing_accessory` (`id`, `printer_borrowing_id`, `accessory_id`, `is_returned`, `note`, `created_at`, `updated_at`) VALUES
-(1, 1, 3, 1, 'หาย', NULL, NULL),
-(2, 1, 4, 0, 'หาย', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -374,7 +339,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('saehQfr9weaTrY7YGjbCqLlVRUZcjFcZ36dZRmTP', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWmQ4STZJOWJ0enpsNW9TSTUyOVRmQUJmS3o5am81akx5amUweW1ZZyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fX0=', 1770869050);
+('Cc0hTSCSyQWxQ2fJE6xU8yeLyYGF6fklG4DjTXvA', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYlpQUEQyN0ZKOUloTWZYWE05aEN2dEt5aldCY0hNeFBWWFZkQkxPMCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9ub3RlYm9va3MiO3M6NToicm91dGUiO3M6MjU6ImFkbWluLm5vdGVib29rX21hbmFnZW1lbnQiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1771576765);
 
 -- --------------------------------------------------------
 
@@ -394,15 +359,9 @@ CREATE TABLE `users` (
   `role` varchar(255) NOT NULL DEFAULT 'user',
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `phone`, `department`, `workgroup`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'fasai', 'ฟ้าใส', 'หวาน', '0984521654', 'กองบริหารยุทธศาสตร์การพัฒนาจังหวัดชายแดนภาคใต้', 'กลุ่มงานบริหารงบประมาณ', '$2y$12$4GJQU9Tc0BC5N0VaOO/VM.rRglnWGWZaakBIFt/fiwxBrT8K3ENb2', 'user', NULL, '2026-02-11 21:01:04', '2026-02-11 21:01:04');
 
 --
 -- Indexes for dumped tables
@@ -546,13 +505,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `borrowings`
 --
 ALTER TABLE `borrowings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `borrowing_accessory`
 --
 ALTER TABLE `borrowing_accessory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -570,37 +529,37 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `notebooks`
 --
 ALTER TABLE `notebooks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `printers`
 --
 ALTER TABLE `printers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `printer_borrowings`
 --
 ALTER TABLE `printer_borrowings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `printer_borrowing_accessory`
 --
 ALTER TABLE `printer_borrowing_accessory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

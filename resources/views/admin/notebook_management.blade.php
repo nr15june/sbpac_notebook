@@ -119,7 +119,27 @@
     <h2><i class="bi bi-laptop me-1"></i> การจัดการโน้ตบุ๊ก</h2>
     <p>จัดการอุปกรณ์โน้ตบุ๊กภายในระบบ</p>
 </div>
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ',
+        text: "{{ session('success') }}",
+        confirmButtonText: 'ตกลง'
+    });
+</script>
+@endif
 
+@if ($errors->any())
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'เกิดข้อผิดพลาด',
+        html: `{!! implode('<br>', $errors->all()) !!}`,
+        confirmButtonText: 'ตกลง'
+    });
+</script>
+@endif
 {{-- ===== Top Section ===== --}}
 <div class="row g-4 mb-4">
 

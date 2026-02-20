@@ -198,9 +198,18 @@
 
                 {{-- 👤 ผู้ยืม --}}
                 <td>
-                    <div class="fw-medium">
-                        {{ $b->user->first_name }} {{ $b->user->last_name }}
+                    {{-- 👤 ชื่อผู้ยืมจริง --}}
+                    <div class="fw-semibold text-dark">
+                        {{ $b->borrower_first_name ?? '-' }}
+                        {{ $b->borrower_last_name ?? '' }}
                     </div>
+
+                    {{-- 🧾 ชื่อบัญชี --}}
+                    <div class="text-muted small">
+                        บัญชี: {{ $b->user->first_name ?? '-' }}
+                        {{ $b->user->last_name ?? '' }}
+                    </div>
+
                 </td>
 
                 {{-- 💻 / 🖨️ อุปกรณ์ --}}

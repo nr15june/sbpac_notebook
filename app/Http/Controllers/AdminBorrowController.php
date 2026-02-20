@@ -64,38 +64,20 @@ class AdminBorrowController extends Controller
     {
         $q = $request->q;
 
-        // 🔹 Notebook
+        // Notebook
         $notebooks = Borrowing::with(['user', 'notebook', 'accessories'])
             ->get()
             ->map(function ($b) {
-                return (object)[
-                    'type' => 'notebook',
-                    'user' => $b->user,
-                    'notebook' => $b->notebook,
-                    'printer' => null,
-                    'borrow_date' => $b->borrow_date,
-                    'return_date' => $b->return_date,
-                    'status' => $b->status,
-                    'accessories' => $b->accessories,
-                    'created_at' => $b->created_at,
-                ];
+                $b->type = 'notebook';
+                return $b;
             });
 
-        // 🔹 Printer
+        // Printer
         $printers = PrinterBorrowing::with(['user', 'printer', 'accessories'])
             ->get()
             ->map(function ($b) {
-                return (object)[
-                    'type' => 'printer',
-                    'user' => $b->user,
-                    'notebook' => null,
-                    'printer' => $b->printer,
-                    'borrow_date' => $b->borrow_date,
-                    'return_date' => $b->return_date,
-                    'status' => $b->status,
-                    'accessories' => $b->accessories,
-                    'created_at' => $b->created_at,
-                ];
+                $b->type = 'printer';
+                return $b;
             });
 
         $borrowings = $notebooks
@@ -117,6 +99,9 @@ class AdminBorrowController extends Controller
                     'type' => 'notebook',
                     'id' => $b->id,
                     'user' => $b->user,
+                    'borrower_first_name' => $b->borrower_first_name,
+                    'borrower_last_name'  => $b->borrower_last_name,
+                    'borrower_phone'      => $b->borrower_phone,
                     'device' => $b->notebook,
                     'borrow_date' => $b->borrow_date,
                     'return_date' => $b->return_date,
@@ -124,7 +109,6 @@ class AdminBorrowController extends Controller
                     'model' => $b,
                 ];
             });
-
         // 🔹 เครื่องปริ้น
         $printers = PrinterBorrowing::with(['printer', 'user', 'accessories'])
             ->where('status', 'borrowed')
@@ -134,6 +118,9 @@ class AdminBorrowController extends Controller
                     'type' => 'printer',
                     'id' => $b->id,
                     'user' => $b->user,
+                    'borrower_first_name' => $b->borrower_first_name,
+                    'borrower_last_name'  => $b->borrower_last_name,
+                    'borrower_phone'      => $b->borrower_phone,
                     'device' => $b->printer,
                     'borrow_date' => $b->borrow_date,
                     'return_date' => $b->return_date,

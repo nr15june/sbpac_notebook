@@ -25,6 +25,9 @@ class PrinterBorrowController extends Controller
     {
         $request->validate([
             'printer_id'  => 'required|exists:printers,id',
+            'borrower_first_name' => 'required|string|max:100',
+            'borrower_last_name'  => 'required|string|max:100',
+            'borrower_phone'      => 'nullable|string|max:20',
             'borrow_date' => 'required|date',
             'return_date' => 'required|date|after_or_equal:borrow_date',
             'phone'       => 'nullable|string|max:20',
@@ -42,12 +45,15 @@ class PrinterBorrowController extends Controller
         // ✅ สร้างรายการยืม
         $borrowing = PrinterBorrowing::create([
             'user_id'     => Auth::id(),
+            'borrower_first_name'  => $request->borrower_first_name,
+            'borrower_last_name'   => $request->borrower_last_name,
+            'borrower_phone'       => $request->borrower_phone,
             'printer_id'  => $printer->id,
             'phone'       => $request->phone,
             'borrow_date' => $request->borrow_date,
             'return_date' => $request->return_date,
             'status'      => 'pending',
-            
+
         ]);
 
         // ✅ บันทึกอุปกรณ์เสริม

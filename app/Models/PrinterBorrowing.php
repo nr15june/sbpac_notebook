@@ -13,6 +13,9 @@ class PrinterBorrowing extends Model
 
     protected $fillable = [
         'user_id',
+        'borrower_first_name',
+        'borrower_last_name',
+        'borrower_phone',
         'printer_id',
         'phone',
         'borrow_date',

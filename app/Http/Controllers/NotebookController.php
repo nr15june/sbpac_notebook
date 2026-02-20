@@ -93,6 +93,6 @@ class NotebookController extends Controller
 
         return redirect()
             ->route('admin.notebook_management')
-            ->with('deleted', 'ลบข้อมูลเรียบร้อยแล้ว');
+            ->with('success', 'ลบข้อมูลเรียบร้อยแล้ว');
     }
 }

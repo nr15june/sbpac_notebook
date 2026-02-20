@@ -312,14 +312,16 @@
 
                     <div class="col-md-6">
                         <label class="form-label small">ชื่อ</label>
-                        <input type="text" name="first_name"
+                        <input type="text"
+                            name="borrower_first_name"
                             class="form-control form-control-sm"
                             value="{{ auth()->user()->first_name }}">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label small">นามสกุล</label>
-                        <input type="text" name="last_name"
+                        <input type="text"
+                            name="borrower_last_name"
                             class="form-control form-control-sm"
                             value="{{ auth()->user()->last_name }}">
                     </div>
@@ -341,11 +343,10 @@
                     <div class="col-md-6">
                         <label class="form-label small">เบอร์ติดต่อ</label>
                         <input type="text"
-                            name="phone"
+                            name="borrower_phone"
                             class="form-control form-control-sm"
-                            value="{{ old('phone') }}"
-                            placeholder="กรอกเบอร์โทรที่ติดต่อได้ (เช่น 08x-xxx-xxxx)"
-                            required>
+                            value="{{ auth()->user()->phone }}"
+                            placeholder="กรอกเบอร์โทรที่ติดต่อได้">
                     </div>
 
                     <div class="col-md-6">

@@ -13,6 +13,9 @@ class Borrowing extends Model
 
     protected $fillable = [
         'user_id',
+        'borrower_first_name',
+        'borrower_last_name',
+        'borrower_phone',
         'phone',
         'notebook_id',
         'borrow_date',

@@ -5,113 +5,191 @@
 @section('content')
 
 <style>
+    body {
+        background: linear-gradient(180deg, #f1f5f9 0%, #eef2ff 100%);
+    }
+
+    .card-body {
+        padding: 6px 0 !important;
+    }
+
+    /* ===== Header ===== */
     .page-header {
         background: linear-gradient(135deg, #1e293b, #334155);
         color: #fff;
-        border-radius: 16px;
-        padding: 16px 20px;
-        margin-bottom: 24px;
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin-bottom: 30px;
     }
 
     .page-header h2 {
-        margin: 0;
+        font-size: 18px;
         font-weight: 600;
-        font-size: 22px;
+        margin: 0;
     }
 
     .page-header p {
+        font-size: 12.5px;
+        opacity: .85;
         margin: 0;
-        opacity: .7;
-        font-size: 13px;
     }
 
+    /* ===== Card หลัก ===== */
     .return-card {
+        background: #ffffff;
+        border-radius: 22px;
+        padding: 14px 18px;
         border: none;
-        border-radius: 18px;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
-        transition: .25s;
-        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        transition: all .25s ease;
     }
 
+
+
+    /* ปิด hover ลอย */
     .return-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, .12);
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .return-card+.return-card {
+        margin-top: 12px;
+    }
+
+    /* ===== 3 ส่วนแบบเส้นคั่น ===== */
+    .info-box {
+        background: transparent;
+        padding: 0 10px;
+    }
+
+    /* responsive */
+    @media (max-width: 991px) {
+        .info-box {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .info-box:not(:last-child) {
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 18px;
+        }
+    }
+
+    /* ===== หัวข้อ ===== */
+    .box-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #334155;
+        letter-spacing: .3px;
+    }
+
+    /* ===== Text ===== */
+    .box-subtitle {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        margin-top: 12px;
+        margin-bottom: 6px;
+    }
+
+    .user-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .info-line {
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 6px;
+    }
+
+    .device-name {
+        font-size: 14px;
+        font-weight: 600;
     }
 
     .asset {
         font-size: 12px;
-        color: #6b7280;
+        color: #64748b;
     }
 
-    .date-pill {
-        background: #f1f5f9;
-        padding: 6px 12px;
+    /* ===== Date Badge ===== */
+    .date-group {
+        margin-top: 8px;
+    }
+
+    .date-badge {
+        display: inline-block;
+        padding: 5px 12px;
         border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 100px 20px;
-        color: #6b7280;
-    }
-
-    .section-title {
         font-size: 12px;
-        color: #6b7280;
-        font-weight: 700;
-        margin-bottom: 6px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        font-weight: 500;
+        margin-right: 6px;
     }
 
+    .badge-borrow {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .badge-return {
+        background: #e0edff;
+        color: #2563eb;
+    }
+
+    /* ===== Accessories ===== */
     .acc-box {
-        background: #f8fafc;
         border: 1px solid #e5e7eb;
-        border-radius: 14px;
+        border-radius: 10px;
         padding: 12px;
+        background: #fafafa;
     }
 
     .acc-item {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: #fff;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 10px;
+        align-items: center;
+        font-size: 13px;
+        padding: 6px 0;
+        border-bottom: 1px solid #f1f5f9;
     }
 
     .acc-item:last-child {
-        margin-bottom: 0;
+        border-bottom: none;
     }
 
-    .acc-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: #111827;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    .acc-item input[type="checkbox"] {
+        transform: scale(1.1);
+        cursor: pointer;
     }
 
-    .acc-help {
-        font-size: 11px;
-        color: #6b7280;
-        margin-top: 8px;
-    }
-
+    /* ===== Input ===== */
     .note-input {
-        border-radius: 12px;
-        padding: 10px 12px;
         font-size: 13px;
+        padding: 8px 10px;
+        border-radius: 8px;
+    }
+
+    /* ===== Button ===== */
+    .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        border-radius: 10px;
+        transition: all .2s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+    }
+
+    /* ===== Empty State ===== */
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
+        background: #ffffff;
+        border-radius: 16px;
     }
 </style>
 
@@ -120,7 +198,7 @@
     <div>
         <h2>
             <i class="bi bi-arrow-return-left me-1"></i>
-            รายการคืนเครื่อง (โน้ตบุ๊ก + เครื่องปริ้น)
+            รายการคืนเครื่อง
         </h2>
         <p>แอดมินเป็นผู้ยืนยันการคืนเครื่อง เพื่อป้องกันการคืนไม่ตรงกับความจริง</p>
     </div>
@@ -137,137 +215,119 @@
 </div>
 @else
 
-<div class="row g-4">
+<div class="row g-3">
     @foreach($borrowings as $b)
-    <div class="col-xl-4 col-lg-6">
-        <div class="card return-card h-100">
-            <div class="card-body p-4">
+    <div class="col-12">
+        <div class="card return-card">
+            <div class="card-body p-3 p-lg-4">
+                <div class="row g-3">
 
-                {{-- User --}}
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h5 class="fw-bold mb-1">
-                            <i class="bi bi-person-circle me-1"></i>
-                            {{ $b->user->first_name }} {{ $b->user->last_name }}
-                        </h5>
+                    {{-- ===== ส่วนที่ 1 : ผู้ยืม / บัญชี ===== --}}
+                    <div class="col-lg-4">
+                        <div class="info-box user-box">
 
-                        <div class="text-muted small">
-                            <i class="bi bi-telephone me-1"></i>
-                            เบอร์ติดต่อ: <b>{{ $b->model->phone ?? '-' }}</b>
-                        </div>
-                    </div>
-
-                    <span class="badge bg-success px-3 py-2 rounded-pill">
-                        <i class="bi bi-check-circle-fill me-1"></i> กำลังใช้งาน
-                    </span>
-                </div>
-
-                <hr class="my-3">
-
-                {{-- Device --}}
-                <div>
-                    <div class="section-title">
-                        @if($b->type === 'notebook')
-                        <i class="bi bi-laptop"></i> ข้อมูลโน้ตบุ๊ก
-                        @else
-                        <i class="bi bi-printer"></i> ข้อมูลเครื่องปริ้น
-                        @endif
-                    </div>
-
-                    <div class="fw-semibold">
-                        {{ $b->device->brand }} {{ $b->device->model }}
-                    </div>
-
-                    <div class="asset">
-                        Asset: {{ $b->device->asset_code }}
-                    </div>
-                </div>
-
-                {{-- Date --}}
-                <div class="mt-3 d-flex flex-wrap gap-2">
-                    <span class="date-pill">
-                        <i class="bi bi-calendar-event"></i>
-                        ยืม: {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
-                    </span>
-
-                    <span class="date-pill">
-                        <i class="bi bi-calendar-check"></i>
-                        กำหนดคืน: {{ \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y') }}
-                    </span>
-                </div>
-
-                {{-- FORM --}}
-                <form method="POST"
-                    action="{{ $b->type === 'notebook'
-                        ? route('admin.borrow.confirm_return', $b->id)
-                        : route('admin.printer.confirm_return', $b->id) }}"
-                    class="confirm-return-form mt-4">
-                    @csrf
-
-                    {{-- Accessories checklist --}}
-                    <div class="section-title">
-                        <i class="bi bi-bag-check"></i> อุปกรณ์เสริมที่ยืม (ติ๊กเฉพาะที่คืนแล้ว)
-                    </div>
-
-                    <div class="acc-box">
-                        @if($b->accessories && $b->accessories->count() > 0)
-
-                        @foreach($b->accessories as $acc)
-                        <div class="acc-item">
-                            <div class="acc-name">
-                                <i class="bi bi-box-seam"></i>
-                                {{ $acc->name }}
+                            <div class="box-title">
+                                <i class="bi bi-person me-1"></i>
+                                ข้อมูลผู้ยืม
                             </div>
 
-                            <div class="form-check m-0">
-                                <input class="form-check-input"
-                                    type="checkbox"
-                                    name="returned_accessories[]"
-                                    value="{{ $acc->id }}"
-                                    id="acc{{ $b->id }}_{{ $acc->id }}">
-
-                                <label class="small text-muted ms-1" for="acc{{ $b->id }}_{{ $acc->id }}">
-                                    คืนแล้ว
-                                </label>
+                            <div class="user-name">
+                                {{ $b->borrower_first_name }} {{ $b->borrower_last_name }}
                             </div>
-                        </div>
-                        @endforeach
 
-                        <div class="acc-help">
-                            *ถ้าไม่ติ๊ก = ระบบจะบันทึกว่า “ยังไม่คืน/อาจสูญหาย”
+                            <div class="info-line">
+                                <i class="bi bi-telephone"></i>
+                                {{ $b->borrower_phone ?? '-' }}
+                            </div>
+
+                            <hr>
+
+                            <div class="box-subtitle">บัญชีผู้ยื่นคำขอ</div>
+
+                            <div class="info-line">
+                                {{ $b->user->first_name }} {{ $b->user->last_name }}
+                            </div>
+
+                            <div class="info-line">
+                                <i class="bi bi-telephone"></i>
+                                {{ $b->user->phone ?? '-' }}
+                            </div>
+
                         </div>
-                        @else
-                        <div class="text-muted small">
-                            ไม่มีอุปกรณ์เสริม
-                        </div>
-                        @endif
                     </div>
 
-                    {{-- note --}}
-                    <div class="mt-3">
-                        <label class="form-label small mb-1">
-                            หมายเหตุ (หาย/ชำรุด/อื่นๆ)
-                        </label>
-                        @php
-                        $notePlaceholder = $b->type === 'notebook'
-                        ? 'เช่น เมาส์หาย / สายชาร์จชำรุด'
-                        : 'เช่น สาย USB หาย / ตลับหมึกชำรุด';
-                        @endphp
 
-                        <input type="text"
-                            name="note"
-                            class="form-control note-input"
-                            placeholder="{{ $notePlaceholder }}">
+                    {{-- ===== ส่วนที่ 2 : ข้อมูลเครื่อง ===== --}}
+                    <div class="col-lg-4">
+                        <div class="info-box device-box">
+
+                            <div class="box-title">
+                                <i class="bi bi-laptop me-1"></i>
+                                ข้อมูลเครื่อง
+                            </div>
+
+                            <div class="device-name">
+                                {{ $b->device->brand }} {{ $b->device->model }}
+                            </div>
+
+                            <div class="asset">
+                                Asset: {{ $b->device->asset_code }}
+                            </div>
+
+                            <div class="date-group mt-3">
+                                <span class="date-badge badge-borrow">
+                                    ยืม {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
+                                </span>
+
+                                <span class="date-badge badge-return">
+                                    คืน {{ \Carbon\Carbon::parse($b->return_date)->translatedFormat('d M Y') }}
+                                </span>
+                            </div>
+
+                        </div>
                     </div>
 
-                    {{-- button --}}
-                    <button type="submit"
-                        class="btn btn-primary w-100 mt-3">
-                        <i class="bi bi-box-arrow-in-left me-1"></i> ยืนยันคืนเครื่อง
-                    </button>
 
-                </form>
+                    {{-- ===== ส่วนที่ 3 : อุปกรณ์ที่คืน ===== --}}
+                    <div class="col-lg-4">
+                        <div class="info-box form-box">
 
+                            <form method="POST"
+                                action="{{ $b->type === 'notebook'
+                    ? route('admin.borrow.confirm_return', $b->id)
+                    : route('admin.printer.confirm_return', $b->id) }}"
+                                class="confirm-return-form">
+                                @csrf
+
+                                <div class="box-title">
+                                    <i class="bi bi-box-seam me-1"></i>
+                                    อุปกรณ์ที่คืน
+                                </div>
+
+                                <div class="acc-box mb-3">
+                                    @foreach($b->accessories as $acc)
+                                    <div class="acc-item">
+                                        <span>{{ $acc->name }}</span>
+                                        <input type="checkbox"
+                                            name="returned_accessories[]"
+                                            value="{{ $acc->id }}">
+                                    </div>
+                                    @endforeach
+                                </div>
+
+                                <input type="text"
+                                    name="note"
+                                    class="form-control note-input mb-3"
+                                    placeholder="หมายเหตุ (ถ้ามี)">
+
+                                <button type="submit"
+                                    class="btn btn-primary w-100">
+                                    ยืนยันคืนเครื่อง
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

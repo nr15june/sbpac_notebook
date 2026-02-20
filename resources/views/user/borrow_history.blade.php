@@ -251,14 +251,14 @@
     <table class="history-table">
         <thead>
             <tr>
-                <th style="width:30%" class="text-start">อุปกรณ์</th>
-                <th style="width:12%" class="text-center">ประเภท</th>
-                <th style="width:14%" class="text-center">วันที่ยืม</th>
-                <th style="width:14%" class="text-center">วันที่คืน</th>
-                <th style="width:10%" class="text-center">ระยะเวลา</th>
-                <th style="width:20%" class="text-center">สถานะ</th>
+                <th style="width:18%" class="text-start">ชื่อผู้ยืม</th>
+                <th style="width:22%" class="text-start">อุปกรณ์</th>
+                <th style="width:10%" class="text-center">ประเภท</th>
+                <th style="width:12%" class="text-center">วันที่ยืม</th>
+                <th style="width:12%" class="text-center">วันที่คืน</th>
+                <th style="width:8%" class="text-center">ระยะเวลา</th>
+                <th style="width:18%" class="text-center">สถานะ</th>
             </tr>
-
         </thead>
 
         <tbody>
@@ -270,6 +270,15 @@
             @endphp
 
             <tr>
+
+                {{-- 👤 ชื่อผู้ยืม --}}
+                <td class="text-start">
+                    <div class="fw-semibold">
+                        {{ $b['borrower_name'] ?? '-' }}
+                    </div>
+                </td>
+
+                {{-- 💻 อุปกรณ์ --}}
                 <td class="text-start">
                     <div class="item-name">
                         {{ $b['name'] }}
@@ -279,7 +288,8 @@
                     </div>
                 </td>
 
-                <td>
+                {{-- 📦 ประเภท --}}
+                <td class="text-center">
                     @if($b['type'] === 'printer')
                     <span class="type-badge type-printer">
                         <i class="bi bi-printer"></i> เครื่องปริ้น
@@ -291,11 +301,18 @@
                     @endif
                 </td>
 
-                <td>{{ $borrowDate->translatedFormat('d M Y') }}</td>
+                {{-- 📅 วันที่ยืม --}}
+                <td class="text-center">
+                    {{ $borrowDate->translatedFormat('d M Y') }}
+                </td>
 
-                <td>{{ $returnDate->translatedFormat('d M Y') }}</td>
+                {{-- 📅 วันที่คืน --}}
+                <td class="text-center">
+                    {{ $returnDate->translatedFormat('d M Y') }}
+                </td>
 
-                <td>
+                {{-- ⏳ ระยะเวลา --}}
+                <td class="text-center">
                     @if($days > 0)
                     <span class="duration duration-normal">{{ $days }} วัน</span>
                     @elseif($days == 0)
@@ -305,8 +322,8 @@
                     @endif
                 </td>
 
-                <td>
-                    {{-- ✅ คืนแล้ว --}}
+                {{-- 📌 สถานะ --}}
+                <td class="text-center">
                     @if($b['status'] === 'returned')
                     <span class="status-returned">
                         <i class="bi bi-box-arrow-in-left"></i> คืนเครื่องแล้ว
@@ -315,21 +332,14 @@
                         แอดมินยืนยันเมื่อ {{ $returnDate->translatedFormat('d M Y') }}
                     </div>
 
-                    {{-- ❌ ถูกปฏิเสธ --}}
                     @elseif($b['status'] === 'rejected')
                     <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
                         <i class="bi bi-x-circle me-1"></i> ถูกปฏิเสธ
                     </span>
                     <div class="return-date-text">
-                        เหตุผล: {{ $b['reject_reason'] ?? 'ไม่ระบุเหตุผล' }}<br>
-                        @if(!empty($b['rejected_at']))
-                        แจ้งผลเมื่อ {{ \Carbon\Carbon::parse($b['rejected_at'])->translatedFormat('d M Y') }}
-                        @else
-                        แจ้งผลแล้ว
-                        @endif
+                        เหตุผล: {{ $b['reject_reason'] ?? 'ไม่ระบุเหตุผล' }}
                     </div>
 
-                    {{-- ⏳ กำลังยืม --}}
                     @else
                     <span class="status-borrowed">
                         <i class="bi bi-box-arrow-in-right"></i> กำลังยืม
@@ -339,8 +349,8 @@
                     </div>
                     @endif
                 </td>
-            </tr>
 
+            </tr>
             @endforeach
         </tbody>
     </table>

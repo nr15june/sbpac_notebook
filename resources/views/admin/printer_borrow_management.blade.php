@@ -47,36 +47,46 @@
         background: linear-gradient(90deg, #2563eb, #4f46e5);
     }
 
-    /* ===== USER ===== */
-    .user-row {
+    .borrower-header {
         display: flex;
-        gap: 12px;
+        align-items: center;
+        gap: 14px;
     }
 
-    .user-avatar {
-        width: 42px;
-        height: 42px;
+    .borrower-avatar {
+        width: 48px;
+        height: 48px;
         border-radius: 14px;
-        background: #eef2ff;
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
         color: #4f46e5;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
     }
 
-    .user-name {
+    .borrower-name {
+        font-size: 18px;
         font-weight: 800;
-        font-size: 16px;
-        margin: 0;
+        color: #0f172a;
     }
 
-    .user-phone {
-        font-size: 12.5px;
+    .borrower-phone {
+        font-size: 13px;
+        color: #475569;
+        margin-top: 3px;
+    }
+
+    .account-info {
+        margin-top: 10px;
+        font-size: 13px;
         color: #64748b;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+    }
+
+    .account-info strong {
+        color: #334155;
+        font-weight: 700;
     }
 
     /* ===== PRINTER INFO ===== */
@@ -206,24 +216,35 @@
 
             <div class="card-body p-4">
 
-                {{-- USER --}}
-                <div class="user-row">
-                    <div class="user-avatar">
-                        <i class="bi bi-person-circle"></i>
+                {{-- ผู้ยืมจริง --}}
+                <div class="borrower-header">
+                    <div class="borrower-avatar">
+                        <i class="bi bi-person-fill"></i>
                     </div>
 
                     <div>
-                        <p class="user-name">
-                            {{ $b->user->first_name }} {{ $b->user->last_name }}
-                        </p>
-                        <div class="user-phone">
-                            <i class="bi bi-telephone"></i>
-                            {{ $b->phone ?? '-' }}
+                        <div class="borrower-name">
+                            {{ $b->borrower_first_name }} {{ $b->borrower_last_name }}
+                        </div>
+
+                        <div class="borrower-phone">
+                            <i class="bi bi-telephone me-1"></i>
+                            {{ $b->borrower_phone ?? '-' }}
                         </div>
                     </div>
                 </div>
 
                 <div class="section-divider"></div>
+
+                <div class="account-info">
+                    <i class="bi bi-building me-1"></i>
+                    บัญชีผู้ยื่นคำขอ:
+                    <strong>{{ $b->user->first_name }} {{ $b->user->last_name }}</strong>
+                    <span class="ms-2">
+                        <i class="bi bi-telephone"></i>
+                        {{ $b->user->phone ?? '-' }}
+                    </span>
+                </div>
 
                 {{-- PRINTER --}}
                 <div>
@@ -254,7 +275,7 @@
                 </div>
 
                 {{-- DATE --}}
-                <div class="mt-3 d-flex flex-wrap gap-2">
+                <div class="pill-row">
                     <span class="date-pill">
                         <i class="bi bi-calendar-event"></i>
                         {{ \Carbon\Carbon::parse($b->borrow_date)->translatedFormat('d M Y') }}
@@ -299,16 +320,27 @@
 {{-- ===== SweetAlert ===== --}}
 <script>
     document.querySelectorAll('.btn-approve').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', function() {
+
+            const form = this.closest('form');
+
             Swal.fire({
                 title: 'ยืนยันการอนุมัติ',
+                text: 'คุณต้องการอนุมัติการยืมเครื่องปริ้นนี้หรือไม่?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'อนุมัติ'
-            }).then(r => r.isConfirmed && btn.closest('form').submit());
+                confirmButtonText: 'อนุมัติ',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#e5e7eb'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); 
+                }
+            });
+
         });
     });
-
     document.querySelectorAll('.btn-reject').forEach(btn => {
         btn.addEventListener('click', () => {
             const form = btn.closest('form');

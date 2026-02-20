@@ -48,41 +48,23 @@
         background: linear-gradient(90deg, #2563eb, #4f46e5);
     }
 
-    /* ===== USER BLOCK ===== */
-    .user-row {
+    .borrower-header {
         display: flex;
-        gap: 12px;
-        align-items: flex-start;
+        align-items: center;
+        gap: 14px;
     }
 
-    .user-avatar {
-        width: 42px;
-        height: 42px;
+    .borrower-avatar {
+        width: 48px;
+        height: 48px;
         border-radius: 14px;
-        background: #eef2ff;
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
         color: #4f46e5;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        flex: 0 0 auto;
-    }
-
-    .user-name {
-        font-weight: 800;
-        margin: 0;
-        font-size: 16px;
-        color: #0f172a;
-        line-height: 1.2;
-    }
-
-    .user-phone {
-        font-size: 12.5px;
-        color: #64748b;
-        margin-top: 2px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
     }
 
     /* ===== NOTEBOOK INFO ===== */
@@ -193,6 +175,33 @@
         border-radius: 18px;
         box-shadow: 0 14px 34px rgba(0, 0, 0, .06);
     }
+
+    .primary-borrower {
+        margin-bottom: 12px;
+    }
+
+    .borrower-name {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .borrower-phone {
+        font-size: 13px;
+        color: #475569;
+        margin-top: 3px;
+    }
+
+    .account-info {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .account-info strong {
+        color: #334155;
+        font-weight: 700;
+    }
 </style>
 
 {{-- ===== Header ===== --}}
@@ -226,25 +235,38 @@
 
             <div class="card-body p-4">
 
-                {{-- USER --}}
-                <div class="user-row">
-                    <div class="user-avatar">
-                        <i class="bi bi-person-circle"></i>
-                    </div>
+                {{-- ผู้ยืมหลัก --}}
+                <div class="primary-borrower">
 
-                    <div class="flex-grow-1">
-                        <p class="user-name">
-                            {{ $b->user->first_name }} {{ $b->user->last_name }}
-                        </p>
+                    <div class="borrower-header">
+                        <div class="borrower-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
 
-                        <div class="user-phone">
-                            <i class="bi bi-telephone"></i>
-                            <span>{{ $b->phone ?? '-' }}</span>
+                        <div>
+                            <div class="borrower-name">
+                                {{ $b->borrower_first_name }} {{ $b->borrower_last_name }}
+                            </div>
+
+                            <div class="borrower-phone">
+                                <i class="bi bi-telephone me-1"></i>
+                                {{ $b->borrower_phone ?? '-' }}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="section-divider"></div>
+                    <div class="section-divider"></div>
+
+                    <div class="account-info">
+                        <i class="bi bi-building me-1"></i>
+                        บัญชีผู้ยื่นคำขอ:
+                        <strong>{{ $b->user->first_name }} {{ $b->user->last_name }}</strong>
+                        <span class="ms-2">
+                            <i class="bi bi-telephone"></i>
+                            {{ $b->user->phone ?? '-' }}
+                        </span>
+                    </div>
+                </div>
 
                 {{-- NOTEBOOK --}}
                 <div>
