@@ -96,35 +96,6 @@
         color: #6b7280;
     }
 
-    /* ===== STATUS ===== */
-    .status-badge {
-        padding: 5px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-        display: inline-block;
-    }
-
-    .status-returned {
-        background: #e0ecff;
-        color: #2563eb;
-    }
-
-    .status-borrowed {
-        background: #dcfce7;
-        color: #15803d;
-    }
-
-    .status-pending {
-        background: #fef3c7;
-        color: #b45309;
-    }
-
-    .status-rejected {
-        background: #fee2e2;
-        color: #b91c1c;
-    }
-
     .table tbody td {
         text-align: left;
     }

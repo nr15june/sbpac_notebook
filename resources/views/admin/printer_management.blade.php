@@ -55,26 +55,6 @@
         border-radius: 20px;
     }
 
-    .status-available {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .status-pending {
-        background: #e0f2fe;
-        color: #075985;
-    }
-
-    .status-borrowed {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .status-repair {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
     /* ===== Form ===== */
     .form-label {
         font-size: 13px;
@@ -291,7 +271,7 @@
                     <td>{{ $pr->brand }}</td>
                     <td>{{ $pr->model }}</td>
                     <td>
-                        <span class="nb-status status-{{ $pr->status }}">
+                        <span class="status-badge status-{{ $pr->status }}">
                             {{ $pr->status == 'available' ? 'พร้อมใช้งาน' : ($pr->status == 'pending' ? 'รออนุมัติ' : ($pr->status == 'borrowed' ? 'ถูกยืม' : 'ซ่อม')) }}
                         </span>
                     </td>

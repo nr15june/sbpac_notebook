@@ -55,27 +55,6 @@
         border-radius: 20px;
     }
 
-    .status-available {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .status-borrowed {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .status-repair {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .status-pending {
-        background: #e0f2fe;
-        /* ฟ้าอ่อน */
-        color: #0369a1;
-    }
-
     /* ===== Form ===== */
     .form-label {
         font-size: 13px;
@@ -160,7 +139,7 @@
                         </span>
                     </div>
 
-                    <span class="nb-status status-{{ $nb->status }}">
+                    <span class="status-badge status-{{ $nb->status }}">
                         {{ $nb->status_text }}
                     </span>
 
@@ -315,7 +294,7 @@
 
                     {{-- สถานะ --}}
                     <td>
-                        <span class="nb-status status-{{ $nb->status }}">
+                        <span class="status-badge status-{{ $nb->status }}">
                             {{ $nb->status_text }}
                         </span>
                     </td>

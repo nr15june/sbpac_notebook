@@ -135,6 +135,50 @@
             padding: 32px;
             overflow-y: auto;
         }
+
+        .status-badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* พร้อมใช้งาน */
+        .status-available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* กำลังยืม */
+        .status-borrowed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        /* รออนุมัติ */
+        .status-pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        /* ซ่อม */
+        .status-repair {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        /* คืนแล้ว */
+        .status-returned {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        /* ปฏิเสธ */
+        .status-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
     </style>
 </head>
 
