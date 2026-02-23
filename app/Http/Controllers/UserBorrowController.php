@@ -117,15 +117,13 @@ class UserBorrowController extends Controller
 
             $borrowings->push([
                 'type' => 'notebook',
+                'borrower_name' => $b->borrower_first_name . ' ' . $b->borrower_last_name,
                 'name' => $b->notebook->brand . ' ' . $b->notebook->model,
                 'asset_code' => $b->notebook->asset_code,
                 'borrow_date' => $b->borrow_date,
                 'return_date' => $b->return_date,
                 'status' => $b->status,
-
-                // ✅ accessories ของ notebook
                 'accessories' => $b->accessories ?? collect(),
-
                 'is_overdue' => method_exists($b, 'isOverdue') ? $b->isOverdue() : false,
                 'days_left' => method_exists($b, 'daysLeft') ? $b->daysLeft() : 0,
             ]);
@@ -144,15 +142,13 @@ class UserBorrowController extends Controller
 
             $borrowings->push([
                 'type' => 'printer',
+                'borrower_name' => $p->borrower_first_name . ' ' . $p->borrower_last_name,
                 'name' => $p->printer->brand . ' ' . $p->printer->model,
                 'asset_code' => $p->printer->asset_code,
                 'borrow_date' => $p->borrow_date,
                 'return_date' => $p->return_date,
                 'status' => $p->status,
-
-                // ✅ accessories ของ printer
                 'accessories' => $p->accessories ?? collect(),
-
                 'is_overdue' => $isOverdue,
                 'days_left' => $daysLeft,
             ]);

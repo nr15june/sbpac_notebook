@@ -76,6 +76,20 @@
             border-radius: 3px;
         }
 
+        .error-text {
+            color: #b00020;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .alert-error {
+            color: #b00020;
+            text-align: center;
+            font-size: 15px;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
         .btn-login {
             margin-top: 35px;
             display: block;
@@ -108,19 +122,47 @@
             </div>
         </div>
 
+        @if ($errors->any())
+        <div class="alert-error">
+            {{ $errors->first() }}
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="alert-error">
+            {{ session('error') }}
+        </div>
+        @endif
+
         <form method="POST" action="{{ route('login.submit') }}">
             @csrf
 
             <div class="form-group">
                 <div class="form-label">Username</div>
-                <input type="text" name="username" class="form-control" placeholder="username">
+                <input type="text"
+                    name="username"
+                    value="{{ old('username') }}"
+                    class="form-control @error('username') is-invalid @enderror"
+                    placeholder="username">
 
+                @error('username')
+                <div class="error-text">{{ $message }}</div>
+                @enderror
             </div>
+
 
             <div class="form-group">
                 <div class="form-label">Password</div>
-                <input type="password" name="password" class="form-control" placeholder="password">
+                <input type="password"
+                    name="password"
+                    class="form-control @error('password') is-invalid @enderror"
+                    placeholder="password">
+
+                @error('password')
+                <div class="error-text">{{ $message }}</div>
+                @enderror
             </div>
+
 
             <button type="submit" class="btn-login">LOGIN</button>
         </form>

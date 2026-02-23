@@ -165,7 +165,7 @@
             <div>
                 <h3 class="list-header-title">รายการยืมของฉัน</h3>
                 <div class="list-header-subtitle">
-                    แสดงรายการยืม (โน้ตบุ๊ก + เครื่องปริ้น) ที่กำลังดำเนินการ
+                    แสดงรายการยืมที่กำลังดำเนินการ
                 </div>
             </div>
         </div>
@@ -214,6 +214,13 @@
                                     <div>
                                         <div class="fw-bold text-dark">{{ $b['name'] }}</div>
 
+                                        <div class="text-muted" style="font-size: 12px;">
+                                            <i class="bi bi-person-circle me-1"></i>
+                                            ผู้ยืม:
+                                            <span class="fw-semibold text-dark">
+                                                {{ $b['borrower_name'] }}
+                                            </span>
+                                        </div>
                                         <span class="badge bg-light text-secondary border mt-1" style="font-size: 10px;">
                                             <i class="bi bi-upc-scan me-1"></i>{{ $b['asset_code'] }}
                                         </span>
