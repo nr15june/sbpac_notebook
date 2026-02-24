@@ -246,7 +246,7 @@
                 @elseif($pr->status === 'pending')
                 <div class="nb-status status-pending">⏳ รออนุมัติ</div>
                 @else
-                <div class="nb-status status-busy">✖ ไม่พร้อมให้ยืม</div>
+                <div class="nb-status status-busy">✖ ไม่พร้อมใช้งาน</div>
                 @endif
 
 

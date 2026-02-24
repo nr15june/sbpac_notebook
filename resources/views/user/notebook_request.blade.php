@@ -356,7 +356,7 @@
                         <input type="text"
                             name="phone"
                             class="form-control form-control-sm"
-                            value="{{ old('phone') }}"
+                            value="{{ old('phone', auth()->user()->phone) }}"
                             placeholder="กรอกเบอร์โทรที่ติดต่อได้ (เช่น 08x-xxx-xxxx)"
                             required>
                     </div>
