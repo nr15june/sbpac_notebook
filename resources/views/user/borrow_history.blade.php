@@ -227,7 +227,7 @@
             <i class="bi bi-clock-history"></i>
         </div>
         <div>
-            <h3 class="history-header-title">ประวัติการยืมของฉัน</h3>
+            <h3 class="history-header-title">ประวัติการยืม</h3>
             <div class="history-header-subtitle">
                 แสดงรายการยืม–คืนทั้งหมดของคุณย้อนหลัง
             </div>

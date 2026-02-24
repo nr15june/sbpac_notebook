@@ -132,7 +132,7 @@
     <div>
         <h2>
             <i class="bi bi-clock-history"></i>
-            ประวัติการยืมโน้ตบุ๊ก
+            ประวัติการยืม
         </h2>
         <p>รายการยืม–คืนอุปกรณ์ทั้งหมดในระบบ</p>
     </div>
@@ -154,13 +154,14 @@
     <table class="table align-middle mb-0">
         <thead>
             <tr>
-                <th style="width:16%" class="text-start">ผู้ยืม</th>
-                <th style="width:22%" class="text-start">อุปกรณ์</th>
-                <th style="width:10%" class="text-center">ประเภท</th>
+                <th style="width:15%" class="text-start">ผู้ยืม</th>
+                <th style="width:12%" class="text-start">เบอร์โทร</th>
+                <th style="width:20%" class="text-start">อุปกรณ์</th>
+                <th style="width:8%" class="text-center">ประเภท</th>
                 <th style="width:10%" class="text-center">วันที่ยืม</th>
                 <th style="width:10%" class="text-center">วันที่คืน</th>
-                <th style="width:20%" class="text-start">อุปกรณ์เสริม</th>
-                <th style="width:12%" class="text-center">สถานะ</th>
+                <th style="width:15%" class="text-start">อุปกรณ์เสริม</th>
+                <th style="width:10%" class="text-center">สถานะ</th>
             </tr>
         </thead>
         <tbody>
@@ -180,9 +181,15 @@
                         บัญชี: {{ $b->user->first_name ?? '-' }}
                         {{ $b->user->last_name ?? '' }}
                     </div>
-
                 </td>
 
+                {{-- 📞 เบอร์โทร --}}
+                <td>
+                    <div class="fw-medium">
+                        {{ $b->borrower_phone ?? $b->phone ?? '-' }}
+                    </div>
+                </td>
+                
                 {{-- 💻 / 🖨️ อุปกรณ์ --}}
                 <td>
                     @if($b->type === 'notebook')

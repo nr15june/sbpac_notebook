@@ -163,7 +163,7 @@
                 <i class="bi bi-clipboard-check"></i>
             </div>
             <div>
-                <h3 class="list-header-title">รายการยืมของฉัน</h3>
+                <h3 class="list-header-title">รายการยืม</h3>
                 <div class="list-header-subtitle">
                     แสดงรายการยืมที่กำลังดำเนินการ
                 </div>

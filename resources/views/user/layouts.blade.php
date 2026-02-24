@@ -170,7 +170,7 @@
 
             <a href="{{ route('user.notebook_request') }}"
                 class="menu-item {{ request()->routeIs('user.notebook_request') ? 'active' : '' }}">
-                <i class="bi bi-box-arrow-in-down"></i>
+                <i class="bi bi-laptop"></i>
                 ยืมโน้ตบุ๊ก
             </a>
 
