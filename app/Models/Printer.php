@@ -17,4 +17,16 @@ class Printer extends Model
         'note',
         'image',
     ];
+
+    public function getStatusTextAttribute()
+    {
+        return match ($this->status) {
+            'available' => 'พร้อมใช้งาน',
+            'pending'   => 'รออนุมัติ',
+            'borrowed'  => 'ถูกยืม',
+            'repair'    => 'ซ่อม',
+            'disabled'  => 'ปิดใช้งาน',
+            default     => 'ไม่ทราบสถานะ',
+        };
+    }
 }

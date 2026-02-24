@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2026 at 09:39 AM
+-- Generation Time: Feb 24, 2026 at 03:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,10 +40,10 @@ CREATE TABLE `accessories` (
 --
 
 INSERT INTO `accessories` (`id`, `name`, `type`, `created_at`, `updated_at`) VALUES
-(1, 'เมาส์', 'notebook', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
-(2, 'สายชาร์จ', 'notebook', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
-(3, 'สาย USB ', 'printer', '2026-02-20 01:37:37', '2026-02-20 01:37:37'),
-(4, 'ตลับหมึก', 'printer', '2026-02-20 01:37:37', '2026-02-20 01:37:37');
+(1, 'เมาส์', 'notebook', '2026-02-23 18:57:25', '2026-02-23 18:57:25'),
+(2, 'สายชาร์จ', 'notebook', '2026-02-23 18:57:25', '2026-02-23 18:57:25'),
+(3, 'สาย USB ', 'printer', '2026-02-23 18:57:25', '2026-02-23 18:57:25'),
+(4, 'ตลับหมึก', 'printer', '2026-02-23 18:57:25', '2026-02-23 18:57:25');
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `name`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'adminit', 'ผู้ดูแลระบบ', '$2y$12$W7XqJUHFyfFoeEB1i9gCfep.Ls8O5Ojg976B9iZetPpC/b92jWdSO', '2026-02-20 01:38:57', '2026-02-20 01:38:57');
+(1, 'adminit', 'ผู้ดูแลระบบ', '$2y$12$ysl2EEFDUbPgvhQ4GHlqauOn/TLm8ApjeVq83QvH.Mtbh9YCMdxPe', '2026-02-23 19:00:03', '2026-02-23 19:00:03');
 
 -- --------------------------------------------------------
 
@@ -230,7 +230,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (32, '2026_02_11_025636_drop_name_and_email_verified_at_from_users_table', 1),
 (33, '2026_02_19_044754_add_deleted_at_to_users_table', 1),
 (34, '2026_02_20_024532_add_borrower_fields_to_borrowings_table', 1),
-(35, '2026_02_20_031549_add_borrower_fields_to_printer_borrowings_table', 1);
+(35, '2026_02_20_031549_add_borrower_fields_to_printer_borrowings_table', 1),
+(36, '2026_02_23_090151_update_status_enum_in_notebooks_table', 1),
+(37, '2026_02_23_092119_modify_status_enum_in_printers_table', 1);
 
 -- --------------------------------------------------------
 
@@ -243,7 +245,7 @@ CREATE TABLE `notebooks` (
   `asset_code` varchar(255) NOT NULL,
   `brand` varchar(255) NOT NULL,
   `model` varchar(255) NOT NULL,
-  `status` enum('available','pending','borrowed','repair') NOT NULL DEFAULT 'available',
+  `status` enum('available','pending','borrowed','repair','disabled') DEFAULT 'available',
   `note` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -273,7 +275,7 @@ CREATE TABLE `printers` (
   `asset_code` varchar(255) NOT NULL,
   `brand` varchar(255) DEFAULT NULL,
   `model` varchar(255) DEFAULT NULL,
-  `status` enum('available','pending','borrowed','repair') NOT NULL DEFAULT 'available',
+  `status` enum('available','pending','borrowed','repair','disabled') NOT NULL DEFAULT 'available',
   `note` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -333,13 +335,6 @@ CREATE TABLE `sessions` (
   `payload` longtext NOT NULL,
   `last_activity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `sessions`
---
-
-INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Cc0hTSCSyQWxQ2fJE6xU8yeLyYGF6fklG4DjTXvA', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYlpQUEQyN0ZKOUloTWZYWE05aEN2dEt5aldCY0hNeFBWWFZkQkxPMCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9ub3RlYm9va3MiO3M6NToicm91dGUiO3M6MjU6ImFkbWluLm5vdGVib29rX21hbmFnZW1lbnQiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1771576765);
 
 -- --------------------------------------------------------
 
@@ -529,7 +524,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `notebooks`

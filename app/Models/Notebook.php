@@ -31,6 +31,7 @@ class Notebook extends Model
         'borrowed'  => 'ถูกยืม',
         'repair'    => 'ซ่อม',
         'pending'   => 'รออนุมัติ',
+        'disabled'  => 'ปิดใช้งาน',
         default     => 'ไม่ทราบสถานะ',
     };
 }

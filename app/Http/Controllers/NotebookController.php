@@ -10,7 +10,9 @@ class NotebookController extends Controller
 {
     public function index()
     {
-        $notebooks = Notebook::orderBy('created_at', 'desc')->get();
+        $notebooks = Notebook::where('status', '!=', 'disabled')
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('admin.notebook_management', compact('notebooks'));
     }
 
@@ -53,7 +55,7 @@ class NotebookController extends Controller
             'asset_code' => 'required|unique:notebooks,asset_code',
             'brand'      => 'required',
             'model'      => 'required',
-            
+
         ]);
 
         $data = $request->only('asset_code', 'brand', 'model', 'note');
@@ -75,7 +77,9 @@ class NotebookController extends Controller
     public function edit($id)
     {
         $notebook = Notebook::findOrFail($id);
-        $notebooks = Notebook::orderBy('created_at', 'desc')->get();
+        $notebooks = Notebook::where('status', '!=', 'disabled')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.notebook_management', compact('notebooks', 'notebook'));
     }
@@ -84,15 +88,12 @@ class NotebookController extends Controller
     {
         $nb = Notebook::findOrFail($id);
 
-        // ลบรูปด้วย
-        if ($nb->image) {
-            Storage::disk('public')->delete($nb->image);
-        }
-
-        $nb->delete();
+        $nb->update([
+            'status' => 'disabled'
+        ]);
 
         return redirect()
             ->route('admin.notebook_management')
-            ->with('success', 'ลบข้อมูลเรียบร้อยแล้ว');
+            ->with('success', 'ยกเลิกการใช้งานเรียบร้อยแล้ว');
     }
 }

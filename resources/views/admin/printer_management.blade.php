@@ -286,8 +286,8 @@
                             class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
-                                ลบ
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-disable">
+                                ปิดใช้งาน
                             </button>
                         </form>
                     </td>
@@ -320,17 +320,16 @@
         });
     });
 
-    // ===== Delete =====
-    document.querySelectorAll('.btn-delete').forEach(btn => {
+    document.querySelectorAll('.btn-disable').forEach(btn => {
         btn.addEventListener('click', function() {
             const form = this.closest('form');
 
             Swal.fire({
-                title: 'ยืนยันการลบข้อมูล',
-                text: 'ข้อมูลนี้จะไม่สามารถกู้คืนได้',
+                title: 'ยืนยันการปิดใช้งาน',
+                text: 'เครื่องปริ้นนี้จะไม่สามารถใช้งานได้อีก',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'ลบ',
+                confirmButtonText: 'ปิดใช้งาน',
                 cancelButtonText: 'ยกเลิก',
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#d1d5db'

@@ -26,11 +26,11 @@
         opacity: .75;
     }
 
-     /* ===== Cards ===== */
+    /* ===== Cards ===== */
     .card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
     }
 
     .card-title {
@@ -100,12 +100,18 @@
 </div>
 @if(session('success'))
 <script>
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        return;
+    }
+
     Swal.fire({
         icon: 'success',
         title: 'สำเร็จ',
         text: "{{ session('success') }}",
         confirmButtonText: 'ตกลง'
     });
+});
 </script>
 @endif
 
@@ -312,8 +318,8 @@
                             @csrf
                             @method('DELETE')
                             <button type="button"
-                                class="btn btn-sm btn-outline-danger btn-delete">
-                                ลบ
+                                class="btn btn-sm btn-outline-danger btn-disable">
+                                ปิดใช้งาน
                             </button>
                         </form>
                     </td>
@@ -346,18 +352,16 @@
             }
         });
     });
-
-    // ===== Delete =====
-    document.querySelectorAll('.btn-delete').forEach(btn => {
+    document.querySelectorAll('.btn-disable').forEach(btn => {
         btn.addEventListener('click', function() {
             const form = this.closest('form');
 
             Swal.fire({
-                title: 'ยืนยันการลบข้อมูล',
-                text: 'ข้อมูลนี้จะไม่สามารถกู้คืนได้',
+                title: 'ยืนยันการปิดใช้งาน',
+                text: 'คุณต้องการปิดใช้งานโน้ตบุ๊กนี้ใช่หรือไม่?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'ลบ',
+                confirmButtonText: 'ปิดใช้งาน',
                 cancelButtonText: 'ยกเลิก',
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#d1d5db'

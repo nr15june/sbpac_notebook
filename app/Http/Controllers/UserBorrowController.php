@@ -16,7 +16,10 @@ class UserBorrowController extends Controller
 {
     public function index()
     {
-        $notebooks = Notebook::with('borrowings')->get();
+        $notebooks = Notebook::where('status', 'available')
+            ->with('borrowings')
+            ->orderBy('id', 'desc')
+            ->get();
         $accessories = Accessory::where('type', 'notebook')->get();
 
         return view('user.notebook_request', compact('notebooks', 'accessories'));

@@ -10,7 +10,10 @@ class AdminPrinterController extends Controller
 {
     public function index()
     {
-        $printers = Printer::latest()->get();
+        $printers = Printer::where('status', '!=', 'disabled')
+            ->orderBy('id', 'desc')
+            ->get();
+
         return view('admin.printer_management', compact('printers'));
     }
 
@@ -24,7 +27,7 @@ class AdminPrinterController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->only(['asset_code','brand','model','status','note']);
+        $data = $request->only(['asset_code', 'brand', 'model', 'status', 'note']);
 
         // ✅ upload image
         if ($request->hasFile('image')) {
@@ -39,9 +42,11 @@ class AdminPrinterController extends Controller
     public function edit($id)
     {
         $printer = Printer::findOrFail($id);
-        $printers = Printer::latest()->get();
 
-        // ✅ ให้มันกลับไปหน้าเดียวกัน แต่มีข้อมูลแก้ไข
+        $printers = Printer::where('status', '!=', 'disabled')
+            ->orderBy('id', 'desc')
+            ->get();
+
         return view('admin.printer_management', compact('printers', 'printer'));
     }
 
@@ -57,7 +62,7 @@ class AdminPrinterController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->only(['asset_code','brand','model','status','note']);
+        $data = $request->only(['asset_code', 'brand', 'model', 'status', 'note']);
 
         // ✅ ถ้ามีอัปโหลดรูปใหม่
         if ($request->hasFile('image')) {
@@ -79,13 +84,12 @@ class AdminPrinterController extends Controller
     {
         $printer = Printer::findOrFail($id);
 
-        // ✅ ลบรูปออกจาก storage ด้วย
-        if ($printer->image && Storage::disk('public')->exists($printer->image)) {
-            Storage::disk('public')->delete($printer->image);
-        }
+        $printer->update([
+            'status' => 'disabled'
+        ]);
 
-        $printer->delete();
-
-        return redirect()->route('admin.printers.index')->with('success', 'ลบเครื่องปริ้นแล้ว');
+        return redirect()
+            ->route('admin.printers.index')
+            ->with('success', 'ยกเลิกการใช้งานเรียบร้อยแล้ว');
     }
 }
