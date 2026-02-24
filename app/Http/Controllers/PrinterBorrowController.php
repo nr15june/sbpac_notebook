@@ -13,7 +13,7 @@ class PrinterBorrowController extends Controller
     // ✅ หน้าแสดงรายการเครื่องปริ้นให้ผู้ใช้ยืม
     public function index()
     {
-        $printers = Printer::where('status', 'available')
+        $printers = Printer::where('status', '!=', 'disabled')
             ->orderBy('id', 'desc')
             ->get();
         $accessories = Accessory::where('type', 'printer')->get();

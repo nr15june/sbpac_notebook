@@ -16,7 +16,7 @@ class UserBorrowController extends Controller
 {
     public function index()
     {
-        $notebooks = Notebook::where('status', 'available')
+        $notebooks = Notebook::where('status', '!=', 'disabled')
             ->with('borrowings')
             ->orderBy('id', 'desc')
             ->get();
