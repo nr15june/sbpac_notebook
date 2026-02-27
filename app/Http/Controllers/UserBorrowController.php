@@ -78,6 +78,10 @@ class UserBorrowController extends Controller
                 'borrower_first_name' => $request->first_name,
                 'borrower_last_name'  => $request->last_name,
                 'borrower_phone'      => $request->phone,
+
+                'department' => Auth::user()->department,
+                'workgroup'  => Auth::user()->workgroup,
+
                 'phone'       => $request->phone,
                 'notebook_id' => $notebook->id,
                 'borrow_date' => $request->borrow_date,
@@ -115,8 +119,21 @@ class UserBorrowController extends Controller
         $borrowings = collect();
 
         foreach ($notebookBorrowings as $b) {
-            $borrowDate = \Carbon\Carbon::parse($b->borrow_date);
-            $returnDate = \Carbon\Carbon::parse($b->return_date);
+
+            $borrowDate = Carbon::parse($b->borrow_date)->startOfDay();
+            $returnDate = Carbon::parse($b->return_date)->startOfDay();
+            $today = now()->startOfDay();
+
+            if ($today->lt($borrowDate)) {
+                // ยังไม่ถึงวันรับของ → นับช่วงยืมทั้งหมด
+                $daysLeft = $borrowDate->diffInDays($returnDate);
+            } else {
+                // ถึงวันรับแล้ว → นับวันที่เหลือจริง
+                $daysLeft = $today->diffInDays($returnDate, false);
+                if ($daysLeft < 0) $daysLeft = 0;
+            }
+
+            $isOverdue = $today->gt($returnDate);
 
             $borrowings->push([
                 'type' => 'notebook',
@@ -127,21 +144,25 @@ class UserBorrowController extends Controller
                 'return_date' => $b->return_date,
                 'status' => $b->status,
                 'accessories' => $b->accessories ?? collect(),
-                'is_overdue' => method_exists($b, 'isOverdue') ? $b->isOverdue() : false,
-                'days_left' => method_exists($b, 'daysLeft') ? $b->daysLeft() : 0,
+                'is_overdue' => $isOverdue,
+                'days_left' => $daysLeft,
             ]);
         }
 
         foreach ($printerBorrowings as $p) {
-            $borrowDate = \Carbon\Carbon::parse($p->borrow_date);
-            $returnDate = \Carbon\Carbon::parse($p->return_date);
 
-            // ✅ days_left printer (คำนวณเอง)
-            $daysLeft = now()->startOfDay()->diffInDays($returnDate->startOfDay(), false);
-            if ($daysLeft < 0) $daysLeft = 0;
+            $borrowDate = Carbon::parse($p->borrow_date)->startOfDay();
+            $returnDate = Carbon::parse($p->return_date)->startOfDay();
+            $today = now()->startOfDay();
 
-            // ✅ overdue printer
-            $isOverdue = now()->startOfDay()->gt($returnDate->startOfDay());
+            if ($today->lt($borrowDate)) {
+                $daysLeft = $borrowDate->diffInDays($returnDate);
+            } else {
+                $daysLeft = $today->diffInDays($returnDate, false);
+                if ($daysLeft < 0) $daysLeft = 0;
+            }
+
+            $isOverdue = $today->gt($returnDate);
 
             $borrowings->push([
                 'type' => 'printer',
@@ -236,5 +257,17 @@ class UserBorrowController extends Controller
             ->values();
 
         return view('user.borrow_history', compact('borrowings'));
+    }
+
+    public function currentNotebook($id)
+    {
+        $notebook = \App\Models\Notebook::findOrFail($id);
+
+        $borrowing = \App\Models\Borrowing::where('notebook_id', $id)
+            ->whereIn('status', ['pending', 'borrowed'])
+            ->latest()
+            ->first();
+
+        return view('user.current_notebook', compact('notebook', 'borrowing'));
     }
 }

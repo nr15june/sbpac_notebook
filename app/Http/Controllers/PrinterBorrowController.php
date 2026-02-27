@@ -84,4 +84,16 @@ class PrinterBorrowController extends Controller
 
         return view('user.printer_borrow_history', compact('borrowings'));
     }
+
+    public function currentPrinter($id)
+    {
+        $printer = \App\Models\Printer::findOrFail($id);
+
+        $borrowing = \App\Models\PrinterBorrowing::where('printer_id', $id)
+            ->whereIn('status', ['pending', 'borrowed'])
+            ->latest()
+            ->first();
+
+        return view('user.current_printer', compact('printer', 'borrowing'));
+    }
 }

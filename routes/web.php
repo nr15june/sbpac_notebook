@@ -43,7 +43,7 @@ Route::post('/admin/borrow_management/{id}/approve', [AdminBorrowController::cla
 
 Route::post('/admin/borrow_management/{id}/reject', [AdminBorrowController::class, 'reject'])
     ->name('admin.borrow.reject');
-Route::post('/admin/borrow/confirm-return/{id}', [AdminBorrowController::class,'confirmReturn'])
+Route::post('/admin/borrow/confirm-return/{id}', [AdminBorrowController::class, 'confirmReturn'])
     ->name('admin.borrow.confirm_return');
 
 
@@ -78,7 +78,7 @@ Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
 
 Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.user.delete');
-    
+
 //---------------------admin borrow history-----------------------//
 Route::get('/admin/borrow_history', [AdminBorrowController::class, 'history'])
     ->name('admin.borrow_history');
@@ -150,4 +150,12 @@ Route::middleware(['auth'])->group(function () {
 
     // ดูประวัติการยืม
     Route::get('/printers/history', [PrinterBorrowController::class, 'history'])->name('user.printers.history');
+
+    // Notebook current status
+    Route::get('/notebooks/{id}/current', [UserBorrowController::class, 'currentNotebook'])
+        ->name('user.notebook.current');
+
+    // Printer current status
+    Route::get('/printers/{id}/current', [PrinterBorrowController::class, 'currentPrinter'])
+        ->name('user.printer.current');
 });

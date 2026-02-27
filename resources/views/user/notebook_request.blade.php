@@ -69,8 +69,8 @@
     }
 
     .status-busy {
-        background: #fee2e2;
-        color: #991b1b;
+        background: #c3e1f3ff;
+        color: #0c4568ff;
     }
 
     .nb-image {
@@ -234,6 +234,20 @@
         font-size: 12px;
         color: #6b7280;
     }
+
+    .form-static {
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 14px;
+        color: #334155;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        cursor: not-allowed;
+        user-select: none;
+    }
 </style>
 
 <div class="container-fluid">
@@ -257,11 +271,11 @@
 
                 {{-- STATUS --}}
                 @if($nb->status === 'available')
-                <div class="nb-status status-free">✔ พร้อมให้ยืม</div>
+                <div class="nb-status status-free">พร้อมให้ยืม</div>
                 @elseif($nb->status === 'pending')
                 <div class="nb-status status-pending">⏳ รออนุมัติ</div>
                 @else
-                <div class="nb-status status-busy">✖ ไม่พร้อมใช้งาน</div>
+                <div class="nb-status status-busy"> กำลังใช้งาน</div>
                 @endif
 
                 {{-- IMAGE --}}
@@ -278,13 +292,14 @@
                         Asset: {{ $nb->asset_code }}
                     </div>
 
+                    {{-- ปุ่มยืม --}}
                     @if($nb->status === 'available')
                     <button class="btn btn-primary rounded-pill px-4"
                         onclick="selectNotebook(
-                                '{{ $nb->id }}',
-                                '{{ $nb->brand }} {{ $nb->model }}',
-                                '{{ $nb->asset_code }}'
-                            )">
+                '{{ $nb->id }}',
+                '{{ $nb->brand }} {{ $nb->model }}',
+                '{{ $nb->asset_code }}'
+            )">
                         ยืมเครื่องนี้
                     </button>
                     @else
@@ -292,7 +307,17 @@
                         ไม่สามารถยืมได้
                     </button>
                     @endif
+
+                    {{-- ✅ ปุ่มดูสถานะ แสดงเสมอ --}}
+                    {{-- แสดงปุ่มดูสถานะ เฉพาะตอนที่ไม่ว่าง --}}
+                    @if($nb->status !== 'available')
+                    <a href="{{ route('user.notebook.current', $nb->id) }}"
+                        class="btn btn-outline-info rounded-pill px-4 mt-2">
+                        ดูสถานะปัจจุบัน
+                    </a>
+                    @endif
                 </div>
+
 
             </div>
         </div>
@@ -339,16 +364,16 @@
 
                     <div class="col-md-6">
                         <label class="form-label small">สำนัก / กอง / ศูนย์</label>
-                        <input type="text" name="department"
-                            class="form-control form-control-sm"
-                            value="{{ auth()->user()->department }}">
+                        <div class="form-static">
+                            {{ auth()->user()->department }}
+                        </div>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label small">กลุ่มงาน</label>
-                        <input type="text" name="workgroup"
-                            class="form-control form-control-sm"
-                            value="{{ auth()->user()->workgroup }}">
+                        <div class="form-static">
+                            {{ auth()->user()->workgroup }}
+                        </div>
                     </div>
 
                     <div class="col-md-6">
